@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8484b92d751739da72ad0f371b48a939",
+    "hash": "125e1cdaa0d39d663da6543a2e985f27",
     "packages": [
         {
             "name": "3rdpartyeve/perry",
@@ -95,86 +95,17 @@
             "time": "2014-06-17 10:36:52"
         },
         {
-            "name": "cvweiss/zcache",
-            "version": "v0.1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cvweiss/zcache.git",
-                "reference": "c502ab29aa72a7be2b342ca731a692f4560cd3e4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cvweiss/zcache/zipball/c502ab29aa72a7be2b342ca731a692f4560cd3e4",
-                "reference": "c502ab29aa72a7be2b342ca731a692f4560cd3e4",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GNU Affero General Public License"
-            ],
-            "authors": [
-                {
-                    "name": "Clinton Weiss",
-                    "email": "cvweiss@gmail.com"
-                }
-            ],
-            "description": "Library of classes to simplify caching",
-            "time": "2014-05-15 19:36:29"
-        },
-        {
-            "name": "cvweiss/zlibrary",
-            "version": "v0.3.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cvweiss/zlibrary.git",
-                "reference": "999dd5c09ee9ecb3c7ebc17334d945b55b76ce28"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cvweiss/zlibrary/zipball/999dd5c09ee9ecb3c7ebc17334d945b55b76ce28",
-                "reference": "999dd5c09ee9ecb3c7ebc17334d945b55b76ce28",
-                "shasum": ""
-            },
-            "require": {
-                "cvweiss/zcache": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GNU Affero General Public License"
-            ],
-            "authors": [
-                {
-                    "name": "Clinton Weiss",
-                    "email": "cvweiss@gmail.com"
-                }
-            ],
-            "description": "Library of classes to simplify various tasks",
-            "time": "2014-05-13 14:04:08"
-        },
-        {
             "name": "dg/twitter-php",
-            "version": "v3.3",
+            "version": "v3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dg/twitter-php.git",
-                "reference": "9836ec207ce85ad0b78172d54db3aafac82fb815"
+                "reference": "ae184168d7e6a542c43f77982e7bb98db46edf2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dg/twitter-php/zipball/9836ec207ce85ad0b78172d54db3aafac82fb815",
-                "reference": "9836ec207ce85ad0b78172d54db3aafac82fb815",
+                "url": "https://api.github.com/repos/dg/twitter-php/zipball/ae184168d7e6a542c43f77982e7bb98db46edf2d",
+                "reference": "ae184168d7e6a542c43f77982e7bb98db46edf2d",
                 "shasum": ""
             },
             "type": "library",
@@ -185,7 +116,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD-3"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
@@ -193,13 +124,13 @@
                     "homepage": "http://davidgrudl.com"
                 }
             ],
-            "description": "Small and easy Twitter wrapper for PHP.",
+            "description": "Small and easy Twitter library for PHP",
             "homepage": "https://github.com/dg/twitter-php",
             "keywords": [
                 "oauth",
                 "twitter"
             ],
-            "time": "2014-03-10 18:09:07"
+            "time": "2014-11-05 00:21:01"
         },
         {
             "name": "erusev/parsedown",
@@ -207,12 +138,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "0220a930101e0e95472fcc71a5ea2c32e95d0721"
+                "reference": "7000cbc2d29ba0ab303496300600d66fc2bc98ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/0220a930101e0e95472fcc71a5ea2c32e95d0721",
-                "reference": "0220a930101e0e95472fcc71a5ea2c32e95d0721",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/7000cbc2d29ba0ab303496300600d66fc2bc98ac",
+                "reference": "7000cbc2d29ba0ab303496300600d66fc2bc98ac",
                 "shasum": ""
             },
             "type": "library",
@@ -238,20 +169,20 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-08-26 06:31:52"
+            "time": "2014-11-12 20:27:29"
         },
         {
             "name": "filp/whoops",
-            "version": "1.1.2",
+            "version": "1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "9f451fbc7b8cad5e71300672c340c28c6bec09ff"
+                "reference": "a85fab9a98f1f9b8ebcdbe71733f0d910e5b9adf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/9f451fbc7b8cad5e71300672c340c28c6bec09ff",
-                "reference": "9f451fbc7b8cad5e71300672c340c28c6bec09ff",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/a85fab9a98f1f9b8ebcdbe71733f0d910e5b9adf",
+                "reference": "a85fab9a98f1f9b8ebcdbe71733f0d910e5b9adf",
                 "shasum": ""
             },
             "require": {
@@ -296,7 +227,7 @@
                 "whoops",
                 "zf2"
             ],
-            "time": "2014-07-11 05:56:54"
+            "time": "2014-10-26 09:05:09"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -439,7 +370,7 @@
             "authors": [
                 {
                     "name": "Anthony Ferrara",
-                    "email": "ircmaxell@php.net",
+                    "email": "ircmaxell@ircmaxell.com",
                     "homepage": "http://blog.ircmaxell.com"
                 }
             ],
@@ -453,16 +384,16 @@
         },
         {
             "name": "mobiledetect/mobiledetectlib",
-            "version": "2.8.4",
+            "version": "2.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/serbanghita/Mobile-Detect.git",
-                "reference": "58754ad5562d730e9ff64654494165a3dafe10cb"
+                "reference": "891324bde48a245be2213df82887dd7b1ea69dec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/58754ad5562d730e9ff64654494165a3dafe10cb",
-                "reference": "58754ad5562d730e9ff64654494165a3dafe10cb",
+                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/891324bde48a245be2213df82887dd7b1ea69dec",
+                "reference": "891324bde48a245be2213df82887dd7b1ea69dec",
                 "shasum": ""
             },
             "require": {
@@ -501,20 +432,20 @@
                 "mobile detector",
                 "php mobile detect"
             ],
-            "time": "2014-08-25 07:57:48"
+            "time": "2014-10-20 20:39:23"
         },
         {
             "name": "phpmailer/phpmailer",
-            "version": "v5.2.8",
+            "version": "v5.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "d3802c597bff8f6c2ccfa3eab2a511aa01b8d68f"
+                "reference": "73b61679809615850706f1dbf88e6df2ddc05745"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/d3802c597bff8f6c2ccfa3eab2a511aa01b8d68f",
-                "reference": "d3802c597bff8f6c2ccfa3eab2a511aa01b8d68f",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/73b61679809615850706f1dbf88e6df2ddc05745",
+                "reference": "73b61679809615850706f1dbf88e6df2ddc05745",
                 "shasum": ""
             },
             "require": {
@@ -522,7 +453,7 @@
             },
             "require-dev": {
                 "phpdocumentor/phpdocumentor": "*",
-                "phpunit/phpunit": "4.0.*"
+                "phpunit/phpunit": "4.1.*"
             },
             "type": "library",
             "autoload": {
@@ -554,7 +485,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2014-05-14 07:04:18"
+            "time": "2014-09-26 18:33:30"
         },
         {
             "name": "slim/slim",
@@ -639,7 +570,7 @@
                 {
                     "name": "Andrew Smith",
                     "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://thoughts.silentworks.co.uk/"
+                    "homepage": "http://www.silentworks.co.uk/"
                 },
                 {
                     "name": "Josh Lockhart",
@@ -658,16 +589,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.16.0",
+            "version": "v1.16.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8ce37115802e257a984a82d38254884085060024"
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
-                "reference": "8ce37115802e257a984a82d38254884085060024",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/42f758d9fe2146d1f0470604fc05ee43580873fc",
+                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc",
                 "shasum": ""
             },
             "require": {
@@ -711,7 +642,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-07-05 12:19:05"
+            "time": "2014-10-17 12:53:44"
         },
         {
             "name": "zeuxisoo/slim-whoops",
@@ -747,7 +678,7 @@
             ],
             "authors": [
                 {
-                    "name": "Zeuxis Lo",
+                    "name": "Zeuxis.Lo",
                     "email": "seekstudio@gmail.com",
                     "homepage": "http://www.chair.im/",
                     "role": "Developer"
