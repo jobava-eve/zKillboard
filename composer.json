@@ -6,7 +6,6 @@
 		"mobiledetect/mobiledetectlib": "*",
 		"dg/twitter-php": "*",
 		"ircmaxell/password-compat": "*",
-		"cvweiss/zlibrary" : "*",
 		"slim/slim": "2.*",
 		"slim/views": "0.1.*",
 		"filp/whoops": "1.*",
