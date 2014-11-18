@@ -49,7 +49,8 @@ class cli_crestapi implements cliCommand
 		$db::execute("update zz_crest_killmail set processed = 0 where processed < -500");
 		do {
 			// Put priority on unknown kills first
-			$crests = $db->query("select c.* from zz_crest_killmail c left join zz_killmails k on (c.killID = k.killID) where c.processed = 0 and k.killID is null order by killID desc limit 30", array(), 0);
+			//$crests = $db->query("select c.* from zz_crest_killmail c left join zz_killmails k on (c.killID = k.killID) where c.processed = 0 and k.killID is null order by killID desc limit 30", array(), 0);
+			$crests = $db->query("SELECT c.* FROM zz_crest_killmail c, zz_killmails k WHERE c.killID = k.killID AND c.processed = 0 AND k.killID IS NULL ORDER BY killID DESC LIMIT 30", array(), 0);
 			// If no unknown kills, then check the rest
 			if (count($crests) == 0) $crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 1", array(), 0);
 			foreach ($crests as $crest) {
