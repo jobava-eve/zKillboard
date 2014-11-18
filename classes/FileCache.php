@@ -25,7 +25,7 @@ class FileCache extends AbstractCache
 	 * @param $cacheTime the default cache time (5 minutes)
 	 */
 
-	protected $cacheDir = "/tmp/zkb/";
+	protected $cacheDir = "cache/queryCache/";
 	protected $cacheTime = 300;
 
 	/**
