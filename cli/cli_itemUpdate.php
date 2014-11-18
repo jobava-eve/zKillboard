@@ -82,7 +82,6 @@ class cli_itemUpdate implements cliCommand
 				$db->execute("update ccp_invTypes set typeName = :name where typeID = :id", array(":name" => $name, ":id" => $id));
 				if ($currentName != "" && $name != "Unknown Type") {
 					Log::log("$count/$size $id $currentName -> $name");
-					Log::ircAdmin("$count/$size $id $currentName -> $name");
 				}
 			}
 		}
