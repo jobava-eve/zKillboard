@@ -24,6 +24,9 @@ $dbPassword = "%dbpassword%";
 $dbName = "%dbname%";
 $dbHost = "%dbhost%";
 $dbSocket = null;
+$dbPersist = true;
+$dbEmulatePrepares = true;
+$dbUseBufferedQuery = true;
 $dbExplain = false;
 $enableAnalyze = false;
 

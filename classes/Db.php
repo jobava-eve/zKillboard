@@ -30,7 +30,7 @@ class Db
 	 */
 	protected static function getPDO()
 	{
-		global $dbUser, $dbPassword, $dbName, $dbHost, $dbSocket;
+		global $dbUser, $dbPassword, $dbName, $dbHost, $dbSocket, $dbPersist, $dbEmulatePrepares, $dbUseBufferedQuery;
 
 		if($dbSocket)
 			$dsn = "mysql:dbname=$dbName;unix_socket=$dbSocket";
@@ -40,9 +40,9 @@ class Db
 		try
 		{
 			$pdo = new PDO($dsn, $dbUser, $dbPassword, array(
-				PDO::ATTR_PERSISTENT => true, // Keep the connection open, so it can be reused
-				PDO::ATTR_EMULATE_PREPARES => true, // Use native prepares, since they and the execution plan is cached in MySQL, and thus generate faster queries, but more garbled errors if we make any.
-				PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true, // Used buffered queries
+				PDO::ATTR_PERSISTENT => $dbPersist, // Keep the connection open, so it can be reused
+				PDO::ATTR_EMULATE_PREPARES => $dbEmulatePrepares, // Use native prepares, since they and the execution plan is cached in MySQL, and thus generate faster queries, but more garbled errors if we make any.
+				PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $dbUseBufferedQuery, // Used buffered queries
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Error mode
 				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET time_zone = \'+00:00\'' // Default to using UTC as timezone for all queries.. Since EVE is UTC, so should we be!
 				)
