@@ -110,7 +110,7 @@ class cli_crestapi implements cliCommand
 			}
 			if (count($crests) == 0) sleep(1);
 		} while ($timer->stop() < 65000);
-		if ($count) Log::log("CREST: Added $count kills");
+		if ($count) Log::log("CREST: Added $count kill(s)");
 	}
 
 	/**
