@@ -16,7 +16,6 @@ CREATE TABLE `zz_users` (
   `revoked_reason` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`),
   KEY `login_index` (`username`,`password`),
   KEY `revoked` (`revoked`),
   KEY `characterID` (`characterID`)
