@@ -35,7 +35,10 @@ class cli_parseKills implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		global $debug, $parseAscending;
+		global $debug, $parseAscending, $dbPersist;
+		// DB connection needs to persist because we're working with temporary tables..
+		$dbPersist = true;
+
 		if (Util::isMaintenanceMode())
 			return;
 		if (!isset($parseAscending))
@@ -52,6 +55,7 @@ class cli_parseKills implements cliCommand
 
 		if ($debug)
 			Log::log("Fetching kills for processing...");
+
 		while ($timer->stop() < $maxTime)
 		{
 			if (Util::isMaintenanceMode())
