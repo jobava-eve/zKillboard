@@ -204,7 +204,6 @@ if($_POST)
 		// table is updated if user is ceo/executor in code thta loads this information below
 	}
 }
-
 $data["entities"] = Account::getUserTrackerData();
 
 // Theme

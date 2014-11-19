@@ -20,8 +20,11 @@ if(!User::isLoggedIn()) User::autoLogin();
 // Theme
 if(User::isLoggedIn())
 	$theme = UserConfig::get("theme");
-if(!is_dir("themes/$theme") || !isset($theme))
+if(!isset($theme))
 	$theme = "zkillboard";
+elseif(!is_dir("themes/$theme"))
+	$theme = "zkillboard";
+
 $app->config(array("templates.path" => $baseDir."themes/" . $theme));
 
 // Error handling

@@ -113,7 +113,7 @@ $twig->addGlobal("adFreeMonthCost", $adFreeMonthCost);
 
 // Display a banner?
 $banner = Db::queryField("select banner from zz_subdomains where (subdomain = :server or alias = :server)", "banner", array(":server" => $_SERVER["SERVER_NAME"]), 60);
-if ($banner) 
+if ($banner)
 {
 	$banner = str_replace("http://i.imgur.com/", "https://i.imgur.com/", $banner);
 	$banner = str_replace("http://imgur.com/", "https://imgur.com/", $banner);

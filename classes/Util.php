@@ -548,7 +548,6 @@ class Util
 		}
 
 		// Look if the theme has any information pages it wants to present
-		$theme = UserConfig::get("theme", $theme);
 		$tDir = $baseDir . "themes/" . $theme . "/information/";
 		$data = null;
 		if(is_dir($tDir))
