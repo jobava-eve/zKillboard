@@ -26,6 +26,9 @@ class Email
 	 */
 	public static function send($email, $subject, $body)
 	{
+		if($email == "null@null.com")
+			return "Mail address is null@null.com - which isn't a real address, please fix it so we can send mails to you!";
+
 		global $emailsmtp, $emailport, $emailusername, $emailpassword, $sentfromemail, $sentfromdomain, $baseDir;
 		$mail = new PHPMailer();
 		$mail->isSMTP();
