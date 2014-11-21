@@ -1,2 +1,5 @@
 User-agent: *
+Disallow: */stats/
+Disallow: /kill/-*/
 Disallow: /api/*
+sitemap: /sitemaps/sitemaps.xml
