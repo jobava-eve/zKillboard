@@ -55,6 +55,9 @@ foreach($files as $file)
 
 	$class = new $className();
 	$cronInfo[$command] = $class->getCronInfo();
+	if(method_exists($className, "executable"))
+		$cronInfo[$command]["executable"] = $class->executable();
+
 	unset($class);
 }
 
@@ -72,12 +75,23 @@ if(file_exists("$base/cron.overrides"))
 }
 
 foreach($cronInfo as $command => $info)
-	foreach($info as $interval => $arguments)
-		runCron($command, $interval, $arguments);
+{
+	if(isset($info["executable"]))
+	{
+		$executable = $info["executable"];
+		unset($info["executable"]);
+	}
+	else
+		$executable = "php";
 
-function runCron($command, $interval, $args)
+	foreach($info as $interval => $arguments)
+		runCron($command, $interval, $arguments, $executable);
+}
+
+function runCron($command, $interval, $args, $executable)
 {
 	global $base;
+
 	$curTime = time();
 
 	if(is_array($args))
@@ -112,7 +126,7 @@ function runCron($command, $interval, $args)
 		return;
 
 	putenv("SILENT_CLI=1");
-	pcntl_exec("$base/cliLock.sh", $args);
+	pcntl_exec("$base/cliLock.sh", $args, array("EXECUTABLE" => $executable));
 	Storage::store($locker, $lastRun);
 	die("Executing $command failed!");
 }

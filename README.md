@@ -143,6 +143,20 @@ For example the following would disable stompReceive entirely, and increase the 
 
 All cronjobs can be launched manually with the cli interface.
 
+You can also define the executable to use, be it php, hhvm or something third.
+```json
+{
+    "stompReceive":{},
+    "apiFetch":{
+        "300":"",
+        "executable":"hhvm"
+    },
+    "parseKills":{
+        "300":""
+    }
+}
+```
+
 # Stomp
 Stomp uses the STOMP PHP plugin which you can get via git.
 Here is a quick one liner: `cd /tmp/ && git clone https://github.com/php/pecl-tools-stomp.git && cd pecl-tools-stomp && phpize && ./configure && make && make install`

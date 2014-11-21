@@ -29,9 +29,9 @@ class cli_904check implements cliCommand
 	}
 
 	public function getCronInfo()
-        {
-                return array(0 => ""); // Run every minute
-        }
+	{
+		return array(0 => ""); // Run every minute
+	}
 
 	public function execute($parameters, $db)
 	{

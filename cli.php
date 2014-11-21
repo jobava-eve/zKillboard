@@ -41,16 +41,20 @@ if($command == "bashList")
 try
 {
 	$fileName = "$base/cli/cli_$command.php";
-	if ($command == "") CLI::out("|r|You haven't issued a command to execute.|n| Please use list to show all commands, or help <command> to see information on how to use the command", true);
-	if(!file_exists($fileName)) CLI::out("|r|Error running $command|n|. Please use list to show all commands, or help <command> to see information on how to use the command", true);
+	if ($command == "")
+		CLI::out("|r|You haven't issued a command to execute.|n| Please use list to show all commands, or help <command> to see information on how to use the command", true);
+	if(!file_exists($fileName))
+		CLI::out("|r|Error running $command|n|. Please use list to show all commands, or help <command> to see information on how to use the command", true);
 
 	require_once $fileName;
 	$className = "cli_$command";
 	$class = new $className();
 
-	if(!is_a($class, "cliCommand")) CLI::out("|r| Module $command does not implement interface cliCommand", true);
-	Db::execute("set session wait_timeout = 600");
+	if(!is_a($class, "cliCommand"))
+		CLI::out("|r| Module $command does not implement interface cliCommand", true);
+
 	$db = new Db();
+	$db->execute("set session wait_timeout = 600");
 	$class->execute($argv, $db);
 }
 catch (Exception $ex)
