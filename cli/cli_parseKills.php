@@ -122,8 +122,6 @@ class cli_parseKills implements cliCommand
 
 				// Hash is already in the $row array, no need to fetch it from the DB unless we have to..
 				$hash = $row["hash"];
-				if(!$hash)
-					$hash = $db->queryField("SELECT hash FROM zz_killmails WHERE killID = :killID", "hash", array(":killID" => $killID));
 
 				// Because of CREST caching AND the want for accurate prices, don't process the first hour
 				// of kills until after 01:05 each day
@@ -203,12 +201,13 @@ class cli_parseKills implements cliCommand
 			{
 				$db->execute("INSERT IGNORE INTO zz_stats_queue values (" . implode("), (", $processedKills) . ")");
 				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $processedKills) . ")");
-				$db->execute("INSERT INTO zz_storage (locker, contents) values ('KillsAdded', :num) on duplicate key UPDATE contents = contents + :num", array(":num" => $numProcessed));
 			}
 		}
 		if ($numKills > 0)
+		{
 			Log::log("Processed: $numKills kill(s)");
-
+			$db->execute("INSERT INTO zz_storage (locker, contents) VALUES ('KillsAdded', :num) ON DUPLICATE KEY UPDATE contents = contents + :num", array(":num" => $numKills));
+		}
 		self::removeTempTables();
 	}
 
@@ -349,23 +348,15 @@ class cli_parseKills implements cliCommand
 	 */
 	private static function processItem(&$kill, &$killID, &$item, $itemInsertOrder, $isCargo = false, $parentContainerFlag = -1)
 	{
-		global $itemNames, $db;
+		global $db;
 
 		$dttm = (string) $kill["killTime"];
 
-		if ($itemNames == null )
-		{
-			$itemNames = array();
-			$results = $db->query("SELECT typeID, typeName FROM ccp_invTypes", array(), 3600);
-			foreach ($results as $row) {
-				$itemNames[$row["typeID"]] = $row["typeName"];
-			}
-		}
-		$typeID = $item["typeID"];
-		if (isset($item["typeID"]) && isset($itemNames[$item["typeID"]]))
-			$itemName = $itemNames[$item["typeID"]];
-		else
+		$itemName = Db::queryField("select typeName from ccp_invTypes where typeID = :typeID", "typeName", array(":typeID" => $item["typeID"]));
+		if ($itemName == null)
 			$itemName = "TypeID $typeID";
+
+		$typeID = $item["typeID"];
 
 		if ($item["typeID"] == 33329 && $item["flag"] == 89)
 			$price = 0.01; // Golden pod implant can't be destroyed
