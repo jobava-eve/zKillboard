@@ -36,8 +36,9 @@ if ($key != "faction")
 	$validPageTypes[] = "top";
 	$validPageTypes[] = "topalltime";
 }
-if (!in_array($pageType, $validPageTypes) && $pageType != "") $app->redirect("/$key/$id/");
-if ($pageType == "") $pageType = "overview";
+
+if (!in_array($pageType, $validPageTypes) && $pageType != "" && $pageType != "page") $app->redirect("/$key/$id/");
+if ($pageType == "" || $pageType == "page") $pageType = "overview";
 
 $map = array(
 		"corporation"   => array("column" => "corporation", "id" => "Info::getCorpId", "details" => "Info::getCorpDetails", "mixed" => true),
@@ -72,7 +73,7 @@ $parameters["page"] = $page;
 try {
 	$detail = call_user_func($map[$key]["details"], $id, $parameters);
 	if (isset($detail["valid"]) && $detail["valid"] == false) $app->notFound();
-} catch (Exception $ex) 
+} catch (Exception $ex)
 {
 	$app->render("error.html", array("message" => "There was an error fetching information for the $key you specified."));
 	return;
@@ -114,7 +115,7 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 			$topParameters["month"] = date("m");
 	}
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
-	
+
 	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
 	$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
 	$topLists[] = array("type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
