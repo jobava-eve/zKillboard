@@ -25,7 +25,7 @@ if (strlen("$id") > 11) $app->redirect("/");
 
 if ($pageType == "history") $app->redirect("../stats/");
 
-$validSubPages = array("page", "group", "month", "year");
+$validSubPages = array("page", "group", "month", "year", "ship");
 $validPageTypes = array("overview", "kills", "losses", "solo", "stats", "wars", "supers", "page", "api", "corpstats", "top", "topalltime");
 if (!in_array($pageType, $validPageTypes) && $pageType != "" && !in_array($pageType, $validSubPages)) $app->redirect("/$key/$id/");
 if ($pageType == "" || in_array($pageType, $validSubPages)) $pageType = "overview";
