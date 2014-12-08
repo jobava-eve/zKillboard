@@ -127,6 +127,8 @@ function runCron($command, $interval, $args, $executable)
 
 	putenv("SILENT_CLI=1");
 	pcntl_exec("$base/cliLock.sh", $args, array("EXECUTABLE" => $executable));
+	// Sleep for a second before starting the next tast..
+	sleep(1);
 	Storage::store($locker, $lastRun);
 	die("Executing $command failed!");
 }
