@@ -67,9 +67,9 @@ if($_POST)
 					else if ($processed == 2) $error = "There was an error while processing the killmail. Please open a ticket and include the external killmail link so we can examine what happened. Thank you.";
 					else if ($processed == 3) $error = "Only PvP mails are accepted, the mail you just submitted was a PvE killmail.";
 					else if (date("Gi") < 105) $error = "Between 00:00 and 01:05 no kills are processed while we wait for CCP's Market CREST cache to clear... However, the kill has been stored and will be processed at 01:05";
-					else usleep(200000);
-				} while ($timer->stop() < 20000 && $error == "");
-				if ($error == "") $error = "We waited 20 seconds for the kill to be processed but the server must be busy atm, please wait!";
+					else usleep(450000);
+				} while ($timer->stop() < 45000 && $error == "");
+				if ($error == "") $error = "We waited 45 seconds for the kill to be processed but the server must be busy atm, please wait!";
 			}
 		}
 	}

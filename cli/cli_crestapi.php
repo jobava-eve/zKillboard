@@ -46,19 +46,24 @@ class cli_crestapi implements cliCommand
 		$count = 0;
 		$timer = new Timer();
 
-		$db::execute("update zz_crest_killmail set processed = 0 where processed < -500");
-		do {
+		$db->execute("update zz_crest_killmail set processed = 0 where processed < -500");
+		Log::log("Starting CREST API killmail parsing");
+		while ($timer->stop() < 59000)
+                {
 			// Put priority on unknown kills first
 			//$crests = $db->query("select c.* from zz_crest_killmail c left join zz_killmails k on (c.killID = k.killID) where c.processed = 0 and k.killID is null order by killID desc limit 30", array(), 0);
 			$crests = $db->query("SELECT c.* FROM zz_crest_killmail c, zz_killmails k WHERE c.killID = k.killID AND c.processed = 0 AND k.killID IS NULL ORDER BY killID DESC LIMIT 30", array(), 0);
 			// If no unknown kills, then check the rest
-			if (count($crests) == 0) $crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 1", array(), 0);
+			if (count($crests) == 0)
+				$crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 1", array(), 0);
+
 			foreach ($crests as $crest) {
 				try {
 					$now = $timer->stop();
 					$killID = $crest["killID"];
 					$hash = trim($crest["hash"]);
 
+					Log::log("CREST API: Processing kill $killID");
 					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_URL, $url);
@@ -70,7 +75,8 @@ class cli_crestapi implements cliCommand
 					if ($httpCode > 500) return; // Server is rejecting us, bail for now
 					if ($httpCode != 200)
 					{
-						Db::execute("update zz_crest_killmail set processed = :i where killID = :killID", array(":i" => (-1 * $httpCode), ":killID" => $killID));
+						Log::log("Crestapi Error: $killID / $httpCode");
+						$db->execute("update zz_crest_killmail set processed = :i where killID = :killID", array(":i" => (-1 * $httpCode), ":killID" => $killID));
 						usleep(250000);
 						continue;
 					}
@@ -109,7 +115,7 @@ class cli_crestapi implements cliCommand
 				}
 			}
 			if (count($crests) == 0) sleep(1);
-		} while ($timer->stop() < 65000);
+		}
 		if ($count) Log::log("CREST: Added $count kill(s)");
 	}
 
