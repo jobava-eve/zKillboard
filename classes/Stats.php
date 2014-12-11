@@ -259,6 +259,6 @@ class Stats
 	private static function statDestroyed($type, $typeID, $groupID, $modifier, $points, $isk)
 	{
 		if ($typeID == 0) return;
-		Db::execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) values (:type, :typeID, :groupID, :modifier, :points, :isk) on duplicate key update destroyed = destroyed + :modifier, pointsDestroyed = pointsDestroyed + :points, iskDestroyed = iskDestroyed + :isk", 	array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));=> ($isk * $modifier)));
+		Db::execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) values (:type, :typeID, :groupID, :modifier, :points, :isk) on duplicate key update destroyed = destroyed + :modifier, pointsDestroyed = pointsDestroyed + :points, iskDestroyed = iskDestroyed + :isk", 	array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
 	}
 }
