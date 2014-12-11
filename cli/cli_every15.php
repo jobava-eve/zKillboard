@@ -62,7 +62,7 @@ class cli_every15 implements cliCommand
 		$cache = new FileCache($baseDir . "/cache/related/");
 		$cache->cleanUp();
 
-		// Cleanup the overall file cache
+		// Cleanup the overall fileCache
 		$fc = new FileCache();
 		$fc->cleanup();
 	}
