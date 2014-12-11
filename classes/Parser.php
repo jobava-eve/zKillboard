@@ -122,7 +122,7 @@ class Parser
 			if (sizeof($cleanupKills)) {
 				Db::execute("delete from zz_participants where killID in (" . implode(",", $cleanupKills) . ")");
 			}
-			Db::execute("insert into zz_participants select * from zz_participants_temporary");
+			Db::execute("insert ignore into zz_participants select * from zz_participants_temporary");
 			$numProcessed = sizeof($processedKills);
 			if ($numProcessed) {
 				Db::execute("insert ignore into zz_stats_queue values (" . implode("), (", $processedKills) . ")");

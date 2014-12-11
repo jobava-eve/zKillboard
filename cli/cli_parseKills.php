@@ -193,7 +193,7 @@ class cli_parseKills implements cliCommand
 				$db->execute("delete FROM zz_participants WHERE killID in (" . implode(",", $cleanupKills) . ")");
 
 			// Insert all the data from the temporary table to the primary table, so people are happy!
-			$db->execute("INSERT INTO zz_participants SELECT * FROM zz_participants_temporary");
+			$db->execute("INSERT IGNORE INTO zz_participants SELECT * FROM zz_participants_temporary");
 
 			// Insert data into various tables, tell the stats queue it needs to update some kills and set mails as processed
 			$numProcessed = sizeof($processedKills);
