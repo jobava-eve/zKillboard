@@ -46,90 +46,97 @@ if($_POST)
 	}
 }
 
-// Create the details on this kill
-$killdata = Kills::getKillDetails($id);
-
-if (sizeof($killdata["victim"]) == 0) {
-	return $app->render("404.html", array("message" => "KillID $id does not exist."), 404);
-}
-
-// create the dropdown involved array
-$allinvolved = $killdata["involved"];
-$cnt = 0;
-while($cnt < 10)
+$killKey = "CacheKill:$id:$pageview";
+$details = Cache::get($killKey);
+if($details == null)
 {
-	if(isset($allinvolved[$cnt]))
+	// Create the details on this kill
+	$killdata = Kills::getKillDetails($id);
+
+	if (sizeof($killdata["victim"]) == 0) {
+		return $app->render("404.html", array("message" => "KillID $id does not exist."), 404);
+	}
+
+	// create the dropdown involved array
+	$allinvolved = $killdata["involved"];
+	$cnt = 0;
+	while($cnt < 10)
 	{
-		$involved[] = $allinvolved[$cnt];
-		unset($allinvolved[$cnt]);
+		if(isset($allinvolved[$cnt]))
+		{
+			$involved[] = $allinvolved[$cnt];
+			unset($allinvolved[$cnt]);
+		}
+		$cnt++;
+		continue;
 	}
-	$cnt++;
-	continue;
-}
-$topDamage = $finalBlow = null;
-$first = null;
-if (sizeof($killdata["involved"]) > 1){
-	foreach($killdata["involved"] as $inv) {
-		if ($first == null) $first = $inv;
-		if ($inv["finalBlow"] == 1) $finalBlow = $inv;
-		if ($topDamage == null && $inv["characterID"] != 0) $topDamage = $inv;
+	$topDamage = $finalBlow = null;
+	$first = null;
+	if (sizeof($killdata["involved"]) > 1){
+		foreach($killdata["involved"] as $inv) {
+			if ($first == null) $first = $inv;
+			if ($inv["finalBlow"] == 1) $finalBlow = $inv;
+			if ($topDamage == null && $inv["characterID"] != 0) $topDamage = $inv;
+		}
+		// If only NPC's are on the mail give them credit for top damage...
+		if ($topDamage == null) $topDamage = $first;
 	}
-	// If only NPC's are on the mail give them credit for top damage...
-	if ($topDamage == null) $topDamage = $first;
+
+	$extra = array();
+	// And now give all the arrays and whatnots to twig..
+	if($pageview == "overview")
+	{
+		$extra["items"] = Detail::combineditems(md5($id), $killdata["items"]);
+		$extra["invAll"] = involvedCorpsAndAllis(md5($id), $killdata["involved"]);
+		$extra["involved"] = $involved;
+		$extra["allinvolved"] = $allinvolved;
+	}
+	if($pageview == "comments")
+	{
+		$extra["cmtChars"] = Api::getCharacters($userID);
+		$extra["cmtChars"][] = array("characterID" => 0, "characterName" => "Anonymous");
+	}
+
+	$extra["droppedisk"] = droppedIsk(md5($id), $killdata["items"]);
+	$extra["lostisk"] = $killdata["info"]["total_price"] - $extra["droppedisk"];
+	$extra["fittedisk"] = fittedIsk(md5($id), $killdata["items"]);
+	$extra["relatedtime"] = date("YmdH00", strtotime($killdata["info"]["killTime"]));
+	$extra["fittingwheel"] = Detail::eftarray(md5($id), $killdata["items"], $killdata["victim"]["characterID"]);
+	$extra["involvedships"] = involvedships($killdata["involved"]);
+	$extra["involvedshipscount"] = count($extra["involvedships"]);
+	$extra["totalprice"] = usdeurgbp($killdata["info"]["total_price"]);
+	$extra["destroyedprice"] = usdeurgbp($extra["lostisk"]);
+	$extra["droppedprice"] = usdeurgbp($extra["droppedisk"]);
+	$extra["fittedprice"] = usdeurgbp($extra["fittedisk"]);
+	$extra["efttext"] = Fitting::EFT($extra["fittingwheel"]);
+	$extra["dnatext"] = Fitting::DNA($killdata["items"],$killdata["info"]["shipTypeID"]);
+	$extra["edkrawmail"] = Kills::getRawMail($id);
+	$extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
+	$extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
+	$extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
+	$extra["commentID"] = $id;
+	$extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where killID = :killID and processed = 1", array(":killID" => $id), 300);
+	$extra["prevKillID"] = Db::queryField("select killID from zz_participants where killID < :killID order by killID desc limit 1", "killID", array(":killID" => $id), 300);
+	$extra["nextKillID"] = Db::queryField("select killID from zz_participants where killID > :killID order by killID asc limit 1", "killID", array(":killID" => $id), 300);
+	$extra["warInfo"] = War::getKillIDWarInfo($id);
+	$extra["insertTime"] = Db::queryField("select insertTime from zz_killmails where killID = :killID", "insertTime", array(":killID" => $id), 300);
+
+	$systemID = $killdata["info"]["solarSystemID"];
+	$data = Info::getWormholeSystemInfo($systemID);
+	$extra["wormhole"] = $data;
+
+	$url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
+
+	if ($killdata["victim"]["groupID"] == 29) $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID >= (:killID - 200) and killID < :killID and groupID != 29 and isVictim = 1 and characterID = :charID order by killID desc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
+	else $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID <= (:killID + 200) and killID > :killID and groupID = 29 and isVictim = 1 and characterID = :charID order by killID asc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
+	Info::addInfo($relatedShip);
+	$killdata["victim"]["related"] = $relatedShip;
+
+	$details = array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url);
+	Cache::set($killKey, $details);
 }
 
-$extra = array();
-// And now give all the arrays and whatnots to twig..
-if($pageview == "overview")
-{
-	$extra["items"] = Detail::combineditems(md5($id), $killdata["items"]);
-	$extra["invAll"] = involvedCorpsAndAllis(md5($id), $killdata["involved"]);
-	$extra["involved"] = $involved;
-	$extra["allinvolved"] = $allinvolved;
-}
-if($pageview == "comments")
-{
-	$extra["cmtChars"] = Api::getCharacters($userID);
-	$extra["cmtChars"][] = array("characterID" => 0, "characterName" => "Anonymous");
-}
-
-$extra["droppedisk"] = droppedIsk(md5($id), $killdata["items"]);
-$extra["lostisk"] = $killdata["info"]["total_price"] - $extra["droppedisk"];
-$extra["fittedisk"] = fittedIsk(md5($id), $killdata["items"]);
-$extra["relatedtime"] = date("YmdH00", strtotime($killdata["info"]["killTime"]));
-$extra["fittingwheel"] = Detail::eftarray(md5($id), $killdata["items"], $killdata["victim"]["characterID"]);
-$extra["involvedships"] = involvedships($killdata["involved"]);
-$extra["involvedshipscount"] = count($extra["involvedships"]);
-$extra["totalprice"] = usdeurgbp($killdata["info"]["total_price"]);
-$extra["destroyedprice"] = usdeurgbp($extra["lostisk"]);
-$extra["droppedprice"] = usdeurgbp($extra["droppedisk"]);
-$extra["fittedprice"] = usdeurgbp($extra["fittedisk"]);
-$extra["efttext"] = Fitting::EFT($extra["fittingwheel"]);
-$extra["dnatext"] = Fitting::DNA($killdata["items"],$killdata["info"]["shipTypeID"]);
-$extra["edkrawmail"] = Kills::getRawMail($id);
-$extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
-$extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
-$extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
-$extra["commentID"] = $id;
-$extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where killID = :killID and processed = 1", array(":killID" => $id), 300);
-$extra["prevKillID"] = Db::queryField("select killID from zz_participants where killID < :killID order by killID desc limit 1", "killID", array(":killID" => $id), 300);
-$extra["nextKillID"] = Db::queryField("select killID from zz_participants where killID > :killID order by killID asc limit 1", "killID", array(":killID" => $id), 300);
-$extra["warInfo"] = War::getKillIDWarInfo($id);
-$extra["insertTime"] = Db::queryField("select insertTime from zz_killmails where killID = :killID", "insertTime", array(":killID" => $id), 300);
-
-$systemID = $killdata["info"]["solarSystemID"];
-$data = Info::getWormholeSystemInfo($systemID);
-$extra["wormhole"] = $data;
-
-$url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
-
-if ($killdata["victim"]["groupID"] == 29) $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID >= (:killID - 200) and killID < :killID and groupID != 29 and isVictim = 1 and characterID = :charID order by killID desc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
-else $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID <= (:killID + 200) and killID > :killID and groupID = 29 and isVictim = 1 and characterID = :charID order by killID asc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
-Info::addInfo($relatedShip);
-$killdata["victim"]["related"] = $relatedShip;
-
-$app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
-
+$app->render("detail.html", $details);
 function involvedships($array)
 {
 	$involved = array();
