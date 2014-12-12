@@ -19,7 +19,8 @@ OIFS="$IFS"
 IFS="."
 lockFile="$locks/$*.lock"
 IFS="$OIFS"
+flock=$(which flock)
 
 # Execute!
 #echo $base/cli.php
-flock -w 63 $lockFile $executable $base/cli.php "$@"
+$flock -w 63 $lockFile $executable $base/cli.php "$@"
