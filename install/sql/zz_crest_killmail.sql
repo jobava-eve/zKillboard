@@ -1,12 +1,14 @@
-
 DROP TABLE IF EXISTS `zz_crest_killmail`;
 CREATE TABLE `zz_crest_killmail` (
-  `killID` int(16) NOT NULL,
-  `hash` varchar(64) NOT NULL,
-  `processed` int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`killID`,`hash`),
-  KEY `killID` (`killID`),
-  KEY `hash` (`hash`),
-  KEY `processed` (`processed`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+	`killID` INT(16) NOT NULL,
+	`hash` VARCHAR(64) NOT NULL,
+	`processed` SMALLINT(1) NOT NULL DEFAULT '0',
+	`timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`killID`, `hash`),
+	INDEX `killID` (`killID`),
+	INDEX `hash` (`hash`),
+	INDEX `processed` (`processed`)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;
