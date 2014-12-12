@@ -7,7 +7,8 @@ CREATE TABLE `zz_crest_killmail` (
 	PRIMARY KEY (`killID`, `hash`),
 	INDEX `killID` (`killID`),
 	INDEX `hash` (`hash`),
-	INDEX `processed` (`processed`)
+	INDEX `processed` (`processed`),
+	INDEX `timestamp` (`timestamp`)
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
