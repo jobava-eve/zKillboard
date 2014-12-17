@@ -91,7 +91,7 @@ class Price
 			return $total;
 		}
 
-		usleep(100000); // Limit CREST market calls to 10 per second (sleep regardless of when we made our last call)
+		usleep(33334); // Limit CREST market calls to 30 per second (sleep regardless of when we made our last call)
 
 		$url = "http://public-crest.eveonline.com/market/10000002/types/$typeID/history/";
 		$raw = Util::getData($url);
