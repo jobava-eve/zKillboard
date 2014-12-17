@@ -242,6 +242,15 @@ class Util
 				case "pretty":
 					$parameters[$key] = true;
 				break;
+				case "no-attackers":
+					$parameters[$key] = true;
+				break;
+				case "no-items":
+					$parameters[$key] = true;
+				break;
+				case "finalblow-only":
+					$parameters[$key] = true;
+				break;
 				default:
 					if($addExtraParameters == true)
 					{
