@@ -533,30 +533,6 @@ class Util
 	public static function informationPages()
 	{
 		global $baseDir, $theme;
-		$mdDir = $baseDir . "information/";
-		$data = scandir($mdDir);
-
-		foreach($data as $key =>  $file)
-		{
-			if($file == "." || $file == "..")
-				continue;
-
-			if(is_dir($mdDir . $file))
-			{
-				$subData = scandir($mdDir . $file);
-				foreach($subData as $key => $subDir)
-				{
-					if($subDir == "." || $subDir == "..")
-						continue;
-
-					$pages[$file][] = array("name" => strtolower(str_replace(".md", "", $subDir)), "path" => "$mdDir$file/$subDir");
-				}
-			}
-			else
-				$pages[strtolower(str_replace(".md", "", $file))][] = array("name" => strtolower(str_replace(".md", "", $file)), "path" => "$mdDir$file");
-		}
-
-		// Look if the theme has any information pages it wants to present
 		$tDir = $baseDir . "themes/" . $theme . "/information/";
 		$data = null;
 		if(is_dir($tDir))
