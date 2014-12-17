@@ -24,10 +24,10 @@ if ($page > $maxPage && $type != '') $app->redirect("/kills/$type/page/$maxPage/
 switch($type)
 {
 	case "5b":
-		$kills = Kills::getKillsDetails(json_decode(Storage::retrieve("Kills5b+", "[]"), true));
+		$kills = Kills::getKills(array("iskValue" => 5000000000, "page" => $page));
 	break;
 	case "10b":
-		$kills = Kills::getKillsDetails(json_decode(Storage::retrieve("Kills10b+", "[]"), true));
+		$kills = Kills::getKills(array("iskValue" => 10000000000, "page" => $page));
 	break;
 	case "bigkills":
 		$kills = Kills::getKills(array("groupID" => array(547,485,513,902,941,30, 659), "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));

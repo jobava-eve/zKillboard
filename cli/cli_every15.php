@@ -46,9 +46,6 @@ class cli_every15 implements cliCommand
 		$p["pastSeconds"] = $numDays * 86400;
 		$p["kills"] = true;
 
-		Storage::store("Kills5b+", json_encode(Kills::getKills(array("iskValue" => 5000000000), true, false)));
-		Storage::store("Kills10b+", json_encode(Kills::getKills(array("iskValue" => 10000000000), true, false)));
-
 		Storage::store("TopChars", json_encode(Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p))));
 		Storage::store("TopCorps", json_encode(Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p))));
 		Storage::store("TopAllis", json_encode(Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p))));
