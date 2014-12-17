@@ -67,7 +67,7 @@ class Feed
 					if($attacker["finalBlow"] == "1")
 						$json["attackers"][] = $attacker;
 			}
-			elseif (array_key_exists("no-attackers", $parameters))
+			if (array_key_exists("no-attackers", $parameters))
 			{
 				$involved = count($json["attackers"]);
 				$json["zkb"]["involved"] = $involved;
