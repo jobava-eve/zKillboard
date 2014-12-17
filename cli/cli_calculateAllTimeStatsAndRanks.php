@@ -30,12 +30,11 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(0 => "ranks");
+		return array(86400 => "ranks");
 	}
 
 	public function execute($parameters, $db)
 	{
-		if (date("Gi") != 115 && !in_array('-f', $parameters)) return; // Run at 01:15
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|recentStatsAndRanks <type>|n| To see a list of commands, use: |g|methods calculateAllTimeStatsAndRanks", true);
 		$command = $parameters[0];
 
