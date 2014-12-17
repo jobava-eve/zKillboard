@@ -55,8 +55,13 @@ class cli_crestapi implements cliCommand
 			try
 			{
 				// Bind the data to variables
-				$killID = $data["killID"];
-				$hash = trim($data["hash"]);
+				$killID = isset($data["killID"]) ? $data["killID"] : NULL;
+				$hash = isset($data["hash"]) ? trim($data["hash"]) : NULL;
+
+				// If neither killID or hash is set, just return.. no need to go on..
+				if($killID == NULL || $hash == NULL)
+					return;
+
 				if($debug)
 					Log::log("CREST API: Processing kill $killID");
 
