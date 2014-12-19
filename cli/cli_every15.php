@@ -30,14 +30,11 @@ class cli_every15 implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(0 => "");
+		return array(900 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
-		$minute = date("i");
-				if ($minute % 15 != 0) return;
-
 		global $baseDir;
 
 		$p = array();
