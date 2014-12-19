@@ -60,9 +60,6 @@ class cli_fightFinder implements cliCommand
 			$date = date("YmdH00");
 			$link = "$fullAddr/related/$systemID/$date/";
 
-			// Insert into (or update) zz_battles
-			$db->execute("INSERT INTO zz_battles (solarSystemID, solarSystemName, dttm, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)", array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
-
 			if ($socialCount == 0)
 			{
 				$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks.";
