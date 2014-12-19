@@ -182,22 +182,22 @@ class cli_parseKills implements cliCommand
 				$points = Points::calculatePoints($killID, true);
 
 				// Insert it to the database
-				$db->execute("UPDATE zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp WHERE killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill["attackers"]), ":tp" => $totalCost));
+				$db->execute("UPDATE zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp WHERE killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => count($kill["attackers"]), ":tp" => $totalCost));
 
 				// Pass the killID to the $processedKills array, so we can show how many kills we've done this cycle..
 				$processedKills[] = $killID;
 			}
 
 			// If there are kills to clean up, we'll get rid of them here.. This should only be old manual mails that are now api verified tho
-			if (sizeof($cleanupKills))
+			if (count($cleanupKills) > 0)
 				$db->execute("delete FROM zz_participants WHERE killID in (" . implode(",", $cleanupKills) . ")");
 
 			// Insert all the data from the temporary table to the primary table, so people are happy!
 			$db->execute("INSERT IGNORE INTO zz_participants SELECT * FROM zz_participants_temporary");
 
 			// Insert data into various tables, tell the stats queue it needs to update some kills and set mails as processed
-			$numProcessed = sizeof($processedKills);
-			if ($numProcessed)
+			$numProcessed = count($processedKills);
+			if ($numProcessed > 0)
 			{
 				$db->execute("INSERT IGNORE INTO zz_stats_queue values (" . implode("), (", $processedKills) . ")");
 				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $processedKills) . ")");

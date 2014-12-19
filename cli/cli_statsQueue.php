@@ -36,7 +36,7 @@ class cli_statsQueue implements cliCommand
 	public function execute($parameters, $db)
 	{
 		$timer = new Timer();
-		while ($timer->stop() < 65000) {
+		while ($timer->stop() < 59000) {
 			$processedKills = $db->query("select killID from zz_stats_queue limit 100", array(), 0);
 			if (count($processedKills) == 0) {
 				sleep(5);
