@@ -535,6 +535,8 @@ class Util
 		global $baseDir, $theme;
 		$tDir = $baseDir . "themes/" . $theme . "/information/";
 		$data = null;
+		$pages = array();
+
 		if(is_dir($tDir))
 			$data = scandir($tDir);
 
