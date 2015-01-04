@@ -39,28 +39,27 @@ class Killmail
 		if (count($files) > 1) throw new Exception("Invalid set.");
 		$file = $files[0];
 
-                $sem = sem_get(1234);
-                if (!sem_acquire($sem)) throw new Exception("Unable to obtain semaphore");
-                if (!file_exists($file)) $json = array();
-                else
-                {
-                        $contents = file_get_contents($file);
-                        $json = json_decode($contents, true);
-                        $contents = null;
-                }
+				$sem = sem_get(1234);
+				if (!sem_acquire($sem)) throw new Exception("Unable to obtain semaphore");
+				if (!file_exists($file)) $json = array();
+				else
+				{
+						$contents = file_get_contents($file);
+						$json = json_decode($contents, true);
+				}
 
 		foreach($kills as $kill)
 		{
 			$killID = $kill["killID"];
 			$killJson = $kill["json"];
 			if ($killJson == "" || $killJson == "{}") continue;
-                	$json["$killID"] = $killJson;
+					$json["$killID"] = $killJson;
 		}
 
-                $contents = json_encode($json);
-                file_put_contents($file, $contents, LOCK_EX);
+				$contents = json_encode($json);
+				file_put_contents($file, $contents, LOCK_EX);
 		Db::execute("update zz_killmails set kill_json = '' where killID in (" . implode(",", $killIDs) . ")");
-                sem_release($sem);
+				sem_release($sem);
 	}
 
 	protected static function getFile($killID, $createDir = false)
