@@ -32,6 +32,9 @@ class zKBSession implements SessionHandlerInterface
 
 	public function read($id)
 	{
+		$data = Cache::get($id);
+		if(is_array($data)) // Just to make sure that we're returning a string and not an array, eventho that shouldn't technically be possible..
+			return false;
 		return Cache::get($id);
 	}
 
