@@ -309,7 +309,7 @@ class Util
 				header("Etag: ".(md5(serialize($data))));
 				echo $data;
 				die();
-			}throw new Exception("page > 10 not allowed for this modifier type, please see API documentation");
+			}
 		}
 		return $parameters;
 	}
