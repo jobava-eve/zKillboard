@@ -251,6 +251,9 @@ class Util
 				case "finalblow-only":
 					$parameters[$key] = true;
 				break;
+				case "api":
+					$parameters[$key] = true;
+				break;
 				default:
 					if($addExtraParameters == true)
 					{
@@ -279,7 +282,34 @@ class Util
 			foreach ($legitEntities as $entity) {
 				$legit |= in_array($entity, array_keys($parameters));
 			}
-			if (!$legit) throw new Exception("page > 10 not allowed for this modifier type, please see API documentation");
+			// The API doesn't handle Exceptions that well, so we have to output json/xml for them..
+			if (!$legit)
+			{
+				$date = date("Y-m-d H:i:s");
+				$cachedUntil = date("Y-m-d H:i:s", time() + 3600);
+				if(stristr($_SERVER["REQUEST_URI"], "xml"))
+				{
+					$data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?" . ">"; // separating the ? and > allows vi to still color format code nicely
+					$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
+					$data .= "<currentTime>$date</currentTime>";
+					$data .= "<result>";
+					$data .= "<error>A maximum of 10 pages is allowed for the modifier type you are using.</error>";
+					$data .= "</result>";
+					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
+					$data .= "</eveapi>";
+					header("Content-type: text/xml; charset=utf-8");
+				}
+				else
+				{
+					header("Content-type: application/json; charset=utf-8");
+					$data = json_encode(array("Error" => "A maximum of 10 pages is allowed for the modifier type you are using.", "cachedUntil" => $cachedUntil));
+				}
+				header("Retry-After: " . $cachedUntil . " GMT");
+				header("HTTP/1.1 409 Conflict");
+				header("Etag: ".(md5(serialize($data))));
+				echo $data;
+				die();
+			}throw new Exception("page > 10 not allowed for this modifier type, please see API documentation");
 		}
 		return $parameters;
 	}
