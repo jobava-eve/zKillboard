@@ -27,32 +27,37 @@ class Related
 	public static function buildSummary(&$kills, $parameters, $options)
 	{
 		$involvedEntities = array();
-		foreach($kills as $killID => $kill) static::addAllInvolved($involvedEntities, $killID);
+		foreach($kills as $killID => $kill)
+			self::addAllInvolved($involvedEntities, $killID);
 
 		$blueTeam = array();
-		$redTeam = static::findWinners($kills, "allianceID");
-		foreach($involvedEntities as $entity=>$chars) if (!in_array($entity, $redTeam)) $blueTeam[] = $entity;
+		$redTeam = self::findWinners($kills, "allianceID");
+		foreach($involvedEntities as $entity=>$chars)
+			if (!in_array($entity, $redTeam))
+				$blueTeam[] = $entity;
 
-		if (isset($options["A"])) static::assignSides($options["A"], $redTeam, $blueTeam);
-		if (isset($options["B"])) static::assignSides($options["B"], $blueTeam, $redTeam);
+		if (isset($options["A"]))
+			self::assignSides($options["A"], $redTeam, $blueTeam);
+		if (isset($options["B"]))
+			self::assignSides($options["B"], $blueTeam, $redTeam);
 
-		$redInvolved = static::getInvolved($kills, $redTeam);
-		$blueInvolved = static::getInvolved($kills, $blueTeam);
+		$redInvolved = self::getInvolved($kills, $redTeam);
+		$blueInvolved = self::getInvolved($kills, $blueTeam);
 
-		$redKills = static::getKills($kills, $redTeam);
-		$blueKills = static::getKills($kills, $blueTeam);
+		$redKills = self::getKills($kills, $redTeam);
+		$blueKills = self::getKills($kills, $blueTeam);
 
-		static::addMoreInvolved($redInvolved, $redKills);
-		static::addMoreInvolved($blueInvolved, $blueKills);
+		self::addMoreInvolved($redInvolved, $redKills);
+		self::addMoreInvolved($blueInvolved, $blueKills);
 
-		$redTotals = static::getStatsKillList(array_keys($redKills));
-		$redTotals["pilotCount"] = sizeof($redInvolved);
-		$blueTotals = static::getStatsKillList(array_keys($blueKills));
-		$blueTotals["pilotCount"] = sizeof($blueInvolved);
+		$redTotals = self::getStatsKillList(array_keys($redKills));
+		$redTotals["pilotCount"] = count($redInvolved);
+		$blueTotals = self::getStatsKillList(array_keys($blueKills));
+		$blueTotals["pilotCount"] = count($blueInvolved);
 
-		$red = static::addInfo($redTeam);
+		$red = self::addInfo($redTeam);
 		asort($red);
-		$blue = static::addInfo($blueTeam);	
+		$blue = self::addInfo($blueTeam);
 		asort($blue);
 
 		$retValue = array(
@@ -78,19 +83,22 @@ class Related
 		$killjson = Killmail::get($killID);
 		$kill = json_decode($killjson, true);
 
-		static::$killstorage[$killID] = $kill;
+		self::$killstorage[$killID] = $kill;
 
 		$victim = $kill["victim"];
-		static::addInvolved($entities, $victim);
+		self::addInvolved($entities, $victim);
 		$involved = $kill["attackers"];
-		foreach($involved as $entry) static::addInvolved($entities, $entry);
+		foreach($involved as $entry)
+			self::addInvolved($entities, $entry);
 	}
 
 	private static function addInvolved(&$entities, &$entry)
 	{
 		$entity = isset($entry["allianceID"]) && $entry["allianceID"] != 0 ? $entry["allianceID"] : $entry["corporationID"];
-		if (!isset($entities["$entity"])) $entities["$entity"] = array();
-		if (!in_array($entry["characterID"], $entities["$entity"])) $entities["$entity"][] = $entry["characterID"];
+		if (!isset($entities["$entity"]))
+			$entities["$entity"] = array();
+		if (!in_array($entry["characterID"], $entities["$entity"]))
+			$entities["$entity"][] = $entry["characterID"];
 	}
 
 	private static function getInvolved(&$kills, $team)
@@ -98,20 +106,23 @@ class Related
 		$involved = array();
 		foreach($kills as $kill)
 		{
-			$kill = static::$killstorage[$kill["victim"]["killID"]];
+			$kill = self::$killstorage[$kill["victim"]["killID"]];
 
 			$attackers = $kill["attackers"];
 			foreach($attackers as $entry)
 			{
 				$add = false;
-				if (in_array($entry["allianceID"], $team)) $add = true;
-				if (in_array($entry["corporationID"], $team)) $add = true;
+				if (in_array($entry["allianceID"], $team))
+					$add = true;
+				if (in_array($entry["corporationID"], $team))
+					$add = true;
 
 				if ($add)
 				{
 					$key = $entry["characterID"] . ":" . $entry["corporationID"] . ":" . $entry["allianceID"] . ":" . $entry["shipTypeID"];
 					$entry["shipName"] = Info::getItemName($entry["shipTypeID"]);
-					if (!in_array($key, $involved)) $involved[$key] = $entry;
+					if (!in_array($key, $involved))
+						$involved[$key] = $entry;
 				}
 			}
 		}
@@ -142,9 +153,7 @@ class Related
 			$add = in_array($victim["allianceID"], $team) || in_array($victim["corporationID"], $team);
 
 			if ($add)
-			{
 				$teamsKills[$killID] = $kill;
-			}
 		}
 		return $teamsKills;
 	}
@@ -164,7 +173,8 @@ class Related
 			$totalPrice += $info["total_price"];
 			$totalPoints += $info["points"];
 			$groupID = $victim["groupID"];
-			if (!isset($groupIDs[$groupID])) {
+			if (!isset($groupIDs[$groupID]))
+			{
 				$groupIDs[$groupID] = array();
 				$groupIDs[$groupID]["count"] = 0;
 				$groupIDs[$groupID]["isk"] = 0;
@@ -189,8 +199,10 @@ class Related
 		foreach($team as $entity) 
 		{
 			$alliName = Info::getAlliName($entity);
-			if ($alliName) $retValue[$entity] = $alliName;
-			else $retValue[$entity] = Info::getCorpName($entity);
+			if ($alliName)
+				$retValue[$entity] = $alliName;
+			else
+				$retValue[$entity] = Info::getCorpName($entity);
 		}
 		return $retValue;
 	}
@@ -204,8 +216,10 @@ class Related
 		foreach ($kills as $killID=>$kill) {
 			$finalBlow = $kill["finalBlow"];
 			$added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["allianceID"]);
-			if (!$added) $added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["corporationID"]);
-			if (!$added) $added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["characterID"]);
+			if (!$added)
+				$added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["corporationID"]);
+			if (!$added)
+				$added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["characterID"]);
 		}
 		return array_keys($involvedArray);
 	}
@@ -214,8 +228,10 @@ class Related
 
 	private static function addInvolvedEntity(&$involvedArray, &$killID, &$entity)
 	{
-		if ($entity == 0) return false;
-		if (!isset($involvedArray["$entity"])) $involvedArray["$entity"] = array();
+		if ($entity == 0)
+			return false;
+		if (!isset($involvedArray["$entity"]))
+			$involvedArray["$entity"] = array();
 		if (!in_array($killID, $involvedArray["$entity"]))
 		{
 			$involvedArray["$entity"][] = $killID;
@@ -228,8 +244,10 @@ class Related
 	{
 		foreach($assignees as $id)
 		{
-			if (!isset($teamA[$id])) $teamA[] = $id;
-			if (($key = array_search($id, $teamB)) !== false) unset($teamB[$key]);
+			if (!isset($teamA[$id]))
+				$teamA[] = $id;
+			if (($key = array_search($id, $teamB)) !== false)
+				unset($teamB[$key]);
 		}
 	}
 }
