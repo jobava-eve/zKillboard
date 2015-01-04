@@ -51,7 +51,7 @@ class cli_crestapi implements cliCommand
 		while ($timer->stop() < 59000)
 		{
 			// Get the killmail data
-			$data = $db->queryRow("SELECT * FROM zz_crest_killmail WHERE processed = 0 ORDER BY timestamp DESC LIMIT 1", array(), 0);
+			$data = $db->queryRow("SELECT * FROM zz_crest_killmail WHERE processed = 0 ORDER BY dttm DESC LIMIT 1", array(), 0);
 			try
 			{
 				// Bind the data to variables
