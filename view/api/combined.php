@@ -47,7 +47,6 @@ class api_combined implements apiEndpoint
 				"limit" => "Limit the amount of kills and losses shown. Minimum 1, maximum 200.",
 				"beforeKillID" => "Show killmails from before this killID.",
 				"afterKillID" => "Show killmails after this killID.",
-				"killID" => "Only show a single killmail.",
 				"iskValue" => "Only show killmails with a total iskValue above this.",
 				"no-attackers" => "Remove attackers from the killmail.",
 				"no-items" => "Remove items from the killmail.",
@@ -63,8 +62,7 @@ class api_combined implements apiEndpoint
 				"solarSystemID",
 				"regionID",
 				"solo",
-				"w-space",
-				"killID"
+				"w-space"
 			)
 		);
 	}
