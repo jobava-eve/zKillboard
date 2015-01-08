@@ -18,103 +18,103 @@
 
 class cli_battles implements cliCommand
 {
-		public function getDescription()
-		{
-				return "";
-		}
+	public function getDescription()
+	{
+		return "";
+	}
 
-		public function getAvailMethods()
-		{
-				return ""; // Space seperated list
-		}
+	public function getAvailMethods()
+	{
+		return ""; // Space seperated list
+	}
 
-		public function getCronInfo()
-		{
-				return array(0 => ""); // Always run
-		}
+	public function getCronInfo()
+	{
+		return array(0 => ""); // Always run
+	}
 
-		public function execute($parameters, $db)
-		{
-				$battles = Db::query("SELECT * FROM zz_battle_report");
+	public function execute($parameters, $db)
+	{
+		$battles = Db::query("SELECT * FROM zz_battle_report");
 
-				foreach($battles as $battle)
+		foreach($battles as $battle)
+		{
+			if($battle["checked"] == 0)
+			{
+				$battleID = $battle["battleID"];
+				$systemID = $battle["solarSystemID"];
+				$time = (int) $battle["dttm"];
+				$options = $battle["options"];
+				$showBattleOptions = false;
+
+				$json_options = json_decode($options, true);
+				if (!isset($json_options["A"])) $json_options["A"] = array();
+				if (!isset($json_options["B"])) $json_options["B"] = array();
+
+				$params = array("solarSystemID" => $systemID, "relatedTime" => $time, "exHours" => 1);
+				$kills = Kills::getKills($params);
+				$summary = Related::buildSummary($kills, $params, $json_options);
+
+				if(!empty($kills))
 				{
-						if($battle["checked"] == 0)
-						{
-								$battleID = $battle["battleID"];
-								$systemID = $battle["solarSystemID"];
-								$time = (int) $battle["dttm"];
-								$options = $battle["options"];
-								$showBattleOptions = false;
+					// System and region name
+					$systemName = Info::getSystemName($systemID);
+					$regionID = Info::getRegionIDFromSystemID($systemID);
+					$regionName = Info::getRegionName($regionID);
 
-								$json_options = json_decode($options, true);
-								if (!isset($json_options["A"])) $json_options["A"] = array();
-								if (!isset($json_options["B"])) $json_options["B"] = array();
+					$unixTime = strtotime($time);
+					$timestamp = date("Y-m-d H:i", $unixTime);
 
-								$params = array("solarSystemID" => $systemID, "relatedTime" => $time, "exHours" => 1);
-								$kills = Kills::getKills($params);
-								$summary = Related::buildSummary($kills, $params, $json_options);
+					// Define all the kill/loss statistics including who was involved on which side..
+					$killsA = $summary["teamA"]["totals"]["totalShips"];
+					$killsB = $summary["teamB"]["totals"]["totalShips"];
 
-								if(!empty($kills))
-								{
-										// System and region name
-										$systemName = Info::getSystemName($systemID);
-										$regionID = Info::getRegionIDFromSystemID($systemID);
-										$regionName = Info::getRegionName($regionID);
+					$teamAinvolved = $summary["teamA"]["totals"]["pilotCount"];
+					$teamBinvolved = $summary["teamB"]["totals"]["pilotCount"];
 
-										$unixTime = strtotime($time);
-										$timestamp = date("Y-m-d H:i", $unixTime);
+					$teamApoints = $summary["teamA"]["totals"]["total_points"];
+					$teamBpoints = $summary["teamB"]["totals"]["total_points"];
 
-										// Define all the kill/loss statistics including who was involved on which side..
-										$killsA = $summary["teamA"]["totals"]["totalShips"];
-										$killsB = $summary["teamB"]["totals"]["totalShips"];
+					$teamAvs = json_encode($summary["teamA"]["entities"]);
+					$teamBvs = json_encode($summary["teamB"]["entities"]);
 
-										$teamAinvolved = $summary["teamA"]["totals"]["pilotCount"];
-										$teamBinvolved = $summary["teamB"]["totals"]["pilotCount"];
+					$teamAkillIDs = $summary["teamA"]["killIDs"];
+					$teamBkillIDs = $summary["teamB"]["killIDs"];
 
-										$teamApoints = $summary["teamA"]["totals"]["total_points"];
-										$teamBpoints = $summary["teamB"]["totals"]["total_points"];
+					foreach($teamAkillIDs as $killID)
+						$teamAkillData[] = Killmail::get($killID);
 
-										$teamAvs = json_encode($summary["teamA"]["entities"]);
-										$teamBvs = json_encode($summary["teamB"]["entities"]);
+					foreach($teamBkillIDs as $killID)
+						$teamBkillData[] = Killmail::get($killID);
 
-										$teamAkillIDs = $summary["teamA"]["killIDs"];
-										$teamBkillIDs = $summary["teamB"]["killIDs"];
+					$teamAkillDataJson = json_encode($teamAkillData);
+					$teamBkillDataJson = json_encode($teamBkillData);
 
-										foreach($teamAkillIDs as $killID)
-												$teamAkillData[] = Killmail::get($killID);
+					Db::execute("INSERT INTO zz_battles (battleID, solarSystemID, solarSystemName, regionID, regionName, dttm, teamAkills, teamApilotCount, teamApoints, teamAinvolved, teamAJson, teamBkills, teamBpilotCount, teamBpoints, teamBinvolved, teamBJson)
+						VALUES (:battleID, :solarSystemID, :solarSystemName, :regionID, :regionName, :dttm, :teamAkills, :teamApilotCount, :teamApoints, :teamAinvolved, :teamAJson, :teamBkills, :teamBpilotCount, :teamBpoints, :teamBinvolved, :teamBJson)",
+						array(
+							":battleID" => $battleID,
+							":solarSystemID" => $systemID,
+							":solarSystemName" => $systemName,
+							":regionID" => $regionID,
+							":regionName" => $regionName,
+							":dttm" => $timestamp,
+							":teamAkills" => $killsA,
+							":teamApilotCount" => $teamAinvolved,
+							":teamApoints" => $teamApoints,
+							":teamAinvolved" => $teamAvs,
+							":teamAJson" => $teamAkillDataJson,
+							":teamBkills" => $killsB,
+							":teamBpilotCount" => $teamBinvolved,
+							":teamBpoints" => $teamBpoints,
+							":teamBinvolved" => $teamBvs,
+							":teamBJson" => $teamBkillDataJson
+						)
+					);
 
-										foreach($teamBkillIDs as $killID)
-												$teamBkillData[] = Killmail::get($killID);
-
-										$teamAkillDataJson = json_encode($teamAkillData);
-										$teamBkillDataJson = json_encode($teamBkillData);
-
-										Db::execute("INSERT INTO zz_battles (battleID, solarSystemID, solarSystemName, regionID, regionName, dttm, teamAkills, teamApilotCount, teamApoints, teamAinvolved, teamAJson, teamBkills, teamBpilotCount, teamBpoints, teamBinvolved, teamBJson)
-												VALUES (:battleID, :solarSystemID, :solarSystemName, :regionID, :regionName, :dttm, :teamAkills, :teamApilotCount, :teamApoints, :teamAinvolved, :teamAJson, :teamBkills, :teamBpilotCount, :teamBpoints, :teamBinvolved, :teamBJson)",
-												array(
-														":battleID" => $battleID,
-														":solarSystemID" => $systemID,
-														":solarSystemName" => $systemName,
-														":regionID" => $regionID,
-														":regionName" => $regionName,
-														":dttm" => $timestamp,
-														":teamAkills" => $killsA,
-														":teamApilotCount" => $teamAinvolved,
-														":teamApoints" => $teamApoints,
-														":teamAinvolved" => $teamAvs,
-														":teamAJson" => $teamAkillDataJson,
-														":teamBkills" => $killsB,
-														":teamBpilotCount" => $teamBinvolved,
-														":teamBpoints" => $teamBpoints,
-														":teamBinvolved" => $teamBvs,
-														":teamBJson" => $teamBkillDataJson
-												)
-										);
-
-										Db::execute("UPDATE zz_battle_report SET checked = 1 WHERE battleID = :battleID", array(":battleID" => $battleID));
-								}
-						}
+					Db::execute("UPDATE zz_battle_report SET checked = 1 WHERE battleID = :battleID", array(":battleID" => $battleID));
 				}
+			}
 		}
+	}
 }
