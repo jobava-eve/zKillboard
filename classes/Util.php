@@ -361,53 +361,6 @@ class Util
 		return self::$longMonths[$month];
 	}
 
-	public static function scrapeCheck()
-	{
-		global $apiWhiteList, $maxRequestsPerHour;
-		$maxRequestsPerHour = isset($maxRequestsPerHour) ? $maxRequestsPerHour : 360;
-
-		$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
-        	$ip = substr(IP::get(), 0, 64);
-        	Db::execute("insert into zz_scrape_prevention values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
-
-		if(!in_array($ip, $apiWhiteList))
-		{
-			$count = Db::queryField("select count(*) count from zz_scrape_prevention where ip = :ip and dttm >= date_sub(now(), interval 1 hour)", "count", array(":ip" => $ip), 0);
-
-			if($count > $maxRequestsPerHour)
-			{
-				$date = date("Y-m-d H:i:s");
-				$cachedUntil = date("Y-m-d H:i:s", time() + 3600);
-				if(stristr($_SERVER["REQUEST_URI"], "xml"))
-				{
-					$data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?" . ">"; // separating the ? and > allows vi to still color format code nicely
-					$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
-					$data .= "<currentTime>$date</currentTime>";
-					$data .= "<result>";
-					$data .= "<error>You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.</error>";
-					$data .= "</result>";
-					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
-					$data .= "</eveapi>";
-					header("Content-type: text/xml; charset=utf-8");
-				}
-				else
-				{
-					header("Content-type: application/json; charset=utf-8");
-					$data = json_encode(array("Error" => "You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.", "cachedUntil" => $cachedUntil));
-				}
-				header("X-Bin-Request-Count: ". $count);
-				header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
-				header("Retry-After: " . $cachedUntil . " GMT");
-				header("HTTP/1.1 429 Too Many Requests");
-				header("Etag: ".(md5(serialize($data))));
-				echo $data;
-				die();
-			}
-			header("X-Bin-Request-Count: ". $count);
-			header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
-		}
-	}
-
 	public static function isValidCallback($subject)
 	{
 		$identifier_syntax = '/^[$_\p{L}][$_\p{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\x{200C}\x{200D}]*+$/u';
