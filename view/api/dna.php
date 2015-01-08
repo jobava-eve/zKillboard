@@ -29,41 +29,53 @@ class api_dna implements apiEndpoint
 	{
 		return array("type" => "parameters", "parameters" =>
 			array(
-				"page" => "Pagination."
+				"page" => "Pagination.",
+				"killID" => "Get only data for a single kill."
 			)
 		);
 	}
+
 	public function execute($parameters)
 	{
-		//set the headers to cache the request properly
-		$dna = array();
+		$page = isset($parameters["page"]) ? $parameters["page"] : 1;
+		if(isset($parameters["killID"]))
+			$killIDs[] = (int) $parameters["killID"];
 
-		$page = 1;
-		if(isset($parameters["page"]))
-			$page = $parameters["page"];
-
-		$kills = Feed::getKills(array("limit" => 200, "cacheTime" => 3600, "page" => $page));
-		foreach($kills as $kill)
+		if(!isset($killIDs))
 		{
-			$kill = json_decode($kill, true);
-			$killdata = Kills::getKillDetails($kill["killID"]);
+			$kills = Feed::getKills(array("limit" => 200, "cacheTime" => 3600, "page" => $page));
+			foreach($kills as $kill)
+			{
+				$kill = json_decode($kill, true);
+				$killIDs[] = (int) $kill["killID"];
+			}
+		}
+		return self::json_data($killIDs);
+	}
+
+	private function json_data($killIDs)
+	{
+		$dna = array();
+		foreach($killIDs as $killID)
+		{
+			$killdata = Kills::getKillDetails($killID);
 			$dna[] = array(
 				"killtime" => $killdata["info"]["dttm"], 
 				"SolarSystemName" => $killdata["info"]["solarSystemName"],
 				"solarSystemID" => $killdata["info"]["solarSystemID"],
 				"regionID" => $killdata["info"]["regionID"],
 				"regionName" => $killdata["info"]["regionName"],
-				"victimCharacterID" => (isset($killdata["victim"]["characterID"]) ? isset($killdata["victim"]["characterID"]) : null),
-				"victimCharacterName" => (isset($killdata["victim"]["characterName"]) ? isset($killdata["victim"]["characterName"]) : null),
-				"victimCorporationID" => (isset($killdata["victim"]["corporationID"]) ? isset($killdata["victim"]["corporationID"]) : null),
-				"victimCorporationName" => (isset($killdata["victim"]["corporationName"]) ? isset($killdata["victim"]["corporationName"]) : null),
-				"victimAllianceID" => (isset($killdata["victim"]["allianceID"]) ? isset($killdata["victim"]["allianceID"]) : null),
-				"victimAllianceName" => (isset($killdata["victim"]["allianceName"]) ? isset($killdata["victim"]["allianceName"]) : null),
-				"victimFactionID" => (isset($killdata["victim"]["factionID"]) ? isset($killdata["victim"]["factionID"]) : null),
-				"victimFactionName" => (isset($killdata["victim"]["factionName"]) ? isset($killdata["victim"]["factionName"]) : null),
-				"dna" => Fitting::DNA($killdata["items"],$killdata["victim"]["shipTypeID"]));
+				"victimCharacterID" => isset($killdata["victim"]["characterID"]) ? $killdata["victim"]["characterID"] : null,
+				"victimCharacterName" => isset($killdata["victim"]["characterName"]) ? $killdata["victim"]["characterName"] : null,
+				"victimCorporationID" => isset($killdata["victim"]["corporationID"]) ? $killdata["victim"]["corporationID"] : null,
+				"victimCorporationName" => isset($killdata["victim"]["corporationName"]) ? $killdata["victim"]["corporationName"] : null,
+				"victimAllianceID" => isset($killdata["victim"]["allianceID"]) ? $killdata["victim"]["allianceID"] : null,
+				"victimAllianceName" => isset($killdata["victim"]["allianceName"]) ? $killdata["victim"]["allianceName"] : null,
+				"victimFactionID" => isset($killdata["victim"]["factionID"]) ? $killdata["victim"]["factionID"] : null,
+				"victimFactionName" => isset($killdata["victim"]["factionName"]) ? $killdata["victim"]["factionName"] : null,
+				"dna" => Fitting::DNA($killdata["items"], $killdata["victim"]["shipTypeID"])
+			);
 		}
-
 		return $dna;
 	}
 }
