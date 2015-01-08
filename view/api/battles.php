@@ -42,7 +42,7 @@ class api_battles implements apiEndpoint
 		if($command == "list")
 		{
 			$data = array();
-			$battles = Db::query("SELECT * FROM zz_battles");
+			$battles = Db::query("SELECT * FROM zz_battles", array(), 360);
 			foreach($battles as $key => $value)
 			{
 				unset($battles[$key]["teamAJson"]);
@@ -52,7 +52,7 @@ class api_battles implements apiEndpoint
 		}
 		elseif($command == "battle")
 		{
-			return Db::queryRow("SELECT * FROM zz_battles WHERE battleID = :battleID", array(":battleID" => $battleID));
+			return Db::queryRow("SELECT * FROM zz_battles WHERE battleID = :battleID", array(":battleID" => $battleID), 360);
 		}
 		else
 			return array(
