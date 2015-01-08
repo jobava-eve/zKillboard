@@ -31,10 +31,6 @@ $parameters = Util::convertUriToParameters();
 // client IP
 $ip = IP::get();
 
-// Scrape Checker
-if(!in_array($ip, $apiWhiteList))
-	scrapeCheck();
-
 if(in_array($endpoint, $endpoints))
 {
 	try
@@ -77,6 +73,12 @@ else
 		)
 	);
 }
+
+// Scrape Checker If type isn't set, scrapecheck, otherwise don't..
+$type = isset($data["type"]) ? "error" : NULL;
+if($type == NULL)
+	if(!in_array($ip, $apiWhiteList))
+		scrapeCheck();
 
 // Output the data
 header("Access-Control-Allow-Origin: *");
