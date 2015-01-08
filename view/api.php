@@ -33,7 +33,7 @@ $ip = IP::get();
 
 // Scrape Checker
 if(!in_array($ip, $apiWhiteList))
-	scrapeCheck($xml);
+	scrapeCheck();
 
 if(in_array($endpoint, $endpoints))
 {
