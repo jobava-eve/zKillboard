@@ -183,15 +183,7 @@ $app->get("/comments/", function() use ($app) {
 });
 
 // API
-$app->get("/api/stats/:flags+/", function($flags) use ($app) {
-	include( "view/apistats.php" );
-});
-
-$app->get("/api/dna(/:flags+)/", function($flags = null) use ($app) {
-	include( "view/apidna.php" );
-});
-
-$app->get("/api/:input+", function($input) use ($app) {
+$app->get("/api(/:flags+)/", function($flags = NULL) use ($app) {
 	include( "view/api.php" );
 });
 
