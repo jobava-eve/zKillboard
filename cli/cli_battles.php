@@ -28,6 +28,11 @@ class cli_battles implements cliCommand
 		return ""; // Space seperated list
 	}
 
+	public function getCronInfo()
+	{
+		return array(0 => ""); // Always run
+	}
+
 	public function execute($parameters, $db)
 	{
 		$battles = Db::query("SELECT * FROM zz_battle_report");
