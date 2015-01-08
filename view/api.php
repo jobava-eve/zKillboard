@@ -28,9 +28,6 @@ $endpoint = isset($flags[0]) ? $flags[0] : NULL;
 // Parameters
 $parameters = Util::convertUriToParameters();
 
-// XML
-$xml = isset($parameters["xml"]) ? true : false;
-
 // client IP
 $ip = IP::get();
 
@@ -115,7 +112,7 @@ function endPoints()
 	return $endPoints;
 }
 
-function scrapeCheck($xml)
+function scrapeCheck()
 {
 	global $apiWhiteList, $maxRequestsPerHour;
 	$maxRequestsPerHour = isset($maxRequestsPerHour) ? $maxRequestsPerHour : 360;
@@ -131,26 +128,11 @@ function scrapeCheck($xml)
 		{
 			$date = date("Y-m-d H:i:s");
 			$cachedUntil = date("Y-m-d H:i:s", time() + 3600);
-			if($xml)
-			{
-				$data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?" . ">"; // separating the ? and > allows vi to still color format code nicely
-				$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
-				$data .= "<currentTime>$date</currentTime>";
-				$data .= "<result>";
-				$data .= "<error>You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.</error>";
-				$data .= "</result>";
-				$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
-				$data .= "</eveapi>";
-				header("Content-type: text/xml; charset=utf-8");
-			}
-			else
-			{
-				header("Content-type: application/json; charset=utf-8");
-				$data = json_encode(array("Error" => "You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.", "cachedUntil" => $cachedUntil));
-			}
+			header("Content-type: application/json; charset=utf-8");
 			header("Retry-After: " . $cachedUntil . " GMT");
 			header("HTTP/1.1 429 Too Many Requests");
 			header("Etag: ".(md5(serialize($data))));
+			$data = json_encode(array("Error" => "You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.", "cachedUntil" => $cachedUntil));
 			echo $data;
 			die();
 		}
