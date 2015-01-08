@@ -45,8 +45,42 @@ class api_list implements apiEndpoint
 
 		foreach($data as $e)
 			if(!in_array($e, array(".", "..", "help.php", "list.php", "parameters.php", "base.txt")))
-				$endPoints[] = str_replace(".php", "", $e);
+				$endPoints[str_replace(".php", "", $e)] = self::description(str_replace(".php", "", $e));
 
 		return $endPoints;
+	}
+
+	private static function description($endpoint)
+	{
+		try
+		{
+			$fileName = __DIR__ . "/$endpoint.php";
+
+			if(!file_exists($fileName))
+				throw new Exception();
+
+			require_once $fileName;
+			$className = "api_$endpoint";
+			$class = new $className();
+
+			if(!is_a($class, "apiEndpoint"))
+			{
+				$data = array(
+					"type" => "error",
+					"message" => "Endpoint does not implement apiEndpoint"
+				);
+			}
+
+			$data = $class->getDescription();
+		}
+		catch (Exception $e)
+		{
+			$data = array(
+				"type" => "error",
+				"message" => "$endpoint ended with error: " . $e->getMessage()
+			);
+		}
+
+		return $data["message"];
 	}
 }
