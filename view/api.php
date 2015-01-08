@@ -27,7 +27,7 @@ $parameters = Util::convertUriToParameters();
 if (sizeof($parameters) < 2) die("Invalid request.  Must provide at least two request parameters");
 
 // At least one of these modifiers is required
-$requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "solo", "w-space", "warID", "killID");
+$requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID", "solo", "w-space", "warID", "killID");
 $hasRequired = false;
 $hasRequired |= in_array(IP::get(), $apiWhiteList);
 foreach($requiredM as $required) {
