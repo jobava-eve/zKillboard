@@ -59,7 +59,7 @@ class api_related implements apiEndpoint
 				);
 
 		$params = array("solarSystemID" => $systemID, "relatedTime" => $timestamp, "exHours" => $exHours);
-		$md5 = md5($params);
+		$md5 = md5(serialize($params));
 		$cache = Cache::get($md5);
 		if($cache)
 			return $cache;
