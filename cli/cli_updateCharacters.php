@@ -85,7 +85,9 @@ class cli_updateCharacters implements cliCommand
 						$db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 				}
 				catch (Exception $ex)
+				{
 					Log::log("ERROR Validating Character $id" . $ex->getMessage());
+				}
 			}
 		}
 	}
