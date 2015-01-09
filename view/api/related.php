@@ -59,7 +59,14 @@ class api_related implements apiEndpoint
 				);
 
 		$params = array("solarSystemID" => $systemID, "relatedTime" => $timestamp, "exHours" => $exHours);
+		$md5 = md5($params);
+		$cache = Cache::get($md5);
+		if($cache)
+			return $cache;
+
 		$kills = Kills::getKills($params);
-		return Related::buildSummary($kills, $params, array());
+		$data = Related::buildSummary($kills, $params, array());
+		Cache::set($md5, $data, 3600);
+		return $data;
 	}
 }
