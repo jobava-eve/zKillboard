@@ -38,10 +38,12 @@ class cli_characters implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
+			if (Util::is904Error())
+				return;
+
 			$minID = $db->queryField("SELECT MIN(characterID) AS characterID FROM zz_characters WHERE lastUpdated < date_sub(now(), interval 2 day) AND name != ''", "characterID", array(), 0);
 			$nextID = $db->queryField("SELECT characterID FROM zz_characters WHERE characterID > :characterID LIMIT 1", "characterID", array(":characterID" => $minID), 0);
 
-			echo $minID;
 			if($nextID - $minID >= 2)
 			{
 				$count = 1;
