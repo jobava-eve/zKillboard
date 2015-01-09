@@ -77,12 +77,12 @@ class cli_updateCharacters implements cliCommand
 					if ($name != $row["name"] || ((int) $corpID) != $row["corporationID"] || ((int) $alliID) != $row["allianceID"])
 						$db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 
-					sleep(1); // Sleep for 1 seconds between each character update.
+					usleep(200000); // Sleep for 200ms
 				}
 				catch (Exception $ex)
 				{
 					Log::log("ERROR Validating Character $id" . $ex->getMessage());
-					sleep(10); // Sleep for 10 seconds between each error.
+					usleep(5000000); // Sleep for 5s between each error.
 				}
 			}
 		}

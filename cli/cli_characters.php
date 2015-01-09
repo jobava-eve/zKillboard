@@ -61,11 +61,11 @@ class cli_characters implements cliCommand
 						Info::addCorp($corporationID, $corporationName);
 						Info::addChar($characterID, $characterName);
 
-						sleep(1); // Sleep for 2 seconds between adding each character.
+						usleep(200000); // Sleep for 200ms
 					}
 					catch (Exception $ex)
 					{
-						sleep(10); // Sleep for 10 seconds everytime we make a mistake..
+						usleep(5000000); // Sleep for 5s between each error.
 					}
 					$count++;
 				}
