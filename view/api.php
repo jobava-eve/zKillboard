@@ -88,11 +88,20 @@ $ip = substr(IP::get(), 0, 64);
 $count = Db::queryField("SELECT count(*) AS count FROM zz_scrape_prevention WHERE ip = :ip AND dttm >= date_sub(now(), interval 1 hour)", "count", array(":ip" => $ip), 0);
 header("X-Bin-Request-Count: ". $count);
 header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
-$app->contentType("application/json; charset=utf-8");
 $app->etag(md5(serialize($data)));
 $app->expires("+1 hour");
 
-echo json_encode($data, JSON_PRETTY_PRINT);
+if(isset($_GET["callback"]) && isValidCallback($_GET["callback"]))
+{
+	$app->contentType("application/javascript; charset=utf-8");
+	header("X-JSONP: true");
+	echo $_GET["callback"] . "(" . json_encode($data) . ")";
+}
+else
+{
+	$app->contentType("application/json; charset=utf-8");
+	echo json_encode($data, JSON_PRETTY_PRINT);
+}
 
 interface apiEndpoint
 {
