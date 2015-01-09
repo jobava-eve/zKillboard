@@ -40,17 +40,10 @@ class cli_updateCharacters implements cliCommand
 
 	private static function updateCharacters($db)
 	{
-		$minute = (int) date("i");
-		if ($minute == 0)
-		{
-			$db->execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
-			$db->execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
-		}
-
 		$timer = new Timer();
-		while ($timer->stop() < 65000)
+		while ($timer->stop() < 59000)
 		{
-			$result = $db->query("select characterID, name, corporationID, allianceID from zz_characters where lastUpdated < date_sub(now(), interval 2 day) order by lastUpdated limit 36000", array(), 0);
+			$result = $db->query("select characterID, name, corporationID, allianceID from zz_characters where lastUpdated < date_sub(now(), interval 2 day) order by lastUpdated limit 100", array(), 0);
 			foreach ($result as $row)
 			{
 				if (Util::is904Error())
@@ -83,10 +76,13 @@ class cli_updateCharacters implements cliCommand
 
 					if ($name != $row["name"] || ((int) $corpID) != $row["corporationID"] || ((int) $alliID) != $row["allianceID"])
 						$db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
+
+					sleep(1); // Sleep for 1 seconds between each character update.
 				}
 				catch (Exception $ex)
 				{
 					Log::log("ERROR Validating Character $id" . $ex->getMessage());
+					sleep(10); // Sleep for 10 seconds between each error.
 				}
 			}
 		}
