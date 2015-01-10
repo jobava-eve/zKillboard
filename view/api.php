@@ -17,7 +17,7 @@
  */
 
 // Load globals
-global $apiWhiteList, $maxRequestsPerHour;
+global $apiWhiteList, $maxRequestsPerHour, $debug;
 
 // Endpoints
 $endpoints = endPoints();
@@ -90,7 +90,9 @@ header("X-Bin-Request-Count: ". $count);
 header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
 $app->etag(md5(serialize($data)));
 $app->expires("+1 hour");
-Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
+$userAgent = @$_SERVER["HTTP_USER_AGENT"];
+if($debug)
+	Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
 
 if(isset($_GET["callback"]) && isValidCallback($_GET["callback"]))
 {
