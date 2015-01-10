@@ -90,6 +90,8 @@ class cli_hourly implements cliCommand
 			}
 		}
 
+		// reset mails where the processed id is below -500
+		$db->execute("update zz_crest_killmail set processed = 0 where processed < -500", array(), false, false);
 	}
 
 	private static function apiPercentage($db)
@@ -101,7 +103,7 @@ class cli_hourly implements cliCommand
 		if ($bad > (($bad + $good) * ($percentage / 100)))
 		{
 			if($percentage > 15)
-				Log::irc("|r|API gone haywire?  Over $percentage% of API's reporting an error atm.");
+				Log::irc("|r|API gone haywire? Over $percentage% of API's reporting an error atm.");
 
 			$percentage += 5;
 		}

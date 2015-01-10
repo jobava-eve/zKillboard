@@ -45,8 +45,6 @@ class cli_crestapi implements cliCommand
 		global $debug, $baseAddr;
 		$count = 0;
 		$timer = new Timer();
-
-		$db->execute("update zz_crest_killmail set processed = 0 where processed < -500", array(), false, false);
 		Log::log("Starting CREST API killmail parsing");
 		while ($timer->stop() < 59000)
 		{
