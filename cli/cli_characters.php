@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,13 +35,26 @@ class cli_characters implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		// Fetch 10000 characters (limit 10000)
+		// Set the max ID from that array as the next starting +1
+		// Loop through those 10000 characters find holes
+		// Add characters IDs to a list
+		// Once that list hits 10000 IDs to fetch, fetch them.
+
+
+
+
+
+
 		$timer = new Timer();
+		$minID = NULL;
+
 		while ($timer->stop() < 59000)
 		{
 			if (Util::is904Error())
 				return;
 
-			$minID = $db->queryField("SELECT MIN(characterID) AS characterID FROM zz_characters WHERE lastUpdated < date_sub(now(), interval 2 day) AND name != ''", "characterID", array(), 0);
+			$minID = $db->queryField("SELECT MIN(characterID) AS characterID FROM zz_characters WHERE lastUpdated < date_sub(now(), interval 2 day) AND name != '' AND characterID != :oldID", "characterID", array(":oldID" => $minID), 0);
 			$nextID = $db->queryField("SELECT characterID FROM zz_characters WHERE characterID > :characterID LIMIT 1", "characterID", array(":characterID" => $minID), 0);
 
 			if($nextID - $minID >= 2)
