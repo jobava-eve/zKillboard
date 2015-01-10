@@ -100,7 +100,7 @@ if(isset($_GET["callback"]) && isValidCallback($_GET["callback"]))
 else
 {
 	$app->contentType("application/json; charset=utf-8");
-	echo json_encode($data, JSON_PRETTY_PRINT);
+	echo json_encode($data, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 }
 
 interface apiEndpoint

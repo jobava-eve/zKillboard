@@ -113,6 +113,10 @@ class api_losses implements apiEndpoint
 			Cache::set($key, $data, 3600);
 		}
 
-		return $data;
+		$return = array();
+		foreach($data as $kill)
+			$return[] = json_decode($kill, true);
+
+		return $return;
 	}
 }
