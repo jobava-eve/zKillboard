@@ -90,6 +90,7 @@ header("X-Bin-Request-Count: ". $count);
 header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
 $app->etag(md5(serialize($data)));
 $app->expires("+1 hour");
+Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
 
 if(isset($_GET["callback"]) && isValidCallback($_GET["callback"]))
 {
@@ -143,7 +144,12 @@ function scrapeCheck()
 			header("Retry-After: " . $cachedUntil . " GMT");
 			header("HTTP/1.1 429 Too Many Requests");
 			header("Etag: ".(md5(serialize($data))));
-			$data = json_encode(array("Error" => "You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.", "cachedUntil" => $cachedUntil));
+			$data = json_encode(
+				array(
+					"Error" => "You have too many API requests in the last hour. You are allowed a maximum of $maxRequestsPerHour requests.",
+					"cachedUntil" => $cachedUntil
+				)
+			);
 			echo $data;
 			die();
 		}

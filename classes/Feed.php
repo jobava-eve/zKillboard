@@ -32,8 +32,6 @@ class Feed
 		$ip = IP::get();
 
 		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
-
-		if ($debug) Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
 		$parameters["limit"] = 200; // Always 200 -- Squizz
 		$kills = Kills::getKills($parameters, true, false);
 
