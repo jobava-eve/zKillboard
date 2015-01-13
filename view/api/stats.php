@@ -90,6 +90,6 @@ class api_stats implements apiEndpoint
 		$stat_totals  = Db::query('SELECT SUM(destroyed) AS countDestroyed, SUM(lost) AS countLost, SUM(pointsDestroyed) AS pointsDestroyed, SUM(pointsLost) AS pointsLost, SUM(iskDestroyed) AS iskDestroyed, SUM(iskLost) AS iskLost FROM ' . $statsTable . ' WHERE type = :type AND typeID = :id', array(':type' => $type, ':id' => $id));
 		$stat_details = Db::query('SELECT groupID, destroyed AS countDestroyed, lost AS countLost, pointsDestroyed, pointsLost, iskDestroyed, iskLost FROM ' . $statsTable . ' WHERE type = :type AND typeID = :id', array(':type' => $type, ':id' => $id));
 
-		return array("totals" => $stat_totals, "details" => $stat_details);
+		return array("totals" => $stat_totals[0], "details" => $stat_details);
 	}
 }
