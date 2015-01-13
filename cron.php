@@ -71,6 +71,8 @@ if(file_exists("$base/cron.overrides"))
 		foreach($info as $f)
 			if($f != "disabled")
 				$cronInfo[$command] = $info;
+			else
+				unset($cronInfo[$command]);
 	}
 }
 
