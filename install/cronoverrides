@@ -20,9 +20,6 @@
 	"sitemap":{
 		"86400":"disabled"
 	},
-	"crestapi":{
-		"0":"disabled"
-	},
 	"priceCheck":{
 		"0":"disabled"
 	}
