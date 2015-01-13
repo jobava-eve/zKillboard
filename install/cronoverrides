@@ -19,5 +19,8 @@
 	},
 	"sitemap":{
 		"86400":"disabled"
+	},
+	"crestapi":{
+		"0":"disabled"
 	}
 }

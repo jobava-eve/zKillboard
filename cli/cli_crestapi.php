@@ -31,11 +31,6 @@ class cli_crestapi implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function getCronInfo()
-	{
-		return array(0 => "");
-	}
-
 	/**
 	 * @param array $parameters
 	 * @param Database $db
