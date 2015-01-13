@@ -29,11 +29,6 @@ class cli_priceCheck implements cliCommand
 		return "";
 	}
 
-	public function getCronInfo()
-	{
-		return array(0 => ""); // Always (somewhat) run
-	}
-
 	public function execute($parameters, $db)
 	{
 		if (date("Gi") != 105 && !in_array('-f', $parameters)) return; // Only execute at 01:05
