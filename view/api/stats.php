@@ -96,10 +96,10 @@ class api_stats implements apiEndpoint
 			$output["groups"][array_shift($detail)] = $detail;
 
 		$characterID = isset($parameters["characterID"][0]) ? $parameters["characterID"][0] : NULL;
-		$corporationID = isset($parameters["corporationID"][0]) ? $parameters["corporationID"][0] : NULL;
-		$verified = (bool) Db::queryField("SELECT count(*) AS count FROM zz_api_characters WHERE ((characterID = :characterID AND isDirector = 'F') OR (corporationID = :corporationID AND isDirector = 'T')) AND errorCode = 0", "count", array(":characterID" => $characterID, ":corporationID" => $corporationID));
-
+		$corporationID = isset($parameters["corporationID"][0]) ? $parameters["corporationID"][0] : Info::getCharacterAffiliations($characterID)["corporationID"];
+		$verified = (bool) Db::queryField("SELECT count(*) AS count FROM zz_api_characters WHERE ((characterID = :characterID AND isDirector = 'F') OR (corporationID = :corporationID AND isDirector = 'T')) AND errorCode = 0", "count", array(":characterID" => $characterID, ":corporationID" => $corporationID), 0);
 		$output["apiVerified"] = $verified;
+
 		return $output;
 	}
 }
