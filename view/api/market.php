@@ -37,7 +37,15 @@ class api_market implements apiEndpoint
 	{
 		$date = isset($parameters["date"]) ? date("Y-m-d", strtotime($parameters["date"])) : date("Y-m-d");
 
-		$data = Db::query("SELECT * FROM zz_item_price_lookup WHERE priceDate = :date", array(":date" => $date));
+		$md5 = md5($date);
+		$data = Cache::get($md5);
+
+		if(!$data)
+		{
+			$data = Db::query("SELECT * FROM zz_item_price_lookup WHERE priceDate = :date", array(":date" => $date));
+			Cache::set($md5, $data, 3600);
+		}
+
 		return $data;
 	}
 }
