@@ -93,15 +93,20 @@ class Db
 		{
 			// Start the timer
 			$timer = new Timer();
+
 			// Increment the queryCounter
 			self::$queryCount++;
+
 			// Open the databse connection
 			$pdo = self::getPDO();
+
 			// Make sure PDO is set
 			if($pdo == NULL)
 				return;
+
 			// Prepare the query
 			$stmt = $pdo->prepare($query);
+
 			// Execute the query, with the parameters
 			$stmt->execute($parameters);
 
@@ -111,6 +116,7 @@ class Db
 
 			// Fetch an associative array
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 			// Close the cursor
 			$stmt->closeCursor();
 
@@ -146,6 +152,7 @@ class Db
 	{
 		// Get the result
 		$result = self::query($query, $parameters, $cacheTime, $selectCheck);
+
 		// Figure out if it has more than one result and return it
 		if(sizeof($result) >= 1)
 			return $result[0];
@@ -168,6 +175,7 @@ class Db
 	{
 		// Get the result
 		$result = self::query($query, $parameters, $cacheTime, $selectCheck);
+
 		// Figure out if it has no results
 		if(sizeof($result) == 0)
 			return null;
@@ -195,15 +203,19 @@ class Db
 
 		// Start the timer
 		$timer = new Timer();
+
 		// Increment the queryCounter
 		self::$queryCount++;
+
 		// Open the databse connection
 		$pdo = self::getPDO();
 
 		// Begin the transaction
 		$pdo->beginTransaction();
+
 		// Prepare the query
 		$stmt = $pdo->prepare($query);
+
 		// Execute the query, with the parameters
 		$stmt->execute($parameters);
 
@@ -223,17 +235,21 @@ class Db
 
 		// No error, time to commit
 		$pdo->commit();
+
 		// Stop the timer
 		$duration = $timer->stop();
 
+		// Log the query
 		self::log($query, $parameters, $duration);
 
 		// Get the amount of rows that was altered
 		$rowCount = $stmt->rowCount();
+
 		// Close the cursor
 		$stmt->closeCursor();
 
-		if($returnID) return $lastInsertID;
+		if($returnID)
+			return $lastInsertID;
 
 		// Return the amount of rows that was altered
 		return $rowCount;
@@ -294,7 +310,9 @@ class Db
 	 */
 	public static function log($query, $parameters = array(), $duration = 0)
 	{
-		if ($duration < 5000) return; // Don't log short queries
+		if ($duration < 10000)  // Don't log queries taking less than 10 seconds.
+			return;
+
 		global $baseAddr;
 		foreach ($parameters as $k => $v) {
 			$query = str_replace($k, "'" . $v . "'", $query);
