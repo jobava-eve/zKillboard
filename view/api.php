@@ -133,7 +133,6 @@ function scrapeCheck()
 
 	$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
 	$ip = substr(IP::get(), 0, 64);
-	Db::execute("INSERT INTO zz_scrape_prevention (ip, uri, dttm) VALUES (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
 
 	if(!in_array($ip, $apiWhiteList))
 	{
@@ -156,6 +155,7 @@ function scrapeCheck()
 			die();
 		}
 	}
+	Db::execute("INSERT INTO zz_scrape_prevention (ip, uri, dttm) VALUES (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
 }
 
 function isValidCallback($subject)
