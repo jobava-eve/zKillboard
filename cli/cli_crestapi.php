@@ -85,6 +85,9 @@ class cli_crestapi implements cliCommand
 					continue;
 				}
 
+				// statsD
+				Util::statsD("crest_processing");
+
 				// Decode the killmail data
 				$perrymail = json_decode($body, false);
 
