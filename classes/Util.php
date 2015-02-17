@@ -85,7 +85,7 @@ class Util
 			$pheal = new \Pheal\Pheal();
 
 		// Stats gathering, sadly phealng has no way of telling us if we're hitting the cache or not.
-		self::statsD("api");
+		self::statsD("ccp_api");
 
 		// Return the API data to whomever requested it.
 		return $pheal;
