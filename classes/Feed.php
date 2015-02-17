@@ -32,7 +32,10 @@ class Feed
 		$ip = IP::get();
 
 		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
-		$parameters["limit"] = 200; // Always 200 -- Squizz
+		if(isset($parameters["limit"]) && $parameters["limit"] > 200)
+			$parameters["limit"] = 200;
+		if(isset($parameters["page"]))
+			$parameters["limit"] = 200;
 		$kills = Kills::getKills($parameters, true, false);
 
 		return self::getJSON($kills, $parameters);
