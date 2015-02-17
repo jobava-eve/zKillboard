@@ -80,6 +80,13 @@ $redisPort = "%redisport%";
 // Pheal
 $phealCacheLocation = "%phealcachelocation%";
 
+// StatsD
+$statsd = false;
+$statsdserver = "localhost";
+$statsdport = 8125;
+$statsdnamespace = "zkb.namespace";
+$statsdglobalnamespace = "zkb";
+
 // Cookiiieeeee
 $cookie_name = "zKB";
 $cookie_ssl = false;

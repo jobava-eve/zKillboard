@@ -54,8 +54,11 @@ class Util
 
 		if (static::is904Error()) 
 		{
-			if (php_sapi_name() == 'cli') exit();
-			return null; // Web requests shouldn't be hitting the API...
+			// Web requests shouldn't be hitting the API...
+			if (php_sapi_name() == 'cli')
+				exit();
+
+			return null;
 		}
 
 		\Pheal\Core\Config::getInstance()->http_method = "curl";
@@ -70,14 +73,43 @@ class Util
 		\Pheal\Core\Config::getInstance()->http_keepalive = true; // default 15 seconds
 		\Pheal\Core\Config::getInstance()->http_keepalive = 10; // KeepAliveTimeout in seconds
 		\Pheal\Core\Config::getInstance()->http_timeout = 30;
-		if ($phealCacheLocation != null) \Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage($phealCacheLocation);
+		if ($phealCacheLocation != null)
+			\Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage($phealCacheLocation);
 		\Pheal\Core\Config::getInstance()->log = new PhealLogger();
 		\Pheal\Core\Config::getInstance()->api_customkeys = true;
 		\Pheal\Core\Config::getInstance()->api_base = $apiServer;
 
-		if ($keyID != null && $vCode != null) $pheal = new \Pheal\Pheal($keyID, $vCode);
-		else $pheal = new \Pheal\Pheal();
+		if ($keyID != null && $vCode != null)
+			$pheal = new \Pheal\Pheal($keyID, $vCode);
+		else
+			$pheal = new \Pheal\Pheal();
+
+		// Stats gathering, sadly phealng has no way of telling us if we're hitting the cache or not.
+		self::statsD("api");
+
+		// Return the API data to whomever requested it.
 		return $pheal;
+	}
+
+	public static function statsD($name, $increment = NULL)
+	{
+		global $statsd, $statsdserver, $statsdport, $statsdnamespace, $statsdglobalnamespace;
+
+		// If statsD isn't enabled just return and do nothing..
+		if(!$statsd)
+			return;
+
+		$connection = new \Domnikl\Statsd\Connection\UdpSocket($statsdserver, $statsdport);
+		$statsd = new \Domnikl\Statsd\Client($connection, $statsdnamespace);
+
+		// Global name space
+		$statsd->setNamespace($statsdglobalnamespace);
+
+		// Increment
+		if($icrement == NULL)
+			$statsd->increment($name);
+		else
+			$statsd->count($name, $increment);
 	}
 
 	public static function pluralize($string)
