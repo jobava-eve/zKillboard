@@ -62,5 +62,8 @@ class cli_minutely implements cliCommand
 
 		// Expire change expirations
 		$db->execute("update zz_users set change_expiration = null, change_hash = null where change_expiration < date_sub(now(), interval 3 day)");
+
+		// Reparse kills with an error
+		$db->execute("update zz_killmails set processed = 0 where processed = 2");
 	}
 }
