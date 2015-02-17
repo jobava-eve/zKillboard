@@ -41,5 +41,10 @@ include( "twig.php" );
 // Load the theme stuff AFTER routes and Twig, so themers can add crap to twig's global space
 require_once("themes/$theme/$theme.php");
 
+// Tell statsD that there is a hit
+self::statsD("website_hit");
+self::statsD("website_loadTime", Util::pageTimer());
+self::statsD("website_queryCount", Db::getQueryCount());
+
 // Run the thing!
 $app->run();
