@@ -106,7 +106,7 @@ class Util
 		$statsd->setNamespace($statsdglobalnamespace);
 
 		// Increment
-		if($icrement == NULL)
+		if($increment == NULL)
 			$statsd->increment($name);
 		else
 			$statsd->count($name, $increment);
