@@ -35,8 +35,8 @@ class cli_fightFinder implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		global $beSocial, $fullAddr, $twitterName;
-		global $minPilots, $minWrecks;
+		if (Util::isMaintenanceMode()) return;
+		global $beSocial, $fullAddr, $twitterName, $minPilots, $minWrecks;
 		if (!isset($minPilots)) $minPilots = 200;
 		if (!isset($minWrecks)) $minWrecks = 200;
 		if (!isset($beSocial) || $beSocial == false) return;

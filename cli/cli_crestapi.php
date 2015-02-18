@@ -42,6 +42,7 @@ class cli_crestapi implements cliCommand
 	 */
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		global $debug, $baseAddr;
 		$count = 0;
 		$timer = new Timer();

@@ -35,6 +35,7 @@ class cli_parseKills implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		global $debug, $parseAscending, $dbPersist;
 		// DB connection needs to persist because we're working with temporary tables..
 		$dbPersist = true;
