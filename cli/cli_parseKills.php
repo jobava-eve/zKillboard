@@ -240,7 +240,7 @@ class cli_parseKills implements cliCommand
 			if ($attackerGroupID == 365)
 				return true;
 
-			if (isset($attacker["factionID"]) && $attacker["factionID"] == 500021)
+			if ((isset($attacker["factionID"]) && $attacker["factionID"] == 500021) || (isset($attacker["corporationID"]) && $attacker["corporationID"] == 500021))
 				return true;
 
 			// Don't process the kill if it's NPC only
