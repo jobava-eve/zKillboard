@@ -35,7 +35,6 @@ class cli_parseKills implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		if (Util::isMaintenanceMode()) return;
 		global $debug, $parseAscending, $dbPersist;
 		// DB connection needs to persist because we're working with temporary tables..
 		$dbPersist = true;
@@ -135,7 +134,6 @@ class cli_parseKills implements cliCommand
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
 				$numKills++;
-
 				if ($debug)
 					Log::log("Processing kill: $killID");
 
@@ -207,8 +205,7 @@ class cli_parseKills implements cliCommand
 		}
 		if ($numKills > 0)
 		{
-			$statsd = Util::statsD();
-			$statsd->gauge("kills_processed", $numKills);
+			Util::statsD("kills_processed", $numKills);
 			Log::log("Processed: $numKills kill(s)");
 			$db->execute("INSERT INTO zz_storage (locker, contents) VALUES ('KillsAdded', :num) ON DUPLICATE KEY UPDATE contents = contents + :num", array(":num" => $numKills));
 		}
@@ -223,15 +220,11 @@ class cli_parseKills implements cliCommand
 
 	private static function validKill(&$kill)
 	{
-		// Show all pod kills
-		$victimShipID = $kill["victim"]["shipTypeID"];
-		if ($victimShipID == 670 || $victimShipID == 33328)
-			return true;
-
-		$npcOnly = true;
+		global $db;
 		$victimCorp = $kill["victim"]["corporationID"] < 1000999 ? 0 : $kill["victim"]["corporationID"];
 		$victimAlli = $kill["victim"]["allianceID"];
 
+		$npcOnly = true;
 		$blueOnBlue = true;
 		foreach ($kill["attackers"] as $attacker)
 		{
@@ -240,16 +233,12 @@ class cli_parseKills implements cliCommand
 			if ($attackerGroupID == 365)
 				return true;
 
-			if (isset($attacker["factionID"]) && $attacker["factionID"] == 500021)
-				return true;
-
 			// Don't process the kill if it's NPC only
 			$npcOnly &= $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125);
 
 			// Check for blue on blue
 			if ($attacker["characterID"] != 0) $blueOnBlue &= $victimCorp == $attacker["corporationID"] && $victimAlli == $attacker["allianceID"];
 		}
-
 		if ($npcOnly /*|| $blueOnBlue*/)
 			return false;
 

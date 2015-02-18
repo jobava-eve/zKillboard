@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+if(ob_get_level() == 0)
+        ob_start();
+
+ob_implicit_flush();
+
+// Load the config to get the stomp details
+require_once("../../config.php");
+
+$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+$stomp->subscribe("/topic/kills");
+while(true)
+{
+        $frame = $stomp->readFrame();
+        if(!empty($frame))
+        {
+                if(!empty($frame->body))
+                {
+                        fwrite(STDOUT, $frame->body."\n");
+                        ob_flush();
+                        flush();
+                }
+                $stomp->ack($frame->headers["message-id"]);
+        }
+}

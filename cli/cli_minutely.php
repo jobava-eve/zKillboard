@@ -35,7 +35,6 @@ class cli_minutely implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		if (Util::isMaintenanceMode()) return;
 		global $base;
 		chdir($base);
 

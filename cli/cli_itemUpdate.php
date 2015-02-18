@@ -35,7 +35,6 @@ class cli_itemUpdate implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		if (Util::isMaintenanceMode()) return;
 		$rows = $db->query("select typeID from ccp_invTypes order by typeID", array(), 0);
 		$ids = array();
 		foreach($rows as $row) {

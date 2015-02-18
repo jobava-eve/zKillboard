@@ -42,7 +42,6 @@ class cli_populateAlliances implements cliCommand
 
 	private static function populateAlliances($db)
 	{
-		if (Util::isMaintenanceMode()) return;
 		if (Util::is904Error()) return;
 		//CLI::out("Repopulating the alliance table");
 		Log::log("Repopulating alliance tables.");

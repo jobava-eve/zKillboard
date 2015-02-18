@@ -35,7 +35,6 @@ class cli_statsQueue implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		if (Util::isMaintenanceMode()) return;
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{

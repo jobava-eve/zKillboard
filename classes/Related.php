@@ -63,9 +63,6 @@ class Related
 		$blue = self::addInfo($blueTeam);
 		asort($blue);
 
-		usort($redInvolved, "Related::compareShips");
-		usort($blueInvolved, "Related::compareShips");
-
 		$retValue = array(
 			"teamA" => array(
 				"list" => $redInvolved,
@@ -243,12 +240,7 @@ class Related
 		return array_keys($involvedArray);
 	}
 
-	public static function compareShips($a, $b)
-	{
-		$aSize = Db::queryField("select mass from ccp_invTypes where typeID = :typeID", "mass", array(":typeID" => $a["shipTypeID"]));
-		$bSize = Db::queryField("select mass from ccp_invTypes where typeID = :typeID", "mass", array(":typeID" => $b["shipTypeID"]));
-		return $aSize < $bSize;
-	}
+
 
 	private static function addInvolvedEntity(&$involvedArray, &$killID, &$entity)
 	{

@@ -40,7 +40,6 @@ class cli_populateCharacters implements cliCommand
 
 	private static function populateCharacters($db)
 	{
-		if (Util::isMaintenanceMode()) return;
 		global $baseDir;
 
 		$timer = new Timer();
