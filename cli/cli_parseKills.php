@@ -135,6 +135,7 @@ class cli_parseKills implements cliCommand
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
 				$numKills++;
+
 				if ($debug)
 					Log::log("Processing kill: $killID");
 
@@ -206,7 +207,8 @@ class cli_parseKills implements cliCommand
 		}
 		if ($numKills > 0)
 		{
-			Util::statsD("kills_processed", $numKills);
+			$statsd = Util::statsD();
+			$statsd->gauge("kills_processed", $numKills);
 			Log::log("Processed: $numKills kill(s)");
 			$db->execute("INSERT INTO zz_storage (locker, contents) VALUES ('KillsAdded', :num) ON DUPLICATE KEY UPDATE contents = contents + :num", array(":num" => $numKills));
 		}

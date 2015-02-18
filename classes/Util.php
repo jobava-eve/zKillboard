@@ -85,13 +85,14 @@ class Util
 			$pheal = new \Pheal\Pheal();
 
 		// Stats gathering, sadly phealng has no way of telling us if we're hitting the cache or not.
-		self::statsD("ccp_api");
+		$statsd = Util::statsD();
+		$statsd->increment("ccp_api");
 
 		// Return the API data to whomever requested it.
 		return $pheal;
 	}
 
-	public static function statsD($name, $increment = NULL)
+	public static function statsD()
 	{
 		global $statsd, $statsdserver, $statsdport, $statsdnamespace, $statsdglobalnamespace;
 
@@ -105,11 +106,7 @@ class Util
 		// Global name space
 		$statsd->setNamespace($statsdglobalnamespace);
 
-		// Increment
-		if($increment == NULL)
-			$statsd->increment($name);
-		else
-			$statsd->count($name, $increment);
+		return $statsd;
 	}
 
 	public static function pluralize($string)

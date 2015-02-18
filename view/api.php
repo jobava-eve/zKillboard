@@ -133,7 +133,8 @@ function scrapeCheck()
 
 	$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
 	$ip = substr(IP::get(), 0, 64);
-	Util::statsD("zkb_api");
+	$statsd = Util::statsD();
+	$statsd->increment("zkb_api");
 
 	if(!in_array($ip, $apiWhiteList))
 	{

@@ -73,13 +73,19 @@ class cli_crestapi implements cliCommand
 				$body = curl_exec($ch);
 				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+				// Init statsd
+				$statsd = Util::statsD();
+
 				// If the server is rejecting us, bail
 				if ($httpCode > 500)
+				{
+					$statsd->increment("crest_processing.500");
 					return;
-
+				}
 				// If we get an error code, it's probably because the server either doesn't work, or because the kill is wrong, so wrong..
 				if ($httpCode != 200)
 				{
+					$statsd->increment("crest_processing.error");
 					Log::log("Crestapi Error: $killID / $httpCode");
 					$db->execute("update zz_crest_killmail set processed = :i where killID = :killID", array(":i" => (-1 * $httpCode), ":killID" => $killID));
 					usleep(250000);
@@ -87,7 +93,7 @@ class cli_crestapi implements cliCommand
 				}
 
 				// statsD
-				Util::statsD("crest_processing");
+				$statsd->increment("crest_processing");
 
 				// Decode the killmail data
 				$perrymail = json_decode($body, false);

@@ -42,9 +42,9 @@ include( "twig.php" );
 require_once("themes/$theme/$theme.php");
 
 // Tell statsD that there is a hit
-Util::statsD("website_hit");
-Util::statsD("website_loadTime", Util::pageTimer());
-Util::statsD("website_queryCount", Db::getQueryCount());
+$statsd = Util::statsD();
+$statsd->increment("website_hit");
+$statsd->timing("website_loadTime", Util::pageTimer());
 
 // Run the thing!
 $app->run();

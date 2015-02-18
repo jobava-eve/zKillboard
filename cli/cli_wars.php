@@ -35,6 +35,9 @@ class cli_wars implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
+			$statsd = Util::statsD();
+			$statsd->increment("wars_processed");
+
 			$now = $timer->stop();
 			$warRows = $db->query("select * from zz_wars where lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked limit 100", array(), 0);
 
@@ -103,6 +106,7 @@ class cli_wars implements cliCommand
 				}
 			}
 		}
-		if ($added > 0) Log::log("CREST (war): Added $added killmails");
+		if ($added > 0)
+			Log::log("CREST (war): Added $added killmails");
 	}
 }
