@@ -35,6 +35,7 @@ class cli_every15 implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		global $baseDir;
 
 		$p = array();

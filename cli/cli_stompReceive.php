@@ -78,7 +78,11 @@ class cli_stompReceive implements cliCommand
 							$aff = $db->execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 									array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
 							$stompCount++;
-							if ($debug && $aff) Log::log("Added kill $killID");
+							if($aff)
+								self::statsD("stomp_receive");
+
+							if ($debug && $aff)
+								Log::log("Added kill $killID");
 						}
 					}
 					$stomp->ack($frame->headers["message-id"]);

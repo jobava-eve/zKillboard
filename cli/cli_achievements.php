@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-use Perry\Perry;
 
-class cli_warFetcher implements cliCommand
+class cli_achievements implements cliCommand
 {
 	public function getDescription()
 	{
-		return "Prepopulates the warID into the zz_wars table for processing.";
+		return "Runs through all the characters in the database, and figure out which achievements they are up for.";
 	}
 
 	public function getAvailMethods()
@@ -31,20 +30,22 @@ class cli_warFetcher implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		if (Util::isMaintenanceMode()) return;
-		$page = Db::queryField("select floor(count(*) / 2000) page from zz_wars", "page", array(), 0);
-		if ($page == 0) $page = 1;
 
-		$next = "http://public-crest.eveonline.com/wars/?page=$page";
-		do {
-			$perrywars = Perry::fromUrl($next);
-			$next = @$perrywars->next->href;
-			foreach($perrywars->items as $war)
-			{
-				$id = $war->id;
-				if ($id > 0) Db::execute("insert ignore into zz_wars (warID) values (:warID)", array(":warID" => $id));
-			}
-			sleep(1);
-		} while ($next != null);
+		$characters = Db::query("SELECT * FROM zz_characters");
+
+		foreach($characters as $character)
+		{
+			if($character["characterID"] == 0 || $character["characterID"] == NULL)
+				continue;
+
+			$characterID = $character["characterID"];
+			$characterName = $character["characterName"];
+
+			// Babys first kill
+			$firstKill = Db::queryField("SELECT count(*) AS count FROM zz_participants WHERE isVictim = 0 AND characterID = :characterID", "count", array(":characterID" => $characterID));
+
+			var_dump($firstKill);
+			echo "\n";
+		}
 	}
 }
