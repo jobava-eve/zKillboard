@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 if(ob_get_level() == 0)
-        ob_start();
+		ob_start();
 
 ob_implicit_flush();
 
@@ -12,18 +12,31 @@ $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 $stomp->subscribe("/topic/kills");
 while(true)
 {
-        $frame = $stomp->readFrame();
-        if(!empty($frame))
-        {
-                if(!empty($frame->body))
-                {
-                        $data = json_decode($frame->body, true);
-                        $map = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "characterID" => $data["victim"]["characterID"], "corporationID" => $data["victim"]["corporationID"], "allianceID" => $data["victim"]["allianceID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"], "involved" => count($data["attackers"]), "totalValue" => $data["zkb"]["totalValue"], "pointsPrInvolved" => $data["zkb"]["points"]));
+	$frame = $stomp->readFrame();
+	if(!empty($frame))
+	{
+		if(!empty($frame->body))
+		{
+			$data = json_decode($frame->body, true);
+			$map = json_encode(
+				array(
+					"solarSystemID" => $data["solarSystemID"],
+					"killID" => $data["killID"],
+					"characterID" => $data["victim"]["characterID"], 
+					"corporationID" => $data["victim"]["corporationID"],
+					"allianceID" => $data["victim"]["allianceID"],
+					"shipTypeID" => $data["victim"]["shipTypeID"],
+					"killTime" => $data["killTime"],
+					"involved" => count($data["attackers"]),
+					"totalValue" => isset($data["zkb"]["totalValue"]) ? $data["zkb"]["totalValue"] : NULL,
+					"pointsPrInvolved" => isset($data["zkb"]["points"]) ? $data["zkb"]["points"] : NULL
+				)
+			);
 
-                        fwrite(STDOUT, $map."\n");
-                        ob_flush();
-                        flush();
-                }
-                $stomp->ack($frame->headers["message-id"]);
-        }
+			fwrite(STDOUT, $map."\n");
+			ob_flush();
+			flush();
+		}
+		$stomp->ack($frame->headers["message-id"]);
+	}
 }
