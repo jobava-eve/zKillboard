@@ -79,7 +79,10 @@ class cli_stompReceive implements cliCommand
 									array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
 							$stompCount++;
 							if($aff)
-								self::statsD("stomp_receive");
+							{
+								$statsd = Util::statsD();
+								$statsd->increment("stomp_receive");
+							}
 
 							if ($debug && $aff)
 								Log::log("Added kill $killID");
