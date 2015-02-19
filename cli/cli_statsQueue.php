@@ -81,6 +81,10 @@ class cli_statsQueue implements cliCommand
 
 				if (class_exists("Stomp"))
 					StompUtil::sendKill($killID);
+
+				// Statsd
+				$statsd = Util::statsD();
+				$statsd->increment("statsQueue_processed");
 			}
 		}
 	}
