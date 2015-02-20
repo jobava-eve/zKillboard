@@ -5,8 +5,9 @@ require_once( "init.php" );
 // Load Statsd
 $statsd = Util::statsD();
 
-// Start statsd timer
+// Start statsd collecting
 $statsd->startTiming("website_loadTime");
+$statsd->startMemoryProfile("website_memoryUsage");
 
 // initiate the timer!
 $timer = new Timer();
@@ -47,11 +48,11 @@ include( "twig.php" );
 // Load the theme stuff AFTER routes and Twig, so themers can add crap to twig's global space
 require_once("themes/$theme/$theme.php");
 
-// Tell statsD that there is a hit
-$statsd->increment("website_hit");
-
 // Run the thing!
 $app->run();
 
-// End statsd timing
+// End statsd
+$statsd->increment("website_hit");
 $statsd->endTiming("website_loadTime");
+$statsd->endMemoryProfile("website_memoryUsage");
+$statsd->memory("website_memoryPeakUsage");
