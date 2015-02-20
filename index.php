@@ -2,6 +2,12 @@
 // Include Init
 require_once( "init.php" );
 
+// Load Statsd
+$statsd = Util::statsD();
+
+// Start statsd timer
+$statsd->startTiming("website_loadTime");
+
 // initiate the timer!
 $timer = new Timer();
 
@@ -42,9 +48,10 @@ include( "twig.php" );
 require_once("themes/$theme/$theme.php");
 
 // Tell statsD that there is a hit
-$statsd = Util::statsD();
 $statsd->increment("website_hit");
-$statsd->timing("website_loadTime", Util::pageTimer());
 
 // Run the thing!
 $app->run();
+
+// End statsd timing
+$statsd->endTiming("website_loadTime");

@@ -76,6 +76,9 @@ class cli_crestapi implements cliCommand
 				// Init statsd
 				$statsd = Util::statsD();
 
+				// Increment crest calls
+				$statsd->increment("crest_calls");
+
 				// If the server is rejecting us, bail
 				if ($httpCode > 500)
 				{
