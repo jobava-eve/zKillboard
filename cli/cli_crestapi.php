@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,16 +42,15 @@ class cli_crestapi implements cliCommand
 	 */
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		global $debug, $baseAddr;
 		$count = 0;
 		$timer = new Timer();
-
-		$db->execute("update zz_crest_killmail set processed = 0 where processed < -500", array(), false, false);
 		Log::log("Starting CREST API killmail parsing");
 		while ($timer->stop() < 59000)
 		{
 			// Get the killmail data
-			$data = $db->queryRow("SELECT * FROM zz_crest_killmail WHERE processed = 0 ORDER BY timestamp DESC LIMIT 1", array(), 0);
+			$data = $db->queryRow("SELECT * FROM zz_crest_killmail WHERE processed = 0 ORDER BY dttm DESC LIMIT 1", array(), 0);
 			try
 			{
 				// Bind the data to variables
@@ -74,18 +73,30 @@ class cli_crestapi implements cliCommand
 				$body = curl_exec($ch);
 				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+				// Init statsd
+				$statsd = Util::statsD();
+
+				// Increment crest calls
+				$statsd->increment("crest_calls");
+
 				// If the server is rejecting us, bail
 				if ($httpCode > 500)
+				{
+					$statsd->increment("crest_processing.500");
 					return;
-
+				}
 				// If we get an error code, it's probably because the server either doesn't work, or because the kill is wrong, so wrong..
 				if ($httpCode != 200)
 				{
+					$statsd->increment("crest_processing.error");
 					Log::log("Crestapi Error: $killID / $httpCode");
 					$db->execute("update zz_crest_killmail set processed = :i where killID = :killID", array(":i" => (-1 * $httpCode), ":killID" => $killID));
 					usleep(250000);
 					continue;
 				}
+
+				// statsD
+				$statsd->increment("crest_processing");
 
 				// Decode the killmail data
 				$perrymail = json_decode($body, false);

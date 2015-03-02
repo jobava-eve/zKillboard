@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,6 +35,7 @@ class cli_crestHashGenerate implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		$timer = new Timer();
 		while ($timer->stop() <= 65000)
 		{
@@ -48,8 +49,11 @@ class cli_crestHashGenerate implements cliCommand
 			{
 				if ($timer->stop() > 65000) return;
 				$killID = $row["killID"];
-				$hash = Killmail::getCrestHash($killID);
-				$db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+				if($killID > 0)
+				{
+					$hash = Killmail::getCrestHash($killID);
+					$db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+				}
 				$db::execute("delete from zz_crest_queue where killID = :killID", array(":killID" => $killID));
 			}
 		}

@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -183,15 +183,7 @@ $app->get("/comments/", function() use ($app) {
 });
 
 // API
-$app->get("/api/stats/:flags+/", function($flags) use ($app) {
-	include( "view/apistats.php" );
-});
-
-$app->get("/api/dna(/:flags+)/", function($flags = null) use ($app) {
-	include( "view/apidna.php" );
-});
-
-$app->get("/api/:input+", function($input) use ($app) {
+$app->get("/api(/:flags+)/", function($flags = NULL) use ($app) {
 	include( "view/api.php" );
 });
 

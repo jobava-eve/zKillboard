@@ -1,7 +1,7 @@
 <?php
 
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,9 +32,10 @@ class Feed
 		$ip = IP::get();
 
 		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
-
-		if ($debug) Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
-		$parameters["limit"] = 200; // Always 200 -- Squizz
+		if(isset($parameters["limit"]) && $parameters["limit"] > 200)
+			$parameters["limit"] = 200;
+		if(isset($parameters["page"]))
+			$parameters["limit"] = 200;
 		$kills = Kills::getKills($parameters, true, false);
 
 		return self::getJSON($kills, $parameters);

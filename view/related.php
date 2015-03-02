@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -59,15 +59,14 @@ $exHours = 1;
 if (((int) $exHours) < 1 || ((int) $exHours > 12)) $exHours = 1;
 
 $key = "$systemID:$relatedTime:$exHours:" . json_encode($json_options);
-$cache = new FileCache($baseDir . "/cache/related/");
-$mc = $cache->get($key);
-if (!$mc)
+$data = Cache::get($key);
+if (!$data)
 {
 	$parameters = array("solarSystemID" => $systemID, "relatedTime" => $relatedTime, "exHours" => $exHours);
 	$kills = Kills::getKills($parameters);
 	$summary = Related::buildSummary($kills, $parameters, $json_options);
-	$mc = array("summary" => $summary, "systemName" => $systemName, "regionName" => $regionName, "time" => $time, "exHours" => $exHours, "solarSystemID" => $systemID, "relatedTime" => $relatedTime, "options" => json_encode($json_options));
-	$cache->set($key, $mc, 600);
+	$data = array("summary" => $summary, "systemName" => $systemName, "regionName" => $regionName, "time" => $time, "exHours" => $exHours, "solarSystemID" => $systemID, "relatedTime" => $relatedTime, "options" => json_encode($json_options));
+	Cache::set($key, $data, 600);
 }
 
-$app->render("related.html", $mc);
+$app->render("related.html", $data);

@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,6 +40,9 @@ class Util
 
 	public static function getCrest($url)
 	{
+		$statsd = self::statsD();
+		$statsd->increment("crest_calls");
+
 		\Perry\Setup::$fetcherOptions = ["connect_timeout" => 15, "timeout" => 30];
 		return \Perry\Perry::fromUrl($url);
 	}
@@ -54,8 +57,11 @@ class Util
 
 		if (static::is904Error()) 
 		{
-			if (php_sapi_name() == 'cli') exit();
-			return null; // Web requests shouldn't be hitting the API...
+			// Web requests shouldn't be hitting the API...
+			if (php_sapi_name() == 'cli')
+				exit();
+
+			return null;
 		}
 
 		\Pheal\Core\Config::getInstance()->http_method = "curl";
@@ -70,14 +76,40 @@ class Util
 		\Pheal\Core\Config::getInstance()->http_keepalive = true; // default 15 seconds
 		\Pheal\Core\Config::getInstance()->http_keepalive = 10; // KeepAliveTimeout in seconds
 		\Pheal\Core\Config::getInstance()->http_timeout = 30;
-		if ($phealCacheLocation != null) \Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage($phealCacheLocation);
+		if ($phealCacheLocation != null)
+			\Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage($phealCacheLocation); // Implement own cache class that calls statsD
 		\Pheal\Core\Config::getInstance()->log = new PhealLogger();
 		\Pheal\Core\Config::getInstance()->api_customkeys = true;
 		\Pheal\Core\Config::getInstance()->api_base = $apiServer;
 
-		if ($keyID != null && $vCode != null) $pheal = new \Pheal\Pheal($keyID, $vCode);
-		else $pheal = new \Pheal\Pheal();
+		if ($keyID != null && $vCode != null)
+			$pheal = new \Pheal\Pheal($keyID, $vCode);
+		else
+			$pheal = new \Pheal\Pheal();
+
+		// Stats gathering, sadly phealng has no way of telling us if we're hitting the cache or not.
+		$statsd = Util::statsD();
+		$statsd->increment("ccp_api");
+
+		// Return the API data to whomever requested it.
 		return $pheal;
+	}
+
+	public static function statsD()
+	{
+		global $statsd, $statsdserver, $statsdport, $statsdnamespace, $statsdglobalnamespace;
+
+		// If statsD isn't enabled just return and do nothing..
+		if(!$statsd)
+			return;
+
+		$connection = new \Domnikl\Statsd\Connection\UdpSocket($statsdserver, $statsdport);
+		$statsd = new \Domnikl\Statsd\Client($connection, $statsdnamespace);
+
+		// Global name space
+		$statsd->setNamespace($statsdglobalnamespace);
+
+		return $statsd;
 	}
 
 	public static function pluralize($string)
@@ -251,6 +283,9 @@ class Util
 				case "finalblow-only":
 					$parameters[$key] = true;
 				break;
+				case "api":
+					$parameters[$key] = true;
+				break;
 				default:
 					if($addExtraParameters == true)
 					{
@@ -279,7 +314,34 @@ class Util
 			foreach ($legitEntities as $entity) {
 				$legit |= in_array($entity, array_keys($parameters));
 			}
-			if (!$legit) throw new Exception("page > 10 not allowed for this modifier type, please see API documentation");
+			// The API doesn't handle Exceptions that well, so we have to output json/xml for them..
+			if (!$legit)
+			{
+				$date = date("Y-m-d H:i:s");
+				$cachedUntil = date("Y-m-d H:i:s", time() + 3600);
+				if(stristr($_SERVER["REQUEST_URI"], "xml"))
+				{
+					$data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?" . ">"; // separating the ? and > allows vi to still color format code nicely
+					$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
+					$data .= "<currentTime>$date</currentTime>";
+					$data .= "<result>";
+					$data .= "<error>A maximum of 10 pages is allowed for the modifier type you are using.</error>";
+					$data .= "</result>";
+					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
+					$data .= "</eveapi>";
+					header("Content-type: text/xml; charset=utf-8");
+				}
+				else
+				{
+					header("Content-type: application/json; charset=utf-8");
+					$data = json_encode(array("Error" => "A maximum of 10 pages is allowed for the modifier type you are using.", "cachedUntil" => $cachedUntil));
+				}
+				header("Retry-After: " . $cachedUntil . " GMT");
+				header("HTTP/1.1 409 Conflict");
+				header("Etag: ".(md5(serialize($data))));
+				echo $data;
+				die();
+			}
 		}
 		return $parameters;
 	}
@@ -329,68 +391,6 @@ class Util
 	public static function getLongMonth($month)
 	{
 		return self::$longMonths[$month];
-	}
-
-	public static function scrapeCheck()
-	{
-		global $apiWhiteList, $maxRequestsPerHour;
-		$maxRequestsPerHour = isset($maxRequestsPerHour) ? $maxRequestsPerHour : 360;
-
-		$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
-        	$ip = substr(IP::get(), 0, 64);
-        	Db::execute("insert into zz_scrape_prevention values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
-
-		if(!in_array($ip, $apiWhiteList))
-		{
-			$count = Db::queryField("select count(*) count from zz_scrape_prevention where ip = :ip and dttm >= date_sub(now(), interval 1 hour)", "count", array(":ip" => $ip), 0);
-
-			if($count > $maxRequestsPerHour)
-			{
-				$date = date("Y-m-d H:i:s");
-				$cachedUntil = date("Y-m-d H:i:s", time() + 3600);
-				if(stristr($_SERVER["REQUEST_URI"], "xml"))
-				{
-					$data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?" . ">"; // separating the ? and > allows vi to still color format code nicely
-					$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
-					$data .= "<currentTime>$date</currentTime>";
-					$data .= "<result>";
-					$data .= "<error>You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.</error>";
-					$data .= "</result>";
-					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
-					$data .= "</eveapi>";
-					header("Content-type: text/xml; charset=utf-8");
-				}
-				else
-				{
-					header("Content-type: application/json; charset=utf-8");
-					$data = json_encode(array("Error" => "You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.", "cachedUntil" => $cachedUntil));
-				}
-				header("X-Bin-Request-Count: ". $count);
-				header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
-				header("Retry-After: " . $cachedUntil . " GMT");
-				header("HTTP/1.1 429 Too Many Requests");
-				header("Etag: ".(md5(serialize($data))));
-				echo $data;
-				die();
-			}
-			header("X-Bin-Request-Count: ". $count);
-			header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
-		}
-	}
-
-	public static function isValidCallback($subject)
-	{
-		$identifier_syntax = '/^[$_\p{L}][$_\p{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\x{200C}\x{200D}]*+$/u';
-
-		$reserved_words = array('break', 'do', 'instanceof', 'typeof', 'case',
-				'else', 'new', 'var', 'catch', 'finally', 'return', 'void', 'continue', 
-				'for', 'switch', 'while', 'debugger', 'function', 'this', 'with', 
-				'default', 'if', 'throw', 'delete', 'in', 'try', 'class', 'enum', 
-				'extends', 'super', 'const', 'export', 'import', 'implements', 'let', 
-				'private', 'public', 'yield', 'interface', 'package', 'protected', 
-				'static', 'null', 'true', 'false');
-
-		return preg_match($identifier_syntax, $subject) && ! in_array(mb_strtolower($subject, 'UTF-8'), $reserved_words);
 	}
 
 	public static function deleteKill($killID)
@@ -533,32 +533,10 @@ class Util
 	public static function informationPages()
 	{
 		global $baseDir, $theme;
-		$mdDir = $baseDir . "information/";
-		$data = scandir($mdDir);
-
-		foreach($data as $key =>  $file)
-		{
-			if($file == "." || $file == "..")
-				continue;
-
-			if(is_dir($mdDir . $file))
-			{
-				$subData = scandir($mdDir . $file);
-				foreach($subData as $key => $subDir)
-				{
-					if($subDir == "." || $subDir == "..")
-						continue;
-
-					$pages[$file][] = array("name" => strtolower(str_replace(".md", "", $subDir)), "path" => "$mdDir$file/$subDir");
-				}
-			}
-			else
-				$pages[strtolower(str_replace(".md", "", $file))][] = array("name" => strtolower(str_replace(".md", "", $file)), "path" => "$mdDir$file");
-		}
-
-		// Look if the theme has any information pages it wants to present
 		$tDir = $baseDir . "themes/" . $theme . "/information/";
 		$data = null;
+		$pages = array();
+
 		if(is_dir($tDir))
 			$data = scandir($tDir);
 

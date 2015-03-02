@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,22 +30,21 @@ class cli_hourly implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(0 => ""); // Run every minute but let the code decide the top of the hour
+		return array(3600 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
-		$minute = date("i");
-		if ($minute != 0 && !in_array('-f', $parameters)) return;
-
 		global $enableAnalyze;
 
 		$actualKills = Storage::retrieve("ActualKillCount");
 		$iteration = 0;
-		while ($actualKills > 0) {
+		while ($actualKills > 0)
+		{
 			$iteration++;
 			$actualKills -= 1000000;
-			if ($actualKills > 0 && Storage::retrieve("{$iteration}mAnnounced", null) == null) {
+			if ($actualKills > 0 && Storage::retrieve("{$iteration}mAnnounced", null) == null)
+			{
 				Storage::store("{$iteration}mAnnounced", true);
 				$message = "|g|Woohoo!|r| $iteration million kills surpassed!";
 				Log::irc($message);
@@ -54,7 +53,8 @@ class cli_hourly implements cliCommand
 		}
 
 		$highKillID = $db->queryField("select max(killID) highKillID from zz_killmails", "highKillID");
-		if ($highKillID > 1000000) Storage::store("notRecentKillID", ($highKillID - 1000000));
+		if ($highKillID > 1000000)
+			Storage::store("notRecentKillID", ($highKillID - 1000000));
 
 		self::apiPercentage($db);
 
@@ -66,14 +66,16 @@ class cli_hourly implements cliCommand
 		$db->execute("insert ignore into zz_characters (characterID) select distinct characterID from zz_api_characters");
 		$db->execute("insert ignore into zz_corporations (corporationID) select distinct corporationID from zz_api_characters where corporationID > 0");
 
+		// Ensure ship search links to the ship itself
+		$db->execute("insert ignore into ccp_zship_search select distinct shipTypeID from zz_participants where shipTypeID != 0");
+
 		$fileCache = new FileCache();
 		$fileCache->cleanup();
 
 		$tableQuery = $db->query("show tables", array(), 0, false);
 		$tables = array();
-		foreach($tableQuery as $row) {
+		foreach($tableQuery as $row)
 			foreach($row as $column) $tables[] = $column;
-		}
 
 		if($enableAnalyze)
 		{
@@ -84,11 +86,15 @@ class cli_hourly implements cliCommand
 				$count++;
 
 				$result = $db->queryRow("analyze table $table", array(), 0, false);
-				if (!in_array($result["Msg_text"], $tableisgood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
-else Log::log("Analyzed $table");
+				if (!in_array($result["Msg_text"], $tableisgood))
+					Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
+				else
+					Log::log("Analyzed $table");
 			}
 		}
 
+		// reset mails where the processed id is below -500
+		$db->execute("update zz_crest_killmail set processed = 0 where processed < -500", array(), false, false);
 	}
 
 	private static function apiPercentage($db)
@@ -97,12 +103,19 @@ else Log::log("Analyzed $table");
 		$row = $db->queryRow("select sum(if(errorCode = 0, 1, 0)) good, sum(if(errorCode != 0, 1, 0)) bad from zz_api_characters");
 		$good = $row["good"];
 		$bad = $row["bad"];
-		if ($bad > (($bad + $good) * ($percentage / 100))) {
+		if ($bad > (($bad + $good) * ($percentage / 100)))
+		{
 			if($percentage > 15)
-				Log::irc("|r|API gone haywire?  Over $percentage% of API's reporting an error atm.");
+				Log::irc("|r|API gone haywire? Over $percentage% of API's reporting an error atm.");
+
 			$percentage += 5;
-		} else if ($bad < (($bad + $good) * (($percentage - 5) / 100))) $percentage -= 5;
-		if ($percentage < 10) $percentage = 10;
+		}
+		elseif ($bad < (($bad + $good) * (($percentage - 5) / 100)))
+			$percentage -= 5;
+
+		if ($percentage < 10)
+			$percentage = 10;
+
 		Storage::store("LastHourPercentage", $percentage);
 	}
 }

@@ -11,7 +11,8 @@
 		"filp/whoops": "1.*",
 		"zeuxisoo/slim-whoops": "0.2.0",
 		"twig/twig": "1.*",
-		"erusev/parsedown": "dev-master"
+		"erusev/parsedown": "dev-master",
+		"domnikl/statsd": "~2.0"
 	},
 	"minimum-stability": "stable",
 	"prefer-stable": true

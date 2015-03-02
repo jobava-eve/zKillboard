@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -90,10 +90,15 @@ class cli_updateCCPData implements cliCommand
 				file_put_contents($cacheDir . "/temporary.sql", $data);
 
 				// Create the exec line
+				$execLine = "mysql -u$dbUser";
+
+				if(isset($dbPassword) && !empty($dbPassword))
+					$execLine .= " -p $dbPassword ";
+
 				if(isset($dbHost))
-					$execLine = "mysql -u$dbUser -p$dbPassword -h $dbHost $dbName < $cacheDir/temporary.sql";
+					$execLine .= "-h $dbHost $dbName < $cacheDir/temporary.sql";
 				elseif(isset($dbSocket))
-					$execLine = "mysql -u$dbUser -p$dbPassword -S $dbSocket $dbName < $cacheDir/temporary.sql";
+					$execLine .= "-S $dbSocket $dbName < $cacheDir/temporary.sql";
 				// Now we execute the exec line.. It's not ideal, but it works..
 				exec($execLine);
 

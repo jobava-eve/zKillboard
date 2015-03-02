@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,6 +35,7 @@ class cli_parseKills implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		global $debug, $parseAscending, $dbPersist;
 		// DB connection needs to persist because we're working with temporary tables..
 		$dbPersist = true;
@@ -134,6 +135,7 @@ class cli_parseKills implements cliCommand
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
 				$numKills++;
+
 				if ($debug)
 					Log::log("Processing kill: $killID");
 
@@ -182,22 +184,22 @@ class cli_parseKills implements cliCommand
 				$points = Points::calculatePoints($killID, true);
 
 				// Insert it to the database
-				$db->execute("UPDATE zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp WHERE killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill["attackers"]), ":tp" => $totalCost));
+				$db->execute("UPDATE zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp WHERE killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => count($kill["attackers"]), ":tp" => $totalCost));
 
 				// Pass the killID to the $processedKills array, so we can show how many kills we've done this cycle..
 				$processedKills[] = $killID;
 			}
 
 			// If there are kills to clean up, we'll get rid of them here.. This should only be old manual mails that are now api verified tho
-			if (sizeof($cleanupKills))
+			if (count($cleanupKills) > 0)
 				$db->execute("delete FROM zz_participants WHERE killID in (" . implode(",", $cleanupKills) . ")");
 
 			// Insert all the data from the temporary table to the primary table, so people are happy!
 			$db->execute("INSERT IGNORE INTO zz_participants SELECT * FROM zz_participants_temporary");
 
 			// Insert data into various tables, tell the stats queue it needs to update some kills and set mails as processed
-			$numProcessed = sizeof($processedKills);
-			if ($numProcessed)
+			$numProcessed = count($processedKills);
+			if ($numProcessed > 0)
 			{
 				$db->execute("INSERT IGNORE INTO zz_stats_queue values (" . implode("), (", $processedKills) . ")");
 				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $processedKills) . ")");
@@ -205,6 +207,8 @@ class cli_parseKills implements cliCommand
 		}
 		if ($numKills > 0)
 		{
+			$statsd = Util::statsD();
+			$statsd->gauge("kills_processed", $numKills);
 			Log::log("Processed: $numKills kill(s)");
 			$db->execute("INSERT INTO zz_storage (locker, contents) VALUES ('KillsAdded', :num) ON DUPLICATE KEY UPDATE contents = contents + :num", array(":num" => $numKills));
 		}
@@ -219,11 +223,15 @@ class cli_parseKills implements cliCommand
 
 	private static function validKill(&$kill)
 	{
-		global $db;
+		// Show all pod kills
+		$victimShipID = $kill["victim"]["shipTypeID"];
+		if ($victimShipID == 670 || $victimShipID == 33328)
+			return true;
+
+		$npcOnly = true;
 		$victimCorp = $kill["victim"]["corporationID"] < 1000999 ? 0 : $kill["victim"]["corporationID"];
 		$victimAlli = $kill["victim"]["allianceID"];
 
-		$npcOnly = true;
 		$blueOnBlue = true;
 		foreach ($kill["attackers"] as $attacker)
 		{
@@ -232,12 +240,18 @@ class cli_parseKills implements cliCommand
 			if ($attackerGroupID == 365)
 				return true;
 
+			// Drifters
+			if(isset($attacker["shipTypeID"]) && $attacker["shipTypeID"] == 34495) return true;
+			if(isset($attacker["factionID"]) && $attacker["factionID"] == 500021) return true;
+			if(isset($attacker["corporationID"]) && $attacker["corporationID"] == 500021) return true;
+
 			// Don't process the kill if it's NPC only
 			$npcOnly &= $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125);
 
 			// Check for blue on blue
 			if ($attacker["characterID"] != 0) $blueOnBlue &= $victimCorp == $attacker["corporationID"] && $victimAlli == $attacker["allianceID"];
 		}
+
 		if ($npcOnly /*|| $blueOnBlue*/)
 			return false;
 

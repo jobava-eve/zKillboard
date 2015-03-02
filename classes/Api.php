@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -192,55 +192,64 @@ class Api
 		$demoteCharacter = false;
 		$cacheUntil = 0;
 		switch ($code) {
-                        case 28: // Timeouts
-                        case 904: // temp ban from ccp's api server
-                                $db->execute("replace into zz_storage values ('ApiStop904', date_add(now(), interval 5 minute))");
-				break;
+			case 28: // Timeouts
+			case 904: // temp ban from ccp's api server
+				Db::execute("replace into zz_storage values ('ApiStop904', date_add(now(), interval 5 minute))");
+			break;
+
 			case 403:
 			case 502:
 			case 503: // Service Unavailable - try again later
 				$cacheUntil = time() + 300;
 				$updateCacheTime = true;
-				break;
+			break;
+
 			case 119: // Kills exhausted: retry after [{0}]
 				$cacheUntil = $exception->cached_until;
 				$updateCacheTime = true;
-				break;
+			break;
+
 			case 120: // Expected beforeKillID [{0}] but supplied [{1}]: kills previously loaded.
 				$cacheUntil = $exception->cached_until;
 				$updateCacheTime = true;
-				break;
+			break;
+
 			case 221: // Demote toon, illegal page access
 				$clearAllCharacters = true;
 				$clearApiEntry = true;
-				break;
+			break;
+
 			case 220:
 			case 200: // Current security level not high enough.
 				// Typically happens when a key isn't a full API Key
 				$clearAllCharacters = true;
 				$clearApiEntry = true;
 				//$code = 203; // Force it to go away, no point in keeping this key
-				break;
+			break;
+
 			case 522:
 			case 201: // Character does not belong to account.
 				// Typically caused by a character transfer
 				$clearCharacter = true;
-				break;
+			break;
 			case 207: // Not available for NPC corporations.
 			case 209:
 				$demoteCharacter = true;
-				break;
+			break;
+
 			case 222: // account has expired
 				$clearAllCharacters = true;
 				$clearApiEntry = true;
 				$cacheUntil = time() + (7 * 24 * 3600); // Try again in a week
-				break;
+			break;
+
 			case 403:
 			case 211: // Login denied by account status
 				// Remove characters, will revalidate with next doPopulate
 				$clearAllCharacters = true;
 				$clearApiEntry = true;
-				break;
+			break;
+
 			case 202: // API key authentication failure.
 			case 203: // Authentication failure - API is no good and will never be good again
 			case 204: // Authentication failure.
@@ -249,20 +258,23 @@ class Api
 			case 521: // Invalid username and/or password passed to UserData.LoginWebUser().
 				$clearAllCharacters = true;
 				$clearApiEntry = true;
-				break;
+			break;
+
 			case 500: // Internal Server Error (More CCP Issues)
 			case 520: // Unexpected failure accessing database. (More CCP issues)
 			case 404: // URL Not Found (CCP having issues...)
 			case 902: // Eve backend database temporarily disabled
 				$updateCacheTime = true;
 				$cacheUntil = time() + 3600; // Try again in an hour...
-				break;
+			break;
+
 			case 0: // API Date could not be read / parsed, original exception (Something is wrong with the XML and it couldn't be parsed)
 			default: // try again in 5 minutes
 				Log::log("$keyID - Unhandled error - Code $code - $message");
 				//$updateCacheTime = true;
 				$clearApiEntry = true;
 				//$cacheUntil = time() + 300;
+			break;
 		}
 
 		if ($demoteCharacter && $charID != 0) {

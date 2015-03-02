@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +30,7 @@ class cli_wars implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		$added = 0;
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
@@ -41,6 +42,9 @@ class cli_wars implements cliCommand
 
 			foreach ($warRows as $warRow)
 			{
+				$statsd = Util::statsD();
+                        	$statsd->increment("wars_processed");
+
 				if ($timer->stop() > 59000) continue;
 				$id = $warRow["warID"];
 
@@ -102,6 +106,7 @@ class cli_wars implements cliCommand
 				}
 			}
 		}
-		if ($added > 0) Log::log("CREST (war): Added $added killmails");
+		if ($added > 0)
+			Log::log("CREST (war): Added $added killmails");
 	}
 }

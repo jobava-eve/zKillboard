@@ -1,0 +1,6 @@
+Go to ```https://github.com/joewalnes/websocketd/releases/latest```
+
+Download the appropriate release.
+
+Run with: ```./websocketd --port=8888 --address=0.0.0.0 --basepath=/ --dir=/where/you/installed/zkb/websocketd/```
+Voila, websocket server !

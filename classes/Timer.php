@@ -18,7 +18,9 @@
 class Timer
 {
 	/**
-	 * @var The microtime when start() was executed.
+	 * The microtime when start() was executed.
+	 *
+	 * @param string The microtime when start() was executed.
 	 */
 	protected $startTime;
 

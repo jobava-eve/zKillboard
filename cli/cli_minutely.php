@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,6 +35,7 @@ class cli_minutely implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		global $base;
 		chdir($base);
 
@@ -62,5 +63,8 @@ class cli_minutely implements cliCommand
 
 		// Expire change expirations
 		$db->execute("update zz_users set change_expiration = null, change_hash = null where change_expiration < date_sub(now(), interval 3 day)");
+
+		// Reparse kills with an error
+		$db->execute("update zz_killmails set processed = 0 where processed = 2");
 	}
 }

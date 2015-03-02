@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -79,6 +79,13 @@ $redisPort = "%redisport%";
 
 // Pheal
 $phealCacheLocation = "%phealcachelocation%";
+
+// StatsD
+$statsd = false;
+$statsdserver = "localhost";
+$statsdport = 8125;
+$statsdnamespace = "zkb.namespace";
+$statsdglobalnamespace = "zkb";
 
 // Cookiiieeeee
 $cookie_name = "zKB";

@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,8 +35,8 @@ class cli_fightFinder implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		global $beSocial, $fullAddr, $twitterName;
-		global $minPilots, $minWrecks;
+		if (Util::isMaintenanceMode()) return;
+		global $beSocial, $fullAddr, $twitterName, $minPilots, $minWrecks;
 		if (!isset($minPilots)) $minPilots = 200;
 		if (!isset($minWrecks)) $minWrecks = 200;
 		if (!isset($beSocial) || $beSocial == false) return;
@@ -59,9 +59,6 @@ class cli_fightFinder implements cliCommand
 			$system = $row["solarSystemName"];
 			$date = date("YmdH00");
 			$link = "$fullAddr/related/$systemID/$date/";
-
-			// Insert into (or update) zz_battles
-			$db->execute("INSERT INTO zz_battles (solarSystemID, solarSystemName, dttm, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)", array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
 
 			if ($socialCount == 0)
 			{

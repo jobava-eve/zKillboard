@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,19 +41,10 @@ class cli_updateCorporations implements cliCommand
 	private static function updateCorporations($db)
 	{
 		$db->execute("delete from zz_corporations where corporationID = 0");
-		//$db->execute("insert ignore into zz_corporations (corporationID) select executorCorpID from zz_alliances where executorCorpID > 0");
-		$result = $db->query("select corporationID, name, memberCount, ticker from zz_corporations where lastUpdated < date_sub(now(), interval 1 week) and corporationID >= 1000001 order by lastUpdated limit 1000", array(), 0);
+		$result = $db->query("select corporationID, name, memberCount, ticker from zz_corporations where lastUpdated < date_sub(now(), interval 3 day) and corporationID >= 1000001 order by lastUpdated limit 1000", array(), 0);
 		foreach($result as $row) {
 			if (Util::is904Error()) return;
 			$id = $row["corporationID"];
-
-			// Make sure this corp has kills
-			$hasKills = $db->queryField("select killID from zz_participants where corporationID = :id limit 1", "killID", array(":id" => $id));
-			if ($hasKills === null)
-			{
-				$db->execute("delete from zz_corporations where corporationID = :id", array(":id" => $id));
-				continue;
-			}
 
 			$pheal = Util::getPheal();
 			$pheal->scope = "corp";
@@ -67,13 +58,14 @@ class cli_updateCorporations implements cliCommand
 				$dscr = $corpInfo->description;
 
 				if ($name != "") 
-				{
 					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
-				}
-			} catch (Exception $ex) {
+
+			} catch (Exception $ex)
+			{
 				$db->execute("update zz_corporations set lastUpdated = now() where corporationID = :id", array(":id" => $id));
 				$db->execute("update zz_corporations set name = :name where corporationID = :id and name = ''", array(":id" => $id, ":name" => "Corporation $id"));
-				if ($ex->getCode() != 503) Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
+				if ($ex->getCode() != 503)
+					Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
 			}
 			usleep(100000); // Try not to spam the API servers (pauses 1/10th of a second)
 		}

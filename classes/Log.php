@@ -26,8 +26,11 @@ class Log
 	public static function log($text)
 	{
 		global $logfile;
-		if (!file_exists($logfile) && !is_writable(dirname($logfile))) return; // Can't create the file
-		if (is_writable($logfile)) error_log(date("Ymd H:i:s") . " $text \n", 3, $logfile);
+		if (!file_exists($logfile) && !is_writable(dirname($logfile)))
+			return; // Can't create the file
+
+		if (is_writable($logfile))
+			error_log(date("Ymd H:i:s") . " $text \n", 3, $logfile);
 	}
 
 	/*
@@ -39,9 +42,13 @@ class Log
 
 		$from = isset($ircLogFrom) ? $ircLogFrom : "";
 
-		if (!isset($ircLogFile) || $ircLogFile == "") return;
+		if (!isset($ircLogFile) || $ircLogFile == "")
+			return;
+
 		$text = self::addIRCColors($text);
-		if (!is_writable($ircLogFile) && !is_writable(dirname($ircLogFile))) return;
+		if (!is_writable($ircLogFile) && !is_writable(dirname($ircLogFile)))
+			return;
+
 		error_log("\n${from}$text\n", 3, $ircLogFile);
 	}
 
@@ -52,15 +59,15 @@ class Log
 
 		$from = isset($ircLogFrom) ? $ircLogFrom : "";
 
-		if (!isset($ircAdminLogFile) || $ircAdminLogFile == "") return;
-		$text = self::addIRCColors($text);
-		if (!is_writable($ircAdminLogFile) && !is_writable(dirname($ircAdminLogFile))) return; // Can't create the file
-		error_log("\n${from}$text\n", 3, $ircAdminLogFile);
-	}
+		if (!isset($ircAdminLogFile) || $ircAdminLogFile == "")
+			return;
 
-	public static function error($text)
-	{
-		error_log(date("Ymd H:i:s") . " $text \n", 3, "/var/log/kb/kb_error.log");
+		$text = self::addIRCColors($text);
+
+		if (!is_writable($ircAdminLogFile) && !is_writable(dirname($ircAdminLogFile)))
+			return; // Can't create the file
+
+		error_log("\n${from}$text\n", 3, $ircAdminLogFile);
 	}
 
 	public static $colors = array(
@@ -81,9 +88,9 @@ class Log
 	**/
 	public static function addIRCColors($msg)
 	{
-		foreach (self::$colors as $color => $value) {
+		foreach (self::$colors as $color => $value)
 			$msg = str_replace($color, $value, $msg);
-		}
+
 		return $msg;
 	}
 
@@ -93,42 +100,10 @@ class Log
 	**/
 	public static function stripIRCColors($msg)
 	{
-		foreach (self::$colors as $color => $value) {
+		foreach (self::$colors as $color => $value)
 			$msg = str_replace($color, "", $msg);
-		}
+
 		return $msg;
 	}
 
-	/**
-	 * @param string $msg
-	**/
-	public static function firePHP($msg)
-	{
-		ChromePhp::log($msg);
-	}
 }
-
-/*
-Bold: \002text\002
-Underline: \037text\037
-
-Start and end with \003
-
-White: \0030text\003
-\0030: white
-\0031: black
-\0032: blue
-\0033: green
-\0034: light red
-\0035: brown
-\0036: purple
-\0037: orange
-\0038: yellow
-\0039: light green
-\0310: cyan
-\0311: light cyan
-\0312: light blue
-\0313: pink
-\0314: gr
-\0315: light grey
- */

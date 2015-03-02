@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,14 +30,12 @@ class cli_every15 implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(0 => "");
+		return array(900 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
-		$minute = date("i");
-				if ($minute % 15 != 0) return;
-
+		if (Util::isMaintenanceMode()) return;
 		global $baseDir;
 
 		$p = array();

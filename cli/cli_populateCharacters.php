@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,6 +40,7 @@ class cli_populateCharacters implements cliCommand
 
 	private static function populateCharacters($db)
 	{
+		if (Util::isMaintenanceMode()) return;
 		global $baseDir;
 
 		$timer = new Timer();

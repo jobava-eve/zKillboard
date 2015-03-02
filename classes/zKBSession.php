@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +32,9 @@ class zKBSession implements SessionHandlerInterface
 
 	public function read($id)
 	{
+		$data = Cache::get($id);
+		if(is_array($data)) // Just to make sure that we're returning a string and not an array, eventho that shouldn't technically be possible..
+			return "";
 		return Cache::get($id);
 	}
 

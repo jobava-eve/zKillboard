@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
  *nding
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -78,7 +78,14 @@ class cli_stompReceive implements cliCommand
 							$aff = $db->execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 									array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
 							$stompCount++;
-							if ($debug && $aff) Log::log("Added kill $killID");
+							if($aff)
+							{
+								$statsd = Util::statsD();
+								$statsd->increment("stomp_receive");
+							}
+
+							if ($debug && $aff)
+								Log::log("Added kill $killID");
 						}
 					}
 					$stomp->ack($frame->headers["message-id"]);

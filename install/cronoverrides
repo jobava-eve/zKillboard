@@ -19,5 +19,8 @@
 	},
 	"sitemap":{
 		"86400":"disabled"
+	},
+	"priceCheck":{
+		"0":"disabled"
 	}
 }
