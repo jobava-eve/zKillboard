@@ -95,7 +95,7 @@ if($debug)
 	Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
 
 // Increment statsD
-if ($statsd) $statsd = Util::statsD();
+$statsd = Util::statsD();
 if ($statsd) $statsd->increment("zkb_api");
 
 if(isset($_GET["callback"]) && isValidCallback($_GET["callback"]))

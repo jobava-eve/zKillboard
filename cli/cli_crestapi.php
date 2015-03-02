@@ -74,7 +74,7 @@ class cli_crestapi implements cliCommand
 				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 				// Init statsd
-				if ($statsd) $statsd = Util::statsD();
+				$statsd = Util::statsD();
 
 				// Increment crest calls
 				if ($statsd) $statsd->increment("crest_calls");

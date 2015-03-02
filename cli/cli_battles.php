@@ -41,7 +41,7 @@ class cli_battles implements cliCommand
 		{
 			if($battle["checked"] == 0)
 			{
-				if ($statsd) $statsd = Util::statsD();
+				$statsd = Util::statsD();
 				if ($statsd) $statsd->increment("battles_processed");
 
 				$battleID = $battle["battleID"];

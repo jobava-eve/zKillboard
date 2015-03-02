@@ -42,7 +42,7 @@ class cli_wars implements cliCommand
 
 			foreach ($warRows as $warRow)
 			{
-				if ($statsd) $statsd = Util::statsD();
+				$statsd = Util::statsD();
                         	if ($statsd) $statsd->increment("wars_processed");
 
 				if ($timer->stop() > 59000) continue;

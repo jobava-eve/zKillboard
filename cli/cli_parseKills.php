@@ -207,7 +207,7 @@ class cli_parseKills implements cliCommand
 		}
 		if ($numKills > 0)
 		{
-			if ($statsd) $statsd = Util::statsD();
+			$statsd = Util::statsD();
 			if ($statsd) $statsd->gauge("kills_processed", $numKills);
 			Log::log("Processed: $numKills kill(s)");
 			$db->execute("INSERT INTO zz_storage (locker, contents) VALUES ('KillsAdded', :num) ON DUPLICATE KEY UPDATE contents = contents + :num", array(":num" => $numKills));
