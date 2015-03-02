@@ -83,8 +83,8 @@ class cli_statsQueue implements cliCommand
 					StompUtil::sendKill($killID);
 
 				// Statsd
-				$statsd = Util::statsD();
-				$statsd->increment("statsQueue_processed");
+				if ($statsd) $statsd = Util::statsD();
+				if ($statsd) $statsd->increment("statsQueue_processed");
 			}
 		}
 	}

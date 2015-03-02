@@ -6,7 +6,7 @@ require_once( "init.php" );
 $statsd = Util::statsD();
 
 // Start statsd collecting
-$statsd->startMemoryProfile("website_memoryUsage");
+if ($statsd) $statsd->startMemoryProfile("website_memoryUsage");
 
 // initiate the timer!
 $timer = new Timer();
@@ -51,7 +51,7 @@ require_once("themes/$theme/$theme.php");
 $app->run();
 
 // End statsd
-$statsd->increment("website_hit");
-$statsd->timing("website_loadTime", Util::pageTimer());
-$statsd->endMemoryProfile("website_memoryUsage");
-$statsd->memory("website_memoryPeakUsage");
+if ($statsd) $statsd->increment("website_hit");
+if ($statsd) $statsd->timing("website_loadTime", Util::pageTimer());
+if ($statsd) $statsd->endMemoryProfile("website_memoryUsage");
+if ($statsd) $statsd->memory("website_memoryPeakUsage");

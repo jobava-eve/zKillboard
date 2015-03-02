@@ -81,11 +81,11 @@ $redisPort = "%redisport%";
 $phealCacheLocation = "%phealcachelocation%";
 
 // StatsD
-$statsd = false;
-$statsdserver = "localhost";
-$statsdport = 8125;
-$statsdnamespace = "zkb.namespace";
-$statsdglobalnamespace = "zkb";
+if ($statsd) $statsd = false;
+if ($statsd) $statsdserver = "localhost";
+if ($statsd) $statsdport = 8125;
+if ($statsd) $statsdnamespace = "zkb.namespace";
+if ($statsd) $statsdglobalnamespace = "zkb";
 
 // Cookiiieeeee
 $cookie_name = "zKB";
