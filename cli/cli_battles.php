@@ -42,7 +42,7 @@ class cli_battles implements cliCommand
 			if($battle["checked"] == 0)
 			{
 				$statsd = Util::statsD();
-				$statsd->increment("battles_processed");
+				if ($statsd) $statsd->increment("battles_processed");
 
 				$battleID = $battle["battleID"];
 				$systemID = $battle["solarSystemID"];

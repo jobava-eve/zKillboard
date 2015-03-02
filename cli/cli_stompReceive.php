@@ -81,7 +81,7 @@ class cli_stompReceive implements cliCommand
 							if($aff)
 							{
 								$statsd = Util::statsD();
-								$statsd->increment("stomp_receive");
+								if ($statsd) $statsd->increment("stomp_receive");
 							}
 
 							if ($debug && $aff)

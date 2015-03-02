@@ -96,7 +96,7 @@ if($debug)
 
 // Increment statsD
 $statsd = Util::statsD();
-$statsd->increment("zkb_api");
+if ($statsd) $statsd->increment("zkb_api");
 
 if(isset($_GET["callback"]) && isValidCallback($_GET["callback"]))
 {

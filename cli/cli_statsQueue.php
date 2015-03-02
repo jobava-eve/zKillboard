@@ -84,7 +84,7 @@ class cli_statsQueue implements cliCommand
 
 				// Statsd
 				$statsd = Util::statsD();
-				$statsd->increment("statsQueue_processed");
+				if ($statsd) $statsd->increment("statsQueue_processed");
 			}
 		}
 	}
