@@ -17,7 +17,7 @@
 
 class StatsD
 {
-	private static function statsD()
+	private static function init()
 	{
 		global $statsd, $statsdserver, $statsdport, $statsdnamespace, $statsdglobalnamespace;
 
@@ -36,7 +36,7 @@ class StatsD
 
 	public static function increment($name, $amount = 1)
 	{
-		$statsd = self::statsD();
+		$statsd = self::init();
 
 		if($statsd)
 			$statsd->increment($name, $amount);
@@ -44,15 +44,15 @@ class StatsD
 
 	public static function timing($name, $time)
 	{
-				$statsd = self::statsD();
+		$statsd = self::init();
 
-				if($statsd)
-					$statsd->timing($name, $time);
+		if($statsd)
+			$statsd->timing($name, $time);
 	}
 
 	public static function gauge($name, $amount)
 	{
-		$statsd = self::statsD();
+		$statsd = self::init();
 
 		if($statsd)
 			$statsd->gauge($name, $time);
