@@ -94,10 +94,6 @@ $userAgent = @$_SERVER["HTTP_USER_AGENT"];
 if($debug)
 	Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
 
-// Increment statsD
-$statsd = Util::statsD();
-if ($statsd) $statsd->increment("zkb_api");
-
 if(isset($_GET["callback"]) && isValidCallback($_GET["callback"]))
 {
 	$app->contentType("application/javascript; charset=utf-8");
@@ -137,6 +133,8 @@ function scrapeCheck()
 
 	$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
 	$ip = substr(IP::get(), 0, 64);
+	$statsd = Util::statsD();
+	$statsd->increment("zkb_api");
 
 	if(!in_array($ip, $apiWhiteList))
 	{

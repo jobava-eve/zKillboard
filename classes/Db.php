@@ -310,10 +310,6 @@ class Db
 	 */
 	public static function log($query, $parameters = array(), $duration = 0)
 	{
-                $statsd = Util::statsD();
-                if ($statsd) $statsd->increment("website_queryCount");
-                if ($statsd) $statsd->gauge("website_queryTime", $duration);
-
 		if ($duration < 10000)  // Don't log queries taking less than 10 seconds.
 			return;
 
