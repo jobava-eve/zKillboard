@@ -38,6 +38,7 @@ class Points
 		838 => array("Cynosural Generator Array", 10),
 		839 => array("Cynosural System Jammer", 50),
 		420 => array("Destroyer", 60),
+		1305 => array("Tactical Destroyer", 450),
 		485 => array("Dreadnought", 4000),
 		893 => array("Electronic Attack Ship", 200),
 		439 => array("Electronic Warfare Battery", 50),
