@@ -233,7 +233,7 @@ class Util
 				break;
 				case "limit":
 					$value = (int) $value;
-					if ($value < 1000) $parameters["limit"] = $value;
+					if ($value <= 1000) $parameters["limit"] = $value;
 					elseif($value > 1000) $parameters["limit"] = 1000;
 					elseif($value <= 0) $parameters["limit"] = 1;
 				break;
