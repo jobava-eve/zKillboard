@@ -32,10 +32,10 @@ class Feed
 		$ip = IP::get();
 
 		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
-		if(isset($parameters["limit"]) && $parameters["limit"] > 200)
-			$parameters["limit"] = 200;
+		if(isset($parameters["limit"]) && $parameters["limit"] > 1000)
+			$parameters["limit"] = 1000;
 		if(isset($parameters["page"]))
-			$parameters["limit"] = 200;
+			$parameters["limit"] = 1000;
 		$kills = Kills::getKills($parameters, true, false);
 
 		return self::getJSON($kills, $parameters);

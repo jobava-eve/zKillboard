@@ -44,7 +44,7 @@ class api_losses implements apiEndpoint
 				"pastSeconds" => "only show losses that has happened in the past number of seconds.",
 				"startTime" => "Show losses from a certain startTime. (Requires endTime).",
 				"endTime" => "Show losses to a certain endTime. (Requires startTime).",
-				"limit" => "Limit the amount of losses shown. Minimum 1, maximum 200.",
+				"limit" => "Limit the amount of losses shown. Minimum 1, maximum 1000.",
 				"beforeKillID" => "Show killmails from before this killID.",
 				"afterKillID" => "Show killmails after this killID.",
 				"iskValue" => "Only show killmails with a total iskValue above this.",

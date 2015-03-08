@@ -43,7 +43,7 @@ class api_dna implements apiEndpoint
 
 		if(!isset($killIDs))
 		{
-			$kills = Feed::getKills(array("limit" => 200, "cacheTime" => 3600, "page" => $page));
+			$kills = Feed::getKills(array("limit" => 1000, "cacheTime" => 3600, "page" => $page));
 			foreach($kills as $kill)
 			{
 				$kill = json_decode($kill, true);
