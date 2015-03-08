@@ -65,6 +65,8 @@ class OAuth
 
 	public static function eveSSOLogin($data = NULL)
 	{
+		global $cookie_name, $cookie_time, $cookie_ssl, $baseAddr, $app;
+
 		$data = json_decode($data);
 		$characterID = (int) $data->CharacterID;
 		$affiliationInfo = Info::getCharacterAffiliations($characterID);
@@ -81,6 +83,17 @@ class OAuth
 		else
 		{
 			// User exists, and is already registered, merged etc. etc.. Just login
+			$password = Db::queryField("SELECT password FROM zz_users WHERE characterID = :characterID", "password", array(":characterID" => $characterID));
+			$username = Db::queryField("SELECT username FROM zz_users WHERE characterID = :characterID", "username", array(":characterID" => $characterID));
+			$userID = Db::queryField("SELECT id FROM zz_users WHERE characterID = :characterID", "id", array(":characterID" => $characterID));
+			$passwordHash = Password::genPassword($password);
+			$hash = $username . "/" . hash("sha256", $username . $passwordHash . time());
+			$app->setEncryptedCookie($cookie_name, $hash, time() + $cookie_time, "/", $baseAddr, $cookie_ssl, true);
+			$validTill = date("Y-m-d H:i:s", time() + $cookie_time);
+			$userAgent = $_SERVER["HTTP_USER_AGENT"];
+			$ip = IP::get();
+			Db::execute("INSERT INTO zz_users_sessions (userID, sessionHash, validTill, userAgent, ip) VALUES (:userID, :sessionHash, :validTill, :userAgent, :ip)", 
+				array(":userID" => $userID, ":sessionHash" => $hash, ":validTill" => $validTill, ":userAgent" => $userAgent, ":ip" => $ip));
 			$_SESSION["loggedin"] = $data->CharacterName;
 			header("Location: /");
 		}
