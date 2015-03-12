@@ -310,6 +310,8 @@ class Db
 	 */
 	public static function log($query, $parameters = array(), $duration = 0)
 	{
+		StatsD::increment("website_queryCount");
+
 		if ($duration < 10000)  // Don't log queries taking less than 10 seconds.
 			return;
 

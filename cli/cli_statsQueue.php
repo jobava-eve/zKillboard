@@ -58,6 +58,8 @@ class cli_statsQueue implements cliCommand
 				$stuff = $db->queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID), 0);
 				if ($stuff != null)
 				{
+					StatsD::increment("statsQueue_processed");
+
 					$zkb = array();
 					$zkb["totalValue"] = $stuff["total_price"];
 					$zkb["points"] = $stuff["points"];

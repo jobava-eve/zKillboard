@@ -40,6 +40,7 @@ class Util
 
 	public static function getCrest($url)
 	{
+		StatsD::increment("crest_calls");
 		\Perry\Setup::$fetcherOptions = ["connect_timeout" => 15, "timeout" => 30];
 		return \Perry\Perry::fromUrl($url);
 	}

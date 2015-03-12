@@ -35,8 +35,6 @@ class cli_wars implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
-			StatsD::increment("wars_processed");
-
 			$now = $timer->stop();
 			$warRows = $db->query("select * from zz_wars where lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked limit 100", array(), 0);
 
@@ -44,6 +42,7 @@ class cli_wars implements cliCommand
 
 			foreach ($warRows as $warRow)
 			{
+				StatsD::increment("wars_processed");
 				if ($timer->stop() > 59000) continue;
 				$id = $warRow["warID"];
 

@@ -55,6 +55,6 @@ class StatsD
 		$statsd = self::init();
 
 		if($statsd)
-			$statsd->gauge($name, $time);
+			$statsd->gauge($name, $amount);
 	}
 }
