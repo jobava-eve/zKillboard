@@ -65,6 +65,7 @@ class cli_crestapi implements cliCommand
 					Log::log("CREST API: Processing kill $killID");
 
 				// Get the data from CREST
+				StatsD::increment("crest_calls");
 				$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_URL, $url);
