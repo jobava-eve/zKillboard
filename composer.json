@@ -12,7 +12,8 @@
 		"zeuxisoo/slim-whoops": "0.2.0",
 		"twig/twig": "1.*",
 		"erusev/parsedown": "dev-master",
-		"domnikl/statsd": "~2.0"
+		"domnikl/statsd": "~2.0",
+		"textalk/websocket": "1.0.*"
 	},
 	"minimum-stability": "stable",
 	"prefer-stable": true
