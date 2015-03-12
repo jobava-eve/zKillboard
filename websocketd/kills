@@ -17,7 +17,8 @@ while(true)
         {
                 if(!empty($frame->body))
                 {
-                        fwrite(STDOUT, $frame->body."\n");
+                        $json = json_encode(json_decode($frame->body, true), JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+                        fwrite(STDOUT, $json . "\n");
                         ob_flush();
                         flush();
                 }
