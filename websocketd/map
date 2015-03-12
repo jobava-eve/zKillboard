@@ -30,7 +30,7 @@ while(true)
 					"involved" => count($data["attackers"]),
 					"totalValue" => isset($data["zkb"]["totalValue"]) ? $data["zkb"]["totalValue"] : NULL,
 					"pointsPrInvolved" => isset($data["zkb"]["points"]) ? $data["zkb"]["points"] : NULL
-				)
+				), JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES
 			);
 
 			fwrite(STDOUT, $map."\n");
