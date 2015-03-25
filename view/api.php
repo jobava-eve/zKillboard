@@ -131,7 +131,9 @@ function scrapeCheck()
 	global $apiWhiteList, $maxRequestsPerHour;
 	$maxRequestsPerHour = isset($maxRequestsPerHour) ? $maxRequestsPerHour : 360;
 
-	$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
+	$uri = $_SERVER["REQUEST_URI"];
+	$uri = explode("?", $uri);
+	$uri = substr($uri[0], 0, 256);
 	$ip = substr(IP::get(), 0, 64);
 	StatsD::increment("zkb_api");
 
