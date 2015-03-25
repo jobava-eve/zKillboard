@@ -26,6 +26,7 @@ if($_POST)
 		{
 			$random = new RandomGenerator();
 			$hash = substr($random->randomToken(), 0, 32);
+			$date = date("Y-m-d H:i:s", strtotime("+24 hours"));
 
 			$alreadySent = Db::queryField("SELECT change_hash FROM zz_users WHERE email = :email", "change_hash", array(":email" => $email), 0);
 			if($alreadySent != NULL)
