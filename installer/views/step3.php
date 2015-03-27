@@ -8,9 +8,7 @@ ob_end_flush();
 
 // Does config exist?
 $exists = file_exists($dir . "/../config.php");
-$array["configExists"] = $exists;
-
-if($exists && in_array($_GET["step"], array("1", "2", "3")))
+if($exists)
 	die("Sorry, you cannot install a board that already has a config setup");
 
 output('<!doctype html><html><head><title>zKillboard Installer</title><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
