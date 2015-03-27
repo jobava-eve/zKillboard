@@ -20,7 +20,7 @@ class cli_updateSQL implements cliCommand
 {
 	public function getDescription()
 	{
-		return "";
+			return "";
 	}
 
 	public function getAvailMethods()
@@ -59,17 +59,17 @@ class cli_updateSQL implements cliCommand
 					$createStatement .= "INSERT INTO `{$createTable}` VALUES (";
 					foreach($i as $d)
 					{
-						$createStatement .= "'{$d}'";
+						$createStatement .= "\"{$d}\"";
 						if($inc < $count)
-							$createStatement .= ", ";
+							$createStatement .= ",";
 
 						$inc++;
 					}
-
 					$createStatement .= ");\n";
 				}
 				$createStatement .= "\n";
 				$createStatement .= "UNLOCK TABLES;\n";
+				echo $createStatement; die();
 			}
 
 			$file = $installSQLFiles . $createTable . ".sql";
@@ -83,6 +83,5 @@ class cli_updateSQL implements cliCommand
 			CLI::out("Writing {$createTable} to {$file}");
 			file_put_contents($file, $createStatement);
 		}
-
 	}
 }
