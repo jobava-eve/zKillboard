@@ -30,61 +30,75 @@ class cli_characters implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(0 => "");
+		//return array(0 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
-		// Fetch 10000 characters (limit 10000)
-		// Set the max ID from that array as the next starting +1
-		// Loop through those 10000 characters find holes
-		// Add characters IDs to a list
-		// Once that list hits 10000 IDs to fetch, fetch them.
-
-
-
-
-
-
 		$timer = new Timer();
-		$minID = NULL;
 
-		while ($timer->stop() < 59000)
+		while($timer->stop() < 59000)
 		{
-			if (Util::is904Error())
-				return;
-
-			$minID = $db->queryField("SELECT MIN(characterID) AS characterID FROM zz_characters WHERE lastUpdated < date_sub(now(), interval 2 day) AND name != '' AND characterID != :oldID", "characterID", array(":oldID" => $minID), 0);
-			$nextID = $db->queryField("SELECT characterID FROM zz_characters WHERE characterID > :characterID LIMIT 1", "characterID", array(":characterID" => $minID), 0);
-
-			if($nextID - $minID >= 2)
+			$oldMax = Storage::retrieve("oldMax", 0);
+			$charIDs = array();
+			$maxID = $db->queryField("SELECT MAX(characterID) AS max FROM zz_characters", "max", array(), 0);
+			if($oldMax >= $maxID) // If oldMax is the same as, or larger than maxID, then start over!
 			{
-				$count = 1;
-				$max = $nextID - $minID;
-				while($count < $max)
-				{
-					$charID = $minID + $count;
-					$pheal = Util::getPheal();
-					$pheal->scope = "eve";
-					try
-					{
-						$charInfo = $pheal->CharacterInfo(array("characterid" => $charID));
-						$characterID = $charInfo->characterID;
-						$characterName = $charInfo->characterName;
-						$corporationID = $charInfo->corporationID;
-						$corporationName = $charInfo->corporation;
-						Info::addCorp($corporationID, $corporationName);
-						Info::addChar($characterID, $characterName);
+				Storage::store("oldMax", 0);
+				$oldMax = 0;
+			}
+			$characterIDs = $db->query("SELECT characterID FROM zz_characters WHERE characterID >= :oldMax AND characterID > 90000000 ORDER BY characterID LIMIT 10000", array(":oldMax" => $oldMax), 0);
+			foreach($characterIDs as $characterID)
+				$charIDs[] = $characterID["characterID"];
 
-						usleep(200000); // Sleep for 200ms
-					}
-					catch (Exception $ex)
+			$min = 0;
+			$max = 0;
+			$count = 0;
+			$added = 0;
+			foreach($charIDs as $key => $charID)
+			{
+				$min = $charID;
+				$max = $charIDs[$key+1];
+				$difference = $max - $min;
+
+				if($difference > 2)
+				{
+					// Lets fetch the differences
+					$curr = $min;
+					while($curr <= $max)
 					{
-						usleep(5000000); // Sleep for 5s between each error.
+						$pheal = Util::getPheal();
+						$pheal->scope = "eve";
+						try
+						{
+							CLI::out("|g|Trying characterID:|n| $curr");
+							$charInfo = $pheal->CharacterInfo(array("characterid" => $curr));
+							$exists = $db->queryField("SELECT characterID FROM zz_characters WHERE characterID = :characterID", "characterID", array(":characterID" => $charInfo->characterID), 0);
+							if(!$exists)
+							{
+								CLI::out("|g|Adding Character:|n| {$charInfo->characterName}");
+								$characterID = $charInfo->characterID;
+								$characterName = $charInfo->characterName;
+								$corporationID = $charInfo->corporationID;
+								$corporationName = $charInfo->corporation;
+								Info::addCorp($corporationID, $corporationName);
+								Info::addChar($characterID, $characterName);
+								$date = date("Y-m-d H:i:s", time() - 259200);
+								$db->execute("UPDATE zz_characters SET lastUpdated = :date WHERE characterID = :characterID", array(":date" => $date, ":characterID" => $characterID));
+								$added++;
+							}
+							usleep(333333); // Sleep for 333ms (3 a second)
+						}
+						catch (Exception $ex)
+						{
+							usleep(5000000); // Sleep for 5 seconds between each error
+						}
+						$curr++;
+						Storage::store("oldMax", $curr);
 					}
-					$count++;
 				}
 			}
 		}
+		Log::log("Added {$added} new Characters to the database");
 	}
 }

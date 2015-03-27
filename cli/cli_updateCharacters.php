@@ -77,7 +77,8 @@ class cli_updateCharacters implements cliCommand
 					if ($name != $row["name"] || ((int) $corpID) != $row["corporationID"] || ((int) $alliID) != $row["allianceID"])
 						$db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 
-					usleep(200000); // Sleep for 200ms
+					StatsD::increment("characters_Updated");
+					usleep(100000); // Sleep for 100ms (10 req/s)
 				}
 				catch (Exception $ex)
 				{
