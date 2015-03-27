@@ -52,11 +52,14 @@ class cli_updateSQL implements cliCommand
 				// Load the data
 				$iData = $db->query("SELECT * FROM {$createTable}");
 				$createStatement .= "LOCK TABLES `{$createTable}` WRITE;\n";
+				$cnt = count($iData);
+				$c = 1;
+				$createStatement .= "INSERT INTO `{$createTable}` VALUES ";
 				foreach($iData as $i)
 				{
+					$createStatement .= "(";
 					$count = count($i);
 					$inc = 1;
-					$createStatement .= "INSERT INTO `{$createTable}` VALUES (";
 					foreach($i as $d)
 					{
 						$createStatement .= "\"{$d}\"";
@@ -65,7 +68,12 @@ class cli_updateSQL implements cliCommand
 
 						$inc++;
 					}
-					$createStatement .= ");\n";
+					$createStatement .= ")";
+					if($c < $cnt)
+						$createStatement .= ",";
+					else
+						$createStatement .= ";";
+					$c++;
 				}
 				$createStatement .= "\n";
 				$createStatement .= "UNLOCK TABLES;\n";
