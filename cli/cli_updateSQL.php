@@ -69,7 +69,6 @@ class cli_updateSQL implements cliCommand
 				}
 				$createStatement .= "\n";
 				$createStatement .= "UNLOCK TABLES;\n";
-				echo $createStatement; die();
 			}
 
 			$file = $installSQLFiles . $createTable . ".sql";
