@@ -136,7 +136,7 @@ class FileCache extends AbstractCache
 		try
 		{
 			@unlink($this->cacheDir.sha1($key));
-			return self::setData($key, $data+$step);
+			return self::setData($key, $data+$step, $timeout);
 		}
 		catch (Exception $e)
 		{
@@ -160,7 +160,7 @@ class FileCache extends AbstractCache
 		try
 		{
 			@unlink($this->cacheDir.sha1($key));
-			return self::setData($key, $data-$step);
+			return self::setData($key, $data-$step, $timeout);
 		}
 		catch (Exception $e)
 		{
@@ -200,7 +200,8 @@ class FileCache extends AbstractCache
 			$timeout = time() + $timeout;
 
 			$data = $timeout."%".json_encode($value);
-			file_put_contents($this->cacheDir.sha1($key), $data);
+			if(@file_put_contents($this->cacheDir.sha1($key), $data) === false)
+				return false;
 		}
 		catch (Exception $e)
 		{
@@ -223,6 +224,7 @@ class FileCache extends AbstractCache
 			$data = @file_get_contents($this->cacheDir.sha1($key));
 		else
 			$data = @file_get_contents($this->cacheDir.$key);
+
 		$f = explode("%", $data, 2); // We only want the first occurance of % exploded, not everything else aswell.
 		$age = array_shift($f);
 		$data = implode($f);
