@@ -86,6 +86,10 @@ Other webservers are supported, aslong as they can run PHP, they should work.
 But other webservers have other ways to write rewrites, so from our side of things, they are unsupported.
 Feel free to issue pull requests to amend this.
 
+# Cache
+zKillboard has a cache system that utilizes the first available cache, in the following order: Memcached -> Memcache -> Redis -> APC -> FileCache.
+If none of the first 4 are available, it will fallback to fileCache, which on a slow system, could overwhelm the harddrive.
+
 # Installation
 Installation is handled via command line. Other methods are currently not supported.
 
