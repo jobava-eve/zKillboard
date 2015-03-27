@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `zz_errors`;
 CREATE TABLE `zz_errors` (
   `id` varchar(32) NOT NULL,
@@ -8,5 +7,4 @@ CREATE TABLE `zz_errors` (
   `ip` varchar(15) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC TRANSACTIONAL=0

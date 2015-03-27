@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `zz_tickets_replies`;
 CREATE TABLE `zz_tickets_replies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -9,5 +8,4 @@ CREATE TABLE `zz_tickets_replies` (
   `moderator` int(11) NOT NULL DEFAULT '0',
   `datePosted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC

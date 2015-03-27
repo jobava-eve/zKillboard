@@ -1,9 +1,8 @@
-
 DROP TABLE IF EXISTS `zz_query_stats`;
 CREATE TABLE `zz_query_stats` (
   `hash` varchar(128) DEFAULT NULL,
-  `query` mediumtext,
-  `params` mediumtext,
+  `query` text,
+  `params` text,
   `selectType` varchar(256) DEFAULT NULL,
   `table` varchar(256) DEFAULT NULL,
   `queryType` varchar(256) DEFAULT NULL,
@@ -15,5 +14,4 @@ CREATE TABLE `zz_query_stats` (
   `extra` varchar(256) DEFAULT NULL,
   `queryTime` varchar(10) DEFAULT NULL,
   UNIQUE KEY `hash` (`hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8  ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 DELAY_KEY_WRITE=1

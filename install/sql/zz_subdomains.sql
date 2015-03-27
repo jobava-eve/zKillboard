@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `zz_subdomains`;
 CREATE TABLE `zz_subdomains` (
   `subdomainID` int(11) NOT NULL AUTO_INCREMENT,
@@ -9,5 +8,4 @@ CREATE TABLE `zz_subdomains` (
   PRIMARY KEY (`subdomainID`),
   UNIQUE KEY `subdomain` (`subdomain`),
   KEY `alias` (`alias`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8

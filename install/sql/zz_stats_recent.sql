@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `zz_stats_recent`;
 CREATE TABLE `zz_stats_recent` (
   `type` varchar(16) NOT NULL,
@@ -14,5 +13,4 @@ CREATE TABLE `zz_stats_recent` (
   KEY `typeID_2` (`typeID`),
   KEY `groupID` (`groupID`),
   KEY `typeID` (`typeID`,`groupID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED TRANSACTIONAL=0

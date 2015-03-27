@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `zz_users_sessions`;
 CREATE TABLE `zz_users_sessions` (
   `userID` int(11) NOT NULL,
@@ -8,5 +7,4 @@ CREATE TABLE `zz_users_sessions` (
   `userAgent` text NOT NULL,
   `ip` varchar(16) NOT NULL,
   UNIQUE KEY `sessionHash` (`sessionHash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
