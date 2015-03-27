@@ -46,7 +46,8 @@ class cli_updateSQL implements cliCommand
 
 			$createStatement = "DROP TABLE IF EXISTS `{$createTable}`;\n" . $create["Create Table"] . ";\n";
 
-			if(stristr($createTable, "ccp_"))
+			$dropTables = array("ccp_zfactions", "ccp_zwormhole_info");
+			if(in_array($createTable, $dropTables))
 			{
 				// Load the data
 				$iData = $db->query("SELECT * FROM {$createTable}");
