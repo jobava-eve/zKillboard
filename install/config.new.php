@@ -69,6 +69,9 @@ $ircLogFile = "";
 $ircAdminLogFile = "";
 $ircLogFrom = "$baseAddr - ";
 
+// Prefered cache (memcached, memcache, redis, apc, filecache)
+$preferredCache = "Memcache"
+
 // Memcache
 $memcacheServer = "%memcache%";
 $memcachePort = "%memcacheport%";

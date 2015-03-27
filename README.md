@@ -4,7 +4,7 @@
 zKillboard is a killboard created for EVE-Online, for use on EVE-KILL.net, but can also be used for single entities.
 
 # WARNING
-This is BETA, which means it is a work in progress.  It lacks complete documentation and is currently not meant for use in production.
+This is BETA, which means it is a work in progress. It lacks documentation and is currently not meant for use in production.
 
 Since zKillboard is a beta product, it has a code base that is far from complete and enjoys numerous updates, deletions, and modifications to the code and accompanying tables. Please feel free to attempt to install zKillboard on your own server, however, we are not responsible for any difficulties you come across during installation and continuing execution of the product.
 
@@ -157,20 +157,15 @@ You can also define the executable to use, be it php, hhvm or something third.
 }
 ```
 
-# Stomp
-Stomp uses the STOMP PHP plugin which you can get via git.
-Here is a quick one liner: `cd /tmp/ && git clone https://github.com/php/pecl-tools-stomp.git && cd pecl-tools-stomp && phpize && ./configure && make && make install`
-After that you make a `20-stomp.ini` in `/etc/php5/conf.d/` and add `extension=stomp.so` to it, and save. And restart your php stuff.
+# Websocket
+Websocket is used to stream kills from zKillboard.com and EVE-KILL.net to your killboard.
+Currently it streams all kills, without any limit.
 
-The stomp service is read only. If you need to send data via it, come by IRC and have a chat with us.
-
-- Stomp server: `tcp://eve-kill.net:61613`
-- Stomp user: `guest`
-- Stomp pass: `guest`
+Websocket server: ws://ws.eve-kill.net/kills/ and wss://ws.eve-kill.net/kills/
 
 # HHVM
 zKillboard runs perfectly under HHVM (HipHop Virtual Machine).<br>
-To get HHVM look at _https://github.com/facebook/hhvm/wiki#installing-pre-built-packages-for-hhvm_
+To get HHVM look at _https://github.com/facebook/hhvm/wiki/Prebuilt-Packages-for-HHVM_
 
 # HHVM Config
 ```
@@ -209,7 +204,6 @@ To update the CCP tables, run the cli script called ```updateCCPData``` like so 
 It will then automatically download the latest tables from Fuzzysteve, and import them.
 
 # Admin account
-
 Every clean zKillboard installation comes with an admin account, default username and password is `admin`, it is highly recommended that you immediately change this password after you finish your installation.
 
 Current special features to the admin account:
