@@ -214,6 +214,9 @@ catch (Exception $ex)
 	throw $ex;
 }
 
+out("Updating CCP tables to the latest version");
+passthru("php $base/../cli.php updateCCPData");
+
 try
 {
 	out("|g|Installing default admin user...");
