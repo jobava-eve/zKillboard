@@ -86,27 +86,13 @@ class cli_updateCCPData implements cliCommand
 				else
 					$data = str_replace($file, "ccp_$file", $data);
 
-				// Store the data as an sql file
-				file_put_contents($cacheDir . "/temporary.sql", $data);
+				$dataParts = explode(";\n", $data);
 
-				// Create the exec line
-				$execLine = "mysql -u$dbUser";
-
-				if(isset($dbPassword) && !empty($dbPassword))
-					$execLine .= " -p $dbPassword ";
-
-				if(isset($dbHost))
-					$execLine .= "-h $dbHost $dbName < $cacheDir/temporary.sql";
-				elseif(isset($dbSocket))
-					$execLine .= "-S $dbSocket $dbName < $cacheDir/temporary.sql";
-				// Now we execute the exec line.. It's not ideal, but it works..
-				exec($execLine);
-
-				// Delete the temporary file
-				unlink("$cacheDir/temporary.sql");
-
-				// Delete the .sql file
-				unlink("$cacheDir/$file.sql");
+				foreach($dataParts as $q)
+				{
+					$query = $q . ";";
+					$db->execute($query);
+				}
 
 				// Done
 				CLI::out("Done with |g|$file|n|, moving on to the next table");
