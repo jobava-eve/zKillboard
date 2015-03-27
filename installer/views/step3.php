@@ -3,13 +3,14 @@ set_time_limit(0);
 ini_set('memory_limit','512M');
 header('Content-Encoding: none;');
 header('X-Accel-Buffering: no');
-ob_implicit_flush(true);
-ob_end_flush();
 
 // Does config exist?
 $exists = file_exists($dir . "/../config.php");
 if($exists)
 	die("Sorry, you cannot install a board that already has a config setup");
+
+ob_implicit_flush(true);
+ob_end_flush();
 
 output('<!doctype html><html><head><title>zKillboard Installer</title><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
