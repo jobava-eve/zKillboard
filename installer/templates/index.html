@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+	<head>
+		<title>zKillboard Installer</title>
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+		<style type="text/css">
+			/* Space out content a bit */
+			body {
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+			/* Everything but the jumbotron gets side spacing for mobile first views */
+			.header, .marketing, .footer {
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+			/* Custom page header */
+			.header {
+				border-bottom: 1px solid #e5e5e5;
+			}
+			/* Make the masthead heading the same height as the navigation */
+			.header h3 {
+				margin-top: 0;
+				margin-bottom: 0;
+				line-height: 40px;
+				padding-bottom: 19px;
+			}
+			/* Custom page footer */
+			.footer {
+				padding-top: 19px;
+				color: #777;
+				border-top: 1px solid #e5e5e5;
+			}
+			/* Customize container */
+				@media(min-width: 768px) {
+				.container {
+					max-width: 730px;
+				}
+			}
+			.container-narrow > hr {
+				margin: 30px 0;
+			}
+			/* Supporting marketing content */
+			.marketing {
+				margin: 40px 0;
+			}
+			.marketing p + h4 {
+				margin-top: 28px;
+			}
+			/* Responsive: Portrait tablets and up */
+			@media screen and(min-width: 768px) {
+			/* Remove the padding we set earlier */
+				.header, .marketing, .footer {
+					padding-left: 0;
+					padding-right: 0;
+				}
+				/* Space out the masthead */
+				.header {
+					margin-bottom: 30px;
+				}
+				/* Remove the bottom border on the jumbotron for visual effect */
+				.jumbotron {
+					border-bottom: 0;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div style="text-align: center !important;">
+				<h1>zKillboard (BETA)</h1>
+			</div>
+			<hr/>
+			<div class="row marketing">
+				<div class="col-lg-12">
+					<p class="lead">zKillboard is a killboard developed by a multitude of developers. It works great for single and multiple entities alike.
+						<br>
+					zKillboard is licensed under the AGPLv3 license. You can read more about it under the LICENSE.md file</p>
+				</div>
+				<div class="col-lg-6">
+					<h4>MariaDB</h4>
+					<p>MariaDB is a replacement for MySQL, that runs faster and has more features</p>
+					<h4>PHP 5.4+</h4>
+					<p>PHP is the regular PHP</p>
+					<h4>HHVM</h4>
+					<p>Instead of PHP, you can use HHVM, which is developed by Facebook, and gives a 10x increase in speed. <a href="https://github.com/facebook/hhvm" target="_blank">https://github.com/facebook/hhvm</a></p>
+				</div>
+				<div class="col-lg-6">
+					<h4>Memcached</h4>
+					<p>Memcached is a cache solution that stores data in memory</p>
+					<h4>APC</h4>
+					<p>APC does the same as Memcached, it is just more tightly integrated with PHP / HHVM, and thus faster</p>
+					<h4>Redis</h4>
+					<p>Redis does the same as APC and Memcached, it is just more fully featured and can do some cool stuff.</p>
+				</div>
+			</div>
+			{% if configExists %}
+			<div style="text-align: center !important;">
+				<p><a class="btn btn-lg btn-danger">A Configuration is already active, you cannot install again before config.php is removed.</a></p>
+			</div>
+			{% else %}
+			<div style="text-align: center !important;">
+				<p><a class="btn btn-lg btn-success" href="?step=1">Start installation</a></p>
+			</div>
+			{% endif %}
+			<div class="footer">
+				<div>
+					<p class="pull-left">&copy; EVSCO 2012-2015</p>
+					<p class="pull-right">
+						<a href="https://github.com/EVE-KILL/zKillboard" target="_blank">GitHub</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
