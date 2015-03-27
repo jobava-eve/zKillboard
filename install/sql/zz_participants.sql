@@ -40,4 +40,4 @@ CREATE TABLE `zz_participants` (
   KEY `corporationID_dttm` (`corporationID`,`dttm`),
   KEY `allianceID_dttm` (`allianceID`,`dttm`),
   KEY `characterID_dttm` (`characterID`,`dttm`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;

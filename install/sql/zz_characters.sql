@@ -8,4 +8,4 @@ CREATE TABLE `zz_characters` (
   PRIMARY KEY (`characterID`),
   KEY `name` (`name`),
   KEY `lastUpdated` (`lastUpdated`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;

@@ -14,4 +14,4 @@ CREATE TABLE `zz_query_stats` (
   `extra` varchar(256) DEFAULT NULL,
   `queryTime` varchar(10) DEFAULT NULL,
   UNIQUE KEY `hash` (`hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 DELAY_KEY_WRITE=1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 DELAY_KEY_WRITE=1;

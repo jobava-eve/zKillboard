@@ -6,4 +6,4 @@ CREATE TABLE `zz_users_config` (
   UNIQUE KEY `id` (`id`,`locker`),
   KEY `id_2` (`id`),
   KEY `locker` (`locker`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;

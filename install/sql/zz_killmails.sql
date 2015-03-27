@@ -12,4 +12,4 @@ CREATE TABLE `zz_killmails` (
   KEY `source` (`source`),
   KEY `insertTime` (`insertTime`),
   KEY `processed_2` (`processed`,`killID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=4
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=4;

@@ -12,4 +12,4 @@ CREATE TABLE `zz_api` (
   KEY `lastValidation` (`lastValidation`),
   KEY `userID` (`userID`),
   KEY `errorCode` (`errorCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC TRANSACTIONAL=1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC TRANSACTIONAL=1;

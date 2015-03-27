@@ -4,4 +4,4 @@ CREATE TABLE `ccp_dgmTypeEffects` (
   `effectID` smallint(6) NOT NULL,
   `isDefault` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`typeID`,`effectID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

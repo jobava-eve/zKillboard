@@ -15,4 +15,4 @@ CREATE TABLE `ccp_invTypes` (
   `chanceOfDuplicating` double DEFAULT NULL,
   PRIMARY KEY (`typeID`),
   KEY `ccp_invTypes_IX_Group` (`groupID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

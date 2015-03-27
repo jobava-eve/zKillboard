@@ -31,4 +31,4 @@ CREATE TABLE `ccp_systems` (
   KEY `ccp_systems_IX_constellation` (`constellationID`),
   KEY `ccp_systems_IX_security` (`security`),
   KEY `mss_name` (`solarSystemName`(40))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

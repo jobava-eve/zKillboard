@@ -14,4 +14,4 @@ CREATE TABLE `zz_wars` (
   `agrIskKilled` float DEFAULT NULL,
   `dfdIskKilled` float DEFAULT NULL,
   PRIMARY KEY (`warID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -24,4 +24,4 @@ CREATE TABLE `ccp_mapDenormalize` (
   KEY `ccp_mapDenormalize_IX_region` (`regionID`),
   KEY `ccp_mapDenormalize_IX_orbit` (`orbitID`),
   KEY `ccp_mapDenormalize_gis` (`solarSystemID`,`x`,`y`,`z`,`itemName`(40),`itemID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

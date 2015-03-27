@@ -19,4 +19,4 @@ CREATE TABLE `zz_battles` (
   PRIMARY KEY (`battleID`),
   KEY `solarSystemID` (`solarSystemID`),
   KEY `dttm` (`dttm`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;

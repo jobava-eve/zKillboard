@@ -29,4 +29,4 @@ CREATE TABLE `ccp_dgmEffects` (
   `fittingUsageChanceAttributeID` smallint(6) DEFAULT NULL,
   `modifierInfo` longtext,
   PRIMARY KEY (`effectID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

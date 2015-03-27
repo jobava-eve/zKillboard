@@ -4,4 +4,4 @@ CREATE TABLE `zz_achievements` (
   `achievementName` varchar(255) DEFAULT NULL,
   `achievementDescription` text,
   UNIQUE KEY `achievementID` (`achievementID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -15,4 +15,4 @@ CREATE TABLE `ccp_regions` (
   `radius` double DEFAULT NULL,
   PRIMARY KEY (`regionID`),
   KEY `ccp_regions_IX_region` (`regionID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

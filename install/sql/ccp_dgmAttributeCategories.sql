@@ -4,4 +4,4 @@ CREATE TABLE `ccp_dgmAttributeCategories` (
   `categoryName` varchar(50) DEFAULT NULL,
   `categoryDescription` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`categoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

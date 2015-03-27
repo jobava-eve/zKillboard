@@ -4,4 +4,4 @@ CREATE TABLE `zz_warmails` (
   `warID` int(11) NOT NULL,
   PRIMARY KEY (`killID`),
   KEY `warID` (`warID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

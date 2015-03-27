@@ -21,4 +21,4 @@ CREATE TABLE `zz_account_wallet` (
   KEY `dttm` (`dttm`),
   KEY `characterID_2` (`characterID`,`dttm`),
   KEY `paymentApplied` (`paymentApplied`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

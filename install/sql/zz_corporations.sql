@@ -14,4 +14,4 @@ CREATE TABLE `zz_corporations` (
   KEY `lastUpdated` (`lastUpdated`),
   KEY `allianceID` (`allianceID`),
   KEY `ceoID` (`ceoID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
