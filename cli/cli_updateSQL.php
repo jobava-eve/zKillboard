@@ -18,44 +18,70 @@
 
 class cli_updateSQL implements cliCommand
 {
-        public function getDescription()
-        {
-                return "";
-        }
+	public function getDescription()
+	{
+		return "";
+	}
 
-        public function getAvailMethods()
-        {
-                return ""; // Space seperated list
-        }
+	public function getAvailMethods()
+	{
+		return ""; // Space seperated list
+	}
 
-        public function execute($parameters, $db)
-        {
-                global $baseDir;
+	public function execute($parameters, $db)
+	{
+		global $baseDir;
 
-                // Install .sql files are located at:
-                $installSQLFiles = $baseDir . "install/sql/";
+		// Install .sql files are located at:
+		$installSQLFiles = $baseDir . "install/sql/";
 
-                $tables = $db->query("SHOW TABLES");
-                foreach($tables as $table)
-                {
-                        $definitionTable = $table["Tables_in_zkillboard"];
-                        $create = $db->queryRow("SHOW CREATE TABLE {$definitionTable}");
+		$tables = $db->query("SHOW TABLES");
+		foreach($tables as $table)
+		{
+			$definitionTable = $table["Tables_in_zkillboard"];
+			$create = $db->queryRow("SHOW CREATE TABLE {$definitionTable}");
 
-                        $createTable = $create["Table"];
-                        $createStatement = $create["Create Table"];
+			$createTable = $create["Table"];
+			$createStatement = $create["Create Table"];
 
-                        $createStatement = "DROP TABLE IF EXISTS `{$createTable}`;\n" . $create["Create Table"] . ";";
-                        $file = $installSQLFiles . $createTable . ".sql";
+			$createStatement = "DROP TABLE IF EXISTS `{$createTable}`;\n" . $create["Create Table"] . ";\n";
 
-                        if(file_exists($file))
-                        {
-                                CLI::out("Unlinking {$file}");
-                                unlink($file);
-                        }
+			if(stristr($createTable, "ccp_"))
+			{
+				// Load the data
+				$iData = $db->query("SELECT * FROM {$createTable}");
+				$createStatement .= "LOCK TABLES `{$createTable}` WRITE;\n";
+				foreach($iData as $i)
+				{
+					$count = count($i);
+					$inc = 1;
+					$createStatement .= "INSERT INTO `{$createTable}` VALUES (";
+					foreach($i as $d)
+					{
+						$createStatement .= "'{$d}'";
+						if($inc < $count)
+							$createStatement .= ", ";
 
-                        CLI::out("Writing {$createTable} to {$file}");
-                        file_put_contents($file, $createStatement);
-                }
+						$inc++;
+					}
 
-        }
+					$createStatement .= ");\n";
+				}
+				$createStatement .= "\n";
+				$createStatement .= "UNLOCK TABLES;\n";
+			}
+
+			$file = $installSQLFiles . $createTable . ".sql";
+
+			if(file_exists($file))
+			{
+				CLI::out("Unlinking {$file}");
+				unlink($file);
+			}
+
+			CLI::out("Writing {$createTable} to {$file}");
+			file_put_contents($file, $createStatement);
+		}
+
+	}
 }

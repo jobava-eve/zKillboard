@@ -94,6 +94,9 @@ class cli_updateCCPData implements cliCommand
 					$db->execute($query);
 				}
 
+				// Delete the .sql file
+				unlink("$cacheDir/$file.sql");
+
 				// Done
 				CLI::out("Done with |g|$file|n|, moving on to the next table");
 			}
