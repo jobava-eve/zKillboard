@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_alliances`
+DROP TABLE IF EXISTS `zz_alliances`;
 CREATE TABLE `zz_alliances` (
   `allianceID` int(16) NOT NULL DEFAULT '0',
   `ticker` varchar(8) DEFAULT NULL,

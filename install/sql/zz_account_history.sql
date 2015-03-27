@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_account_history`
+DROP TABLE IF EXISTS `zz_account_history`;
 CREATE TABLE `zz_account_history` (
   `purchaseID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` int(16) NOT NULL,

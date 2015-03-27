@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_wars`
+DROP TABLE IF EXISTS `zz_wars`;
 CREATE TABLE `zz_wars` (
   `warID` int(11) NOT NULL,
   `timeDeclared` timestamp NULL DEFAULT NULL,

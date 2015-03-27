@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_subdomains`
+DROP TABLE IF EXISTS `zz_subdomains`;
 CREATE TABLE `zz_subdomains` (
   `subdomainID` int(11) NOT NULL AUTO_INCREMENT,
   `subdomain` varchar(64) NOT NULL,

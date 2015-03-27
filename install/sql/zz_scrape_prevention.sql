@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_scrape_prevention`
+DROP TABLE IF EXISTS `zz_scrape_prevention`;
 CREATE TABLE `zz_scrape_prevention` (
   `ip` varchar(64) NOT NULL,
   `uri` varchar(256) NOT NULL,

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_systems`
+DROP TABLE IF EXISTS `ccp_systems`;
 CREATE TABLE `ccp_systems` (
   `regionID` int(11) DEFAULT NULL,
   `constellationID` int(11) DEFAULT NULL,

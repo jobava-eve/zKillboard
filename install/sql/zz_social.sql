@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_social`
+DROP TABLE IF EXISTS `zz_social`;
 CREATE TABLE `zz_social` (
   `killID` bigint(16) NOT NULL,
   `insertTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

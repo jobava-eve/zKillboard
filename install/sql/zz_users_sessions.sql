@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_users_sessions`
+DROP TABLE IF EXISTS `zz_users_sessions`;
 CREATE TABLE `zz_users_sessions` (
   `userID` int(11) NOT NULL,
   `sessionHash` varchar(192) NOT NULL,

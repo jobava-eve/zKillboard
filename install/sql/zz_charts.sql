@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_charts`
+DROP TABLE IF EXISTS `zz_charts`;
 CREATE TABLE `zz_charts` (
   `chartID` int(16) NOT NULL AUTO_INCREMENT,
   `title` varchar(64) NOT NULL,

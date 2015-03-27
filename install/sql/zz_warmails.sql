@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_warmails`
+DROP TABLE IF EXISTS `zz_warmails`;
 CREATE TABLE `zz_warmails` (
   `killID` int(11) NOT NULL,
   `warID` int(11) NOT NULL,

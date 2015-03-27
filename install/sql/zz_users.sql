@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_users`
+DROP TABLE IF EXISTS `zz_users`;
 CREATE TABLE `zz_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(128) NOT NULL,

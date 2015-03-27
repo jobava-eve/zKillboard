@@ -44,7 +44,7 @@ class cli_updateSQL implements cliCommand
                         $createTable = $create["Table"];
                         $createStatement = $create["Create Table"];
 
-                        $createStatement = "DROP TABLE IF EXISTS `{$createTable}`\n" . $create["Create Table"];
+                        $createStatement = "DROP TABLE IF EXISTS `{$createTable}`;\n" . $create["Create Table"];
                         $file = $installSQLFiles . $createTable . ".sql";
 
                         if(file_exists($file))

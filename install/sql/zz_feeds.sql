@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_feeds`
+DROP TABLE IF EXISTS `zz_feeds`;
 CREATE TABLE `zz_feeds` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(2048) NOT NULL,

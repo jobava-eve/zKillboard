@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_participants`
+DROP TABLE IF EXISTS `zz_participants`;
 CREATE TABLE `zz_participants` (
   `killID` int(32) NOT NULL,
   `solarSystemID` int(16) NOT NULL,

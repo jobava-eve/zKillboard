@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_dgmTypeEffects`
+DROP TABLE IF EXISTS `ccp_dgmTypeEffects`;
 CREATE TABLE `ccp_dgmTypeEffects` (
   `typeID` int(11) NOT NULL,
   `effectID` smallint(6) NOT NULL,

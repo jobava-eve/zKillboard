@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_invGroups`
+DROP TABLE IF EXISTS `ccp_invGroups`;
 CREATE TABLE `ccp_invGroups` (
   `groupID` int(11) NOT NULL,
   `categoryID` int(11) DEFAULT NULL,

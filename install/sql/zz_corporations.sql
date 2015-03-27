@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_corporations`
+DROP TABLE IF EXISTS `zz_corporations`;
 CREATE TABLE `zz_corporations` (
   `corporationID` int(16) NOT NULL DEFAULT '0',
   `allianceID` int(16) NOT NULL DEFAULT '0',

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_dgmTypeAttributes`
+DROP TABLE IF EXISTS `ccp_dgmTypeAttributes`;
 CREATE TABLE `ccp_dgmTypeAttributes` (
   `typeID` int(11) NOT NULL,
   `attributeID` smallint(6) NOT NULL,

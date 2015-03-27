@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_query_stats`
+DROP TABLE IF EXISTS `zz_query_stats`;
 CREATE TABLE `zz_query_stats` (
   `hash` varchar(128) DEFAULT NULL,
   `query` text,

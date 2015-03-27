@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_invFlags`
+DROP TABLE IF EXISTS `ccp_invFlags`;
 CREATE TABLE `ccp_invFlags` (
   `flagID` smallint(6) NOT NULL,
   `flagName` varchar(200) DEFAULT NULL,

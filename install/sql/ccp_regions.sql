@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_regions`
+DROP TABLE IF EXISTS `ccp_regions`;
 CREATE TABLE `ccp_regions` (
   `regionID` int(11) NOT NULL,
   `regionName` longtext,

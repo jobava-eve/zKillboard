@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_users_config`
+DROP TABLE IF EXISTS `zz_users_config`;
 CREATE TABLE `zz_users_config` (
   `id` int(3) NOT NULL,
   `locker` varchar(64) NOT NULL,

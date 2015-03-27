@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_tickets_replies`
+DROP TABLE IF EXISTS `zz_tickets_replies`;
 CREATE TABLE `zz_tickets_replies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_killmails`
+DROP TABLE IF EXISTS `zz_killmails`;
 CREATE TABLE `zz_killmails` (
   `killID` int(32) NOT NULL,
   `processed` int(6) NOT NULL DEFAULT '0',

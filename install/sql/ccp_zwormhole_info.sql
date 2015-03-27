@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_zwormhole_info`
+DROP TABLE IF EXISTS `ccp_zwormhole_info`;
 CREATE TABLE `ccp_zwormhole_info` (
   `solarSystemID` int(11) NOT NULL DEFAULT '0',
   `class` tinyint(3) unsigned DEFAULT NULL,

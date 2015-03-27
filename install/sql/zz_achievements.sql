@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_achievements`
+DROP TABLE IF EXISTS `zz_achievements`;
 CREATE TABLE `zz_achievements` (
   `achievementID` int(11) NOT NULL AUTO_INCREMENT,
   `achievementName` varchar(255) DEFAULT NULL,

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_errors`
+DROP TABLE IF EXISTS `zz_errors`;
 CREATE TABLE `zz_errors` (
   `id` varchar(32) NOT NULL,
   `error` longtext NOT NULL,

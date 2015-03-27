@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_battles`
+DROP TABLE IF EXISTS `zz_battles`;
 CREATE TABLE `zz_battles` (
   `battleID` int(11) NOT NULL DEFAULT '0',
   `solarSystemID` int(11) DEFAULT NULL,

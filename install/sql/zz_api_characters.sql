@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_api_characters`
+DROP TABLE IF EXISTS `zz_api_characters`;
 CREATE TABLE `zz_api_characters` (
   `apiRowID` int(8) NOT NULL AUTO_INCREMENT,
   `keyID` int(16) NOT NULL,
@@ -20,4 +20,4 @@ CREATE TABLE `zz_api_characters` (
   KEY `cachedUntil` (`cachedUntil`),
   KEY `errorCount` (`errorCount`),
   KEY `modulus` (`modulus`)
-) ENGINE=InnoDB AUTO_INCREMENT=1271993 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC TRANSACTIONAL=0
+) ENGINE=InnoDB AUTO_INCREMENT=1271996 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC TRANSACTIONAL=0

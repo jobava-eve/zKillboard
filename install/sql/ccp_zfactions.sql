@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_zfactions`
+DROP TABLE IF EXISTS `ccp_zfactions`;
 CREATE TABLE `ccp_zfactions` (
   `factionID` int(16) NOT NULL DEFAULT '0',
   `name` varchar(64) NOT NULL,

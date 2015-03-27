@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_campaigns`
+DROP TABLE IF EXISTS `zz_campaigns`;
 CREATE TABLE `zz_campaigns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userID` int(11) NOT NULL,

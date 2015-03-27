@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_dgmAttributeCategories`
+DROP TABLE IF EXISTS `ccp_dgmAttributeCategories`;
 CREATE TABLE `ccp_dgmAttributeCategories` (
   `categoryID` tinyint(3) unsigned NOT NULL,
   `categoryName` varchar(50) DEFAULT NULL,

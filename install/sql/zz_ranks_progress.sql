@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_ranks_progress`
+DROP TABLE IF EXISTS `zz_ranks_progress`;
 CREATE TABLE `zz_ranks_progress` (
   `dttm` date NOT NULL,
   `type` varchar(16) NOT NULL,

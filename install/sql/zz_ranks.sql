@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_ranks`
+DROP TABLE IF EXISTS `zz_ranks`;
 CREATE TABLE `zz_ranks` (
   `type` varchar(16) NOT NULL,
   `typeID` int(16) NOT NULL,

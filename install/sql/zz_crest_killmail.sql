@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `zz_crest_killmail`
+DROP TABLE IF EXISTS `zz_crest_killmail`;
 CREATE TABLE `zz_crest_killmail` (
   `killID` int(16) NOT NULL,
   `hash` varchar(64) NOT NULL,

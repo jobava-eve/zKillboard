@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_dgmEffects`
+DROP TABLE IF EXISTS `ccp_dgmEffects`;
 CREATE TABLE `ccp_dgmEffects` (
   `effectID` smallint(6) NOT NULL,
   `effectName` varchar(400) DEFAULT NULL,

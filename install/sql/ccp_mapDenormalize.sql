@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `ccp_mapDenormalize`
+DROP TABLE IF EXISTS `ccp_mapDenormalize`;
 CREATE TABLE `ccp_mapDenormalize` (
   `itemID` int(11) NOT NULL,
   `typeID` int(11) DEFAULT NULL,
