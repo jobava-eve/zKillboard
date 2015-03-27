@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_stats`;
+DROP TABLE IF EXISTS `zz_stats`
 CREATE TABLE `zz_stats` (
   `type` varchar(16) NOT NULL,
   `typeID` int(11) NOT NULL,
@@ -15,5 +14,4 @@ CREATE TABLE `zz_stats` (
   KEY `groupID` (`groupID`),
   KEY `typeID` (`typeID`,`groupID`),
   KEY `type_2` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC TRANSACTIONAL=0

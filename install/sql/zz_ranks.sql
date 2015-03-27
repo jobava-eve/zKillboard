@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_ranks`;
+DROP TABLE IF EXISTS `zz_ranks`
 CREATE TABLE `zz_ranks` (
   `type` varchar(16) NOT NULL,
   `typeID` int(16) NOT NULL,
@@ -20,5 +19,4 @@ CREATE TABLE `zz_ranks` (
   `iskEff` decimal(3,1) NOT NULL,
   `overallRank` mediumint(16) NOT NULL,
   PRIMARY KEY (`type`,`typeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED TRANSACTIONAL=0

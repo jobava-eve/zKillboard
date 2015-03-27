@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_feeds`;
+DROP TABLE IF EXISTS `zz_feeds`
 CREATE TABLE `zz_feeds` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(2048) NOT NULL,
@@ -8,5 +7,4 @@ CREATE TABLE `zz_feeds` (
   `lastKillTime` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `edkStyle` (`edkStyle`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC

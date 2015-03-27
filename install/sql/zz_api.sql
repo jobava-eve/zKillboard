@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_api`;
+DROP TABLE IF EXISTS `zz_api`
 CREATE TABLE `zz_api` (
   `userID` int(6) NOT NULL DEFAULT '0',
   `keyID` int(16) NOT NULL,
@@ -13,5 +12,4 @@ CREATE TABLE `zz_api` (
   KEY `lastValidation` (`lastValidation`),
   KEY `userID` (`userID`),
   KEY `errorCode` (`errorCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC TRANSACTIONAL=1

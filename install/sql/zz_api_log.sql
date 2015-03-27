@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_api_log`;
+DROP TABLE IF EXISTS `zz_api_log`
 CREATE TABLE `zz_api_log` (
   `logID` int(16) NOT NULL AUTO_INCREMENT,
   `requestTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -9,5 +8,4 @@ CREATE TABLE `zz_api_log` (
   `options` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`logID`),
   KEY `requestTime` (`requestTime`,`scope`,`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=Aria AUTO_INCREMENT=649004358 DEFAULT CHARSET=latin1 PAGE_CHECKSUM=1 ROW_FORMAT=DYNAMIC

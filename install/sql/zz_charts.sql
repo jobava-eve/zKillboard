@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_charts`;
+DROP TABLE IF EXISTS `zz_charts`
 CREATE TABLE `zz_charts` (
   `chartID` int(16) NOT NULL AUTO_INCREMENT,
   `title` varchar(64) NOT NULL,
@@ -7,5 +6,4 @@ CREATE TABLE `zz_charts` (
   `dataset` varchar(4096) NOT NULL,
   PRIMARY KEY (`chartID`),
   KEY `dataset` (`dataset`(767))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC

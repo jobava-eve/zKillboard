@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_alliances`;
+DROP TABLE IF EXISTS `zz_alliances`
 CREATE TABLE `zz_alliances` (
   `allianceID` int(16) NOT NULL DEFAULT '0',
   `ticker` varchar(8) DEFAULT NULL,
@@ -11,5 +10,4 @@ CREATE TABLE `zz_alliances` (
   KEY `shortName` (`ticker`),
   KEY `name` (`name`),
   KEY `executorCorpID` (`executorCorpID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED

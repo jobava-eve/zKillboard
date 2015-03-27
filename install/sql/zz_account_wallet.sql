@@ -1,5 +1,4 @@
-
-DROP TABLE IF EXISTS `zz_account_wallet`;
+DROP TABLE IF EXISTS `zz_account_wallet`
 CREATE TABLE `zz_account_wallet` (
   `characterID` int(16) NOT NULL,
   `dttm` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -22,5 +21,4 @@ CREATE TABLE `zz_account_wallet` (
   KEY `dttm` (`dttm`),
   KEY `characterID_2` (`characterID`,`dttm`),
   KEY `paymentApplied` (`paymentApplied`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
