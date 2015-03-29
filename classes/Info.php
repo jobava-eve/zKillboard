@@ -467,10 +467,12 @@ class Info
 	public static function getCharacterAffiliations($characterID)
 	{
 		$pheal = Util::getPheal();
+		if($pheal == NULL) // 904ed most likely
+			return array("corporationID" => NULL, "corporationName" => NULL, "corporationTicker" => NULL, "allianceID" => NULL, "allianceName" => NULL, "allianceTicker" => NULL);
+
 		$pheal->scope = "eve";
 
 		$affiliations = $pheal->CharacterAffiliation(array("ids" => $characterID));
-
 		$corporationID = $affiliations->characters[0]->corporationID;
 		$corporationName = $affiliations->characters[0]->corporationName;
 		$allianceID = $affiliations->characters[0]->allianceID;
