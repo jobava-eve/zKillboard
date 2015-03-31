@@ -78,15 +78,15 @@ class api_combined implements apiEndpoint
 			if(!in_array($key, $acceptedParameters))
 				unset($parameters[$key]);
 
+		// API is true (Put it here so parameters is two even when there is one parameter, just so it's the same as kills and losses)
+		$parameters["api"] = true;
+
 		// If there aren't enough parameters being passed, throw an error.
 		if(count($parameters) < 2)
 			return array(
 				"type" => "error",
 				"message" => "Invalid request. Atleast two parameters are required."
 			);
-
-		// API is true
-		$parameters["api"] = true;
 
 		// At least one of these parameters is required
 		$requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID", "solo", "w-space", "killID");

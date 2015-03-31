@@ -43,7 +43,7 @@ class cli_updateCharacters implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
-			$result = $db->query("select characterID, name, corporationID, allianceID from zz_characters where lastUpdated < date_sub(now(), interval 2 day) order by lastUpdated limit 100", array(), 0);
+			$result = $db->query("select characterID, name, corporationID, allianceID from zz_characters where lastUpdated < date_sub(now(), interval 2 day) order by lastUpdated limit 1000", array(), 0);
 			foreach ($result as $row)
 			{
 				if (Util::is904Error())
@@ -78,7 +78,7 @@ class cli_updateCharacters implements cliCommand
 						$db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 
 					StatsD::increment("characters_Updated");
-					usleep(100000); // Sleep for 100ms (10 req/s)
+					usleep(333333); // Sleep for 333ms (3 req/s)
 				}
 				catch (Exception $ex)
 				{

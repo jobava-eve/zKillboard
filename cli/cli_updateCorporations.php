@@ -56,7 +56,7 @@ class cli_updateCorporations implements cliCommand
 				$ceoID = $corpInfo->ceoID;
 				if ($ceoID == 1) $ceoID = 0;
 				$dscr = $corpInfo->description;
-
+				StatsD::increment("corporations_Updated");
 				if ($name != "") 
 					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
 
@@ -67,7 +67,7 @@ class cli_updateCorporations implements cliCommand
 				if ($ex->getCode() != 503)
 					Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
 			}
-			usleep(100000); // Try not to spam the API servers (pauses 1/10th of a second)
+			usleep(333333); // Pause for 333ms between each request (3 req/s)
 		}
 	}
 }

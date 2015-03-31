@@ -30,51 +30,66 @@ class cli_characters implements cliCommand
 
 	public function getCronInfo()
 	{
-		//return array(0 => "");
+		return array(0 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
-		$timer = new Timer();
+		if (Util::is904Error())
+			return;
 
-		while($timer->stop() < 59000)
+		$oldMax = Storage::retrieve("oldMax", 0);
+		$charIDs = array();
+		$maxID = $db->queryField("SELECT MAX(characterID) AS max FROM zz_characters", "max", array(), 0);
+		if($oldMax >= $maxID) // If oldMax is the same as, or larger than maxID, then start over!
 		{
-			$oldMax = Storage::retrieve("oldMax", 0);
-			$charIDs = array();
-			$maxID = $db->queryField("SELECT MAX(characterID) AS max FROM zz_characters", "max", array(), 0);
-			if($oldMax >= $maxID) // If oldMax is the same as, or larger than maxID, then start over!
-			{
-				Storage::store("oldMax", 0);
-				$oldMax = 0;
-			}
-			$characterIDs = $db->query("SELECT characterID FROM zz_characters WHERE characterID >= :oldMax AND characterID > 90000000 ORDER BY characterID LIMIT 10000", array(":oldMax" => $oldMax), 0);
-			foreach($characterIDs as $characterID)
-				$charIDs[] = $characterID["characterID"];
+			Storage::store("oldMax", 0);
+			$oldMax = 0;
+		}
+		$characterIDs = $db->query("SELECT characterID FROM zz_characters WHERE characterID >= :oldMax AND characterID > 90000000 ORDER BY characterID LIMIT 1000", array(":oldMax" => $oldMax), 0);
+		foreach($characterIDs as $characterID)
+			$charIDs[] = $characterID["characterID"];
 
-			$min = 0;
-			$max = 0;
-			$count = 0;
-			$added = 0;
-			foreach($charIDs as $key => $charID)
-			{
-				$min = $charID;
+		$min = 0;
+		$max = 0;
+		$count = 0;
+		$added = 0;
+		foreach($charIDs as $key => $charID)
+		{
+			if (Util::is904Error())
+				return;
+			$min = $charID;
+			if($key >= 999)
+				$max = $charIDs[$key];
+			else
 				$max = $charIDs[$key+1];
-				$difference = $max - $min;
+			$difference = $max - $min;
 
-				if($difference > 2)
+			if($difference > 2)
+			{
+				// Lets fetch the differences
+				$curr = $min;
+				while($curr <= $max)
 				{
-					// Lets fetch the differences
-					$curr = $min;
-					while($curr <= $max)
+					if (Util::is904Error())
+						return;
+
+					$pheal = Util::getPheal();
+					$pheal->scope = "eve";
+					try
 					{
-						$pheal = Util::getPheal();
-						$pheal->scope = "eve";
-						try
+						$exists = $db->queryField("SELECT characterID FROM zz_characters WHERE characterID = :characterID", "characterID", array(":characterID" => $curr), 0);
+						if(!$exists)
 						{
 							CLI::out("|g|Trying characterID:|n| $curr");
 							$charInfo = $pheal->CharacterInfo(array("characterid" => $curr));
-							$exists = $db->queryField("SELECT characterID FROM zz_characters WHERE characterID = :characterID", "characterID", array(":characterID" => $charInfo->characterID), 0);
-							if(!$exists)
+
+							if(!$charInfo->characterID)
+							{
+								CLI::out("|r|Error:|n| characterID isn't set, sleeping for 5 seconds to not overwhelm the API");
+								usleep(5000000); // Sleep for 5 seconds between each error
+							}
+							else
 							{
 								CLI::out("|g|Adding Character:|n| {$charInfo->characterName}");
 								$characterID = $charInfo->characterID;
@@ -86,16 +101,17 @@ class cli_characters implements cliCommand
 								$date = date("Y-m-d H:i:s", time() - 259200);
 								$db->execute("UPDATE zz_characters SET lastUpdated = :date WHERE characterID = :characterID", array(":date" => $date, ":characterID" => $characterID));
 								$added++;
+								usleep(333333); // Sleep for 333ms (3 a second)
 							}
-							usleep(333333); // Sleep for 333ms (3 a second)
 						}
-						catch (Exception $ex)
-						{
-							usleep(5000000); // Sleep for 5 seconds between each error
-						}
-						$curr++;
-						Storage::store("oldMax", $curr);
 					}
+					catch (Exception $ex)
+					{
+						CLI::out("|r|Error:|n| " . $ex->getMessage() . " / Sleeping for 5 seconds to not overwhelm the API");
+						usleep(5000000); // Sleep for 5 seconds between each error
+					}
+					$curr++;
+					Storage::store("oldMax", $curr);
 				}
 			}
 		}
