@@ -7,4 +7,4 @@ CREATE TABLE `zz_feeds` (
   `lastKillTime` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `edkStyle` (`edkStyle`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
