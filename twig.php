@@ -139,6 +139,8 @@ $detect = new Mobile_Detect();
 $twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));
 $twig->addGlobal("isTablet", ($detect->isTablet() ? true : false));
 
+// Raw killmail
+$twig->addGlobal("rawKillmail", $rawKillmailParser);
 $twig->addExtension(new UserGlobals());
 
 $twig->addFunction(new Twig_SimpleFunction("pageTimer", "Util::pageTimer"));

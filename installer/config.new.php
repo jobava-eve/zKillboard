@@ -45,6 +45,9 @@ $baseAddr = "%baseaddr%";
 $fullAddr = "http://" . $baseAddr;
 chdir($baseDir);
 
+// Enable the raw killmail parser
+$rawKillmailParser = false;
+
 // SSO
 $ssoEnable = false;
 $ssoServer = "https://login.eveonline.com"; // use https://sisilogin.testeveonline.com for the test server

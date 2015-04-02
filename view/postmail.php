@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+global $rawKillmailParser;
+
 $error = "";
 
 if($_POST)
@@ -24,6 +26,7 @@ if($_POST)
 	$vcode = Util::getPost("vcode");
 	$killmail = Util::getPost("killmail");
 	$killmailurl = Util::getPost("killmailurl");
+	$rawKillmail = Util::getPost("rawkillmail");
 
 	// Apikey stuff
 	if($keyid || $vcode)
@@ -40,6 +43,7 @@ if($_POST)
 		}
 	}
 
+	// Crest Killmail
 	if ($killmailurl)
 	{
 		// Looks like http://public-crest.eveonline.com/killmails/30290604/787fb3714062f1700560d4a83ce32c67640b1797/
@@ -72,6 +76,27 @@ if($_POST)
 				if ($error == "") $error = "We waited 45 seconds for the kill to be processed but the server must be busy atm, please wait!";
 			}
 		}
+	}
+
+	// Raw manual killmail
+	if($rawKillmailParser && $rawKillmail)
+	{
+		$userData = User::getUserInfo();
+		if(User::isLoggedIn())
+		{
+			$return = Parser::parseRaw($killmail, $userData["id"]);
+
+			if(isset($return["success"]))
+				$app->redirect("/detail/" . $return["success"] . "/");
+
+			if(isset($return["dupe"]))
+				$app->redirect("/detail/" . $return["dupe"] . "/");
+
+			if(isset($return["error"]))
+				$error = $return["error"];
+		}
+		else
+			$error = "sorry, you need to be logged in to post raw killmails";
 	}
 }
 

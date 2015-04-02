@@ -94,17 +94,17 @@ class Parser
 			"killTime" => $timestamp,
 			"moonID" => 0,
 			"victim" => array(
-					"shipTypeID" => 0,
-					"damageTaken" => 0,
-					"factionName" => "",
-					"factionID" => 0,
-					"allianceName" => "",
-					"allianceID" => 0,
-					"corporationName" => "",
-					"corporationID" => 0,
-					"characterName" => "",
-					"characterID" => 0,
-				),
+				"shipTypeID" => 0,
+				"damageTaken" => 0,
+				"factionName" => "",
+				"factionID" => 0,
+				"allianceName" => "",
+				"allianceID" => 0,
+				"corporationName" => "",
+				"corporationID" => 0,
+				"characterName" => "",
+				"characterID" => 0,
+			),
 			"attackers" => array(),
 			"items" => array()
 		);
@@ -359,43 +359,43 @@ class Parser
 		{
 			$victimGroupID = Info::getGroupID($killMail["victim"]["shipTypeID"]);
 			$noCharGroups = array(
-					311, // Refining Arrays
-					363, // [Capital] Ship Maintenance Array
-					365, // POS's
-					397, // Assembly Arrays
-					404, // Silos
-					413, // Mobile POS Labs
-					416, // Moon Harvester
-					413, // Mobile POS Labs
-					417, // Missile and Torpedo Batteries
-					426, // Artillery Batteries
-					430, // Laser Batteries
-					438, // Reactor Arrays
-					439, // ECM Batteries
-					440, // Dampening Arrays
-					441, // Web Batteries
-					443, // Warp scrambling arrays
-					444, // POS damage arrays (ballistic, explosion, heat, photon)
-					449, // Blaster & Railgun Batteries
-					471, // Corporation Hangar Array, ShipYard
-					473, // Tracking Array
-					707, // Jump Bridges
-					709, // Scanning Arrays
-					837, // Neut Batteries
-					838, // Cynosural Generator Array
-					839, // Cynosural System Jammer
-					1003, // Territorial Claim Unit
-					1003, // QA Territorial Claim Unit
-					1005, // Sovereignty Blockade Unit
-					1005, // QA Sovereignty Blockade Unit
-					1012, // QA Infrastructure Hub
-					1012, // Infrastructure Hub
-					1025, // Customs Office
-					1025, // Orbital Command Center
-					1025, // Interbus Customs Office
-					1106, // Customs Office Gantry
-					1012, // IHUBS
-					);
+				311, // Refining Arrays
+				363, // [Capital] Ship Maintenance Array
+				365, // POS's
+				397, // Assembly Arrays
+				404, // Silos
+				413, // Mobile POS Labs
+				416, // Moon Harvester
+				413, // Mobile POS Labs
+				417, // Missile and Torpedo Batteries
+				426, // Artillery Batteries
+				430, // Laser Batteries
+				438, // Reactor Arrays
+				439, // ECM Batteries
+				440, // Dampening Arrays
+				441, // Web Batteries
+				443, // Warp scrambling arrays
+				444, // POS damage arrays (ballistic, explosion, heat, photon)
+				449, // Blaster & Railgun Batteries
+				471, // Corporation Hangar Array, ShipYard
+				473, // Tracking Array
+				707, // Jump Bridges
+				709, // Scanning Arrays
+				837, // Neut Batteries
+				838, // Cynosural Generator Array
+				839, // Cynosural System Jammer
+				1003, // Territorial Claim Unit
+				1003, // QA Territorial Claim Unit
+				1005, // Sovereignty Blockade Unit
+				1005, // QA Sovereignty Blockade Unit
+				1012, // QA Infrastructure Hub
+				1012, // Infrastructure Hub
+				1025, // Customs Office
+				1025, // Orbital Command Center
+				1025, // Interbus Customs Office
+				1106, // Customs Office Gantry
+				1012, // IHUBS
+			);
 
 			// Allow POS's, POS modules, ihub's and poco's, TCU, SBU
 			if (in_array($victimGroupID, $noCharGroups))  {  } // noop() - do nothing

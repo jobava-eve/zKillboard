@@ -1,0 +1,72 @@
+{% if detail.shipsDestroyed or detail.shipsLost %}
+{% set shipEff = (detail.shipsDestroyed + detail.shipsLost) == 0 ? 100 : (detail.shipsDestroyed / (detail.shipsDestroyed + detail.shipsLost)) * 100 %}
+{% set pointsEff = (detail.pointsDestroyed + detail.pointsLost) == 0 ? 100 : (detail.pointsDestroyed / (detail.pointsDestroyed + detail.pointsLost)) * 100 %}
+{% set iskEff = (detail.iskDestroyed + detail.iskLost) == 0 ? 100 : (detail.iskDestroyed / (detail.iskDestroyed + detail.iskLost)) * 100 %}
+<table style="margin: 0px; padding: 0px; background-color: transparent;" class="table table-condensed col-lg-6">
+	<tbody>
+	<tr>
+		<th>&nbsp;</th>
+		<th style="text-align: right">Destroyed</th>
+		<th style="text-align: right" class="hidden-xs">Rank</th>
+		<th style="text-align: right">Lost</th>
+		<th style="text-align: right" class="hidden-xs">Rank</th>
+		<th style="text-align: right; white-space:nowrap;" class="hidden-xs">Eff. %</th>
+		<th style="text-align: right; white-space:nowrap;" class="table-no-hover"><div class="hidden-xs">Alltime Rank</div><div class="visible-xs">Alltime</div></th>
+	</tr>
+	<tr>
+		<th style="text-align: right">Ships</th>
+		<td class="green" style="text-align: right" class="green-text">{{ detail.shipsDestroyed | number_format(0) }}</td>
+		<td class="green hidden-xs" style="text-align: right">{{ detail.ranks.sdRank == 0 ? '-' : detail.ranks.sdRank | number_format(0) }}</td>
+		<td class="red" style="text-align: right">{{ detail.shipsLost | number_format(0) }}</td>
+		<td class="red hidden-xs" style="text-align: right">{{ detail.ranks.slRank == 0 ? '-' : detail.ranks.slRank | number_format(0) }}</td>
+		{% set greenred = shipEff >= 50 ? 'green' : 'red' %}
+		<td class="{{greenred}} hidden-xs" style="text-align: right">{{ shipEff | number_format(1) }}</td>
+		<th style="text-align: right;">
+			<strong>{{ detail.ranks.overallRank == 0 ? '-' : detail.ranks.overallRank | number_format(0) }}</strong>
+			{% if detail.progress.overallRank > detail.ranks.overallRank and detail.progress.overallRank != 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.overallRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-up green"></span></small>
+			{% elseif detail.progress.overallRank < detail.ranks.overallRank and detail.progress.overallRank != 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.overallRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-down red"></span></small>
+			{% elseif detail.progress.overallRank != 0 %}
+				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus green"></span></small>
+			{% else %}
+				<small><span rel="tooltip" class="glyphicon glyphicon-minus"></span></small>
+			{% endif %}
+			</th>
+	</tr>
+	<tr>
+		<th style="text-align: right">Points</th>
+		<td class="green" style="text-align: right">{{ detail.pointsDestroyed | number_format(0) }}</td>
+		<td class="green hidden-xs" style="text-align: right">{{ detail.ranks.pdRank == 0 ? '-' : detail.ranks.pdRank | number_format(0) }}</td>
+		<td class="red" style="text-align: right">{{ detail.pointsLost | number_format(0) }}</td>
+		<td class="red hidden-xs" style="text-align: right">{{ detail.ranks.plRank  == 0 ? '-' : detail.ranks.plRank | number_format(0) }}</td>
+		{% set greenred = pointsEff >= 50 ? 'green' : 'red' %}
+		<td class="{{greenred}} hidden-xs" style="text-align: right">{{ pointsEff | number_format(1) }}</td>
+		<th style="text-align: right"><div class="hidden-xs">Recent Rank</div><div class="visible-xs">Recent</div></th>
+	</tr>
+	<tr>
+		<th class="" style="text-align: right">ISK</th>
+		<td class="green"  style="text-align: right">{{ formatIsk(detail.iskDestroyed) }}</td>
+		<td class="green hidden-xs" style="text-align: right">{{ detail.ranks.idRank == 0 ? '-' : detail.ranks.idRank | number_format(0) }}</td>
+		<td class="red" style="text-align: right">{{ formatIsk(detail.iskLost) }}</td>
+		<td class="red hidden-xs" style="text-align: right">{{ detail.ranks.ilRank == 0 ? '-' : detail.ranks.ilRank | number_format(0) }}</td>
+		{% set greenred = iskEff >= 50 ? 'green' : 'red' %}
+		<td class="{{greenred}} hidden-xs" style="text-align: right">{{ iskEff | number_format(1) }}</td>
+		{% set recentRank = ( detail.ranks.recentRank is defined ? detail.ranks.recentRank | number_format(0) : '-') %}
+        	<th class="" style="text-align: right;">
+			<strong>{{ recentRank }}</strong>
+			{% if detail.progress.recentRank > detail.ranks.recentRank and detail.progress.recentRank != 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.recentRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-up green"></span></small>
+			{% elseif detail.progress.recentRank < detail.ranks.recentRank and detail.progress.recentRank > 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.recentRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-down red"></span></small>
+			{% elseif detail.progress.recentRank != 0 %}
+				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus green"></span></small>
+			{% else %}
+				<small><span rel="tooltip" class="glyphicon glyphicon-minus"></span></small>
+			{% endif %}
+			</th>
+	</tr>
+	</tbody>
+</table>
+{% endif %}
+
