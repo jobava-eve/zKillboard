@@ -1,7 +1,7 @@
 <?php
 set_time_limit(0);
 ini_set('memory_limit','512M');
-header('Content-Encoding: none;');
+//header('Content-Encoding: none;');
 header('X-Accel-Buffering: no');
 
 // Does config exist?
@@ -52,14 +52,16 @@ if($_POST)
 	$dbSuccess = true;
 	$reason = "";
 	// Test out the db params first..
+	$dbname = $settings["dbname"];
+	$dbhost = $settings["dbhost"];
 	$dsn = "mysql:dbname=" . $settings["dbname"] . ";host=" . $settings["dbhost"];
 	try
 	{
 		$pdo = new PDO($dsn, $settings["dbuser"], $settings["dbpassword"], array(
-			PDO::ATTR_TIMEOUT => 2,
-			PDO::ATTR_EMULATE_PREPARES => true,
-			PDO::ATTR_PERSISTENT => true,
-			PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+			PDO::ATTR_TIMEOUT => 10,
+			PDO::ATTR_EMULATE_PREPARES => false,
+			PDO::ATTR_PERSISTENT => false,
+			PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false
 			)
 		);
 	}
@@ -116,7 +118,7 @@ if($_POST)
 	output('<td><button type="button" class="btn btn-primary btn-circle"><i class="glyphicon glyphicon-ok"></i></button></td></tr>');
 
 	// Vendor is installed, config works, lets load the init!
-	require_once("$dir/../init.php"); 
+	require_once("$dir/../init.php");
 
 	// Time to import the database !
 	output('</tr><tr><td>Installing the database tables</td><td></td></tr>');
@@ -130,7 +132,7 @@ if($_POST)
 		{
 			$table = str_replace(".sql", "", $file);
 			$table = str_replace(".gz", "", $table);
-			$sqlFile = __DIR__."/../sql/$file";
+			$sqlFile = __DIR__."/../../install/sql/$file";
 			output('<tr><td>Adding table: <b>'.$table.'</b></td>');
 			output('<td>'. loadFile($sqlFile) .'</td></tr>');
 		}
