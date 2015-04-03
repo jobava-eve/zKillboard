@@ -1,27 +1,57 @@
 #!/usr/bin/env php
 <?php
 if(ob_get_level() == 0)
-        ob_start();
+		ob_start();
 
 ob_implicit_flush();
 
 // Load the config to get the stomp details
 require_once(__DIR__ . "/../config.php");
 
+$start = date("i");
+
+restart:
 $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 $stomp->subscribe("/topic/kills");
 while(true)
 {
-        $frame = $stomp->readFrame();
-        if(!empty($frame))
-        {
-                if(!empty($frame->body))
-                {
-                        $json = json_encode(json_decode($frame->body, true), JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
-                        fwrite(STDOUT, $json . "\n");
-                        ob_flush();
-                        flush();
-                }
-                $stomp->ack($frame->headers["message-id"]);
-        }
+	if(date("i") > $start || date("i") == 0)
+	{
+		$stomp = null;
+		if(date("i") == 0)
+			$start = 0;
+		else
+			$start = date("i");
+		// Yeeeees a goto...
+		goto restart;
+	}
+
+	try
+	{
+	        $frame = $stomp->readFrame();
+	        if(!empty($frame))
+	        {
+	                if(!empty($frame->body))
+	                {
+	                        $data = json_decode($frame->body, true);
+				if(!isset($data["killID"]))
+					throw new Exception("Error, the data i just got doesn't seem like the data i should've gotten..");
+
+	                        $json = json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+	                        fwrite(STDOUT, $json."\n");
+	                        ob_flush();
+	                        flush();
+	                }
+	                $stomp->ack($frame->headers["message-id"]);
+	        }
+		else
+			fwrite(STDOUT, json_encode(array("ping"))."\n");
+	}
+	catch (Exception $e)
+	{
+                fwrite(STDOUT, json_encode(array("error" => $e->getMessage())));
+                $stomp = NULL;
+		// mmm goto <3
+		goto restart;
+	}
 }
