@@ -43,7 +43,7 @@ class cli_wars implements cliCommand
 			foreach ($warRows as $warRow)
 			{
 				StatsD::increment("wars_processed");
-				if ($timer->stop() > 59000) continue;
+				if ($timer->stop() > 59000) exit();
 				$id = $warRow["warID"];
 
 				$href = "https://public-crest.eveonline.com/wars/$id/";
@@ -61,12 +61,12 @@ class cli_wars implements cliCommand
 					if ($page > 1) $kmHref .= "?page=$page";
 					while ($kmHref != null)
 					{
-						if ($timer->stop() > 59000) continue;
+						if ($timer->stop() > 59000) exit();
 						$killmails = Util::getCrest($kmHref);
 
 						foreach($killmails->items as $kill)
 						{
-							if ($timer->stop() > 59000) continue;
+							if ($timer->stop() > 59000) exit();
 							$href = $kill->href;
 							$exploded = explode("/", $href);
 							$killID = $exploded[4];
