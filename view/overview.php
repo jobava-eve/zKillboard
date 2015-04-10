@@ -217,17 +217,18 @@ switch ($key)
 		$filter = "{$key}ID = :id";
 }
 if ($filter != "") {
-	$hasSupers = Db::queryField("select killID from zz_participants where isVictim = 0 and groupID in (30, 659) and $filter and dttm >= date_sub(now(), interval 90 day) limit 1", "killID", array(":id" => $id));
+	$minKillID = Db::queryField("select min(killID) killID from zz_participants where dttm >= date_sub(now(), interval 90 day) and dttm < date_sub(now(), interval 89 day)", "killID", array(), 900);
+	$hasSupers = Db::queryField("select killID from zz_participants where isVictim = 0 and groupID in (30, 659) and $filter and killID > $minKillID limit 1", "killID", array(":id" => $id));
 	$extra["hasSupers"] = $hasSupers > 0;
 	$extra["supers"] = array();
 	if ($pageType == "supers" && $hasSupers)
 	{
 		$months = 3;
 		$data = array();
-		$data["titans"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 30 and $filter group by characterID order by 2 desc", array(":id" => $id));
+		$data["titans"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where  killID >= $minKillID and isVictim = 0 and groupID = 30 and $filter group by characterID order by 2 desc", array(":id" => $id), 900);
 		$data["titans"]["title"] = "Titans";
 
-		$data["moms"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 659 and $filter group by characterID order by 2 desc", array(":id" => $id));
+		$data["moms"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where killID >= $minKillID and isVictim = 0 and groupID = 659 and $filter group by characterID order by 2 desc", array(":id" => $id), 900);
 		$data["moms"]["title"] = "Supercarriers";
 
 		Info::addInfo($data);
