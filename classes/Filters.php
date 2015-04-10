@@ -1,7 +1,7 @@
 <?php
 
 /* zKillboard
- * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -53,11 +53,6 @@ class Filters
 			$whereClauses[] = "p.killID = " . ((int) $parameters["killID"]);
 		}
 
-		if (array_key_exists("api-only", $parameters)) {
-			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.killID > 0";
-		}
-
 		if (array_key_exists("solo", $parameters) && $parameters["solo"] === true) {
 			$tables[] = "zz_participants p";
 			$whereClauses[] = "p.number_involved = 1";
@@ -82,13 +77,22 @@ class Filters
 			$time = $parameters["startTime"];
 			$unixTime = strtotime($time);
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.dttm >= '" . date("Y-m-d H:i:s", (int)$unixTime) . "'";
+			$date = date("Y-m-d", (int)$unixTime);
+			$date2 = date("Y-m-d", (int) ($unixTime + 86400));
+			$dateKillID = Db::queryField("select min(killID) killID from zz_participants where dttm >= :d1 and dttm < :d2", "killID", array(":d1" => $date, ":d2" => $date2));
+			if ($dateKillID == null) $dateKillID = 0;
+			$whereClauses[] = "p.killID >= $dateKillID";
 		}
 		if (array_key_exists("endTime", $parameters)) {
 			$time = $parameters["endTime"];
 			$unixTime = strtotime($time);
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.dttm <= '" . date("Y-m-d H:i:s", (int)$unixTime) . "'";
+
+			$date = date("Y-m-d", (int)$unixTime);
+			$date2 = date("Y-m-d", (int) ($unixTime - 86400));
+			$dateKillID = Db::queryField("select max(killID) killID from zz_participants where dttm > :d2 and dttm <= :d1", "killID", array(":d1" => $date, ":d2" => $date2));
+			if ($dateKillID == null) $dateKillID = 0;
+			$whereClauses[] = "p.killID <= $dateKillID";
 		}
 
 		if (array_key_exists("pastSeconds", $parameters)) {
@@ -108,7 +112,7 @@ class Filters
 
 		if (array_key_exists("lowsec", $parameters)) {
 			$systems = array();
-			$rows = Db::query("select solarSystemID from ccp_systems where security >= 0 and security < 0.5", array(), 3600);
+			$rows = Db::query("select solarSystemID from ccp_systems where security > 0 and security <= 0.45", array(), 3600);
 			foreach($rows as $row) $systems[] = $row["solarSystemID"];
 			$tables[] = "zz_participants p";
 			$whereClauses[] = " solarSystemID in (" . implode(",", $systems) . ")";
@@ -116,7 +120,7 @@ class Filters
 
 		if (array_key_exists("highsec", $parameters)) {
 			$systems = array();
-			$rows = Db::query("select solarSystemID from ccp_systems where security >= 0.5", array(), 3600);
+			$rows = Db::query("select solarSystemID from ccp_systems where security > 0.45", array(), 3600);
 			foreach($rows as $row) $systems[] = $row["solarSystemID"];
 			$tables[] = "zz_participants p";
 			$whereClauses[] = " solarSystemID in (" . implode(",", $systems) . ")";
@@ -134,15 +138,11 @@ class Filters
 			$killID = (int)$parameters["beforeKillID"];
 			$tables[] = "zz_participants p";
 			$whereClauses[] = "p.killID < $killID";
-			//$killdttm = Db::queryField("select dttm from zz_participants where killID = :killID limit 1", "dttm", array(":killID" => $killID));
-			//$whereClauses[] = "p.dttm <= '$killdttm'";
 		}
 		if (array_key_exists("afterKillID", $parameters)) {
 			$killID = (int)$parameters["afterKillID"];
 			$tables[] = "zz_participants p";
 			$whereClauses[] = "p.killID > $killID";
-			//$killdttm = Db::queryField("select dttm from zz_participants where killID = :killID limit 1", "dttm", array(":killID" => $killID));
-			//$whereClauses[] = "p.dttm >= '$killdttm'";
 		}
 		if (array_key_exists("war", $parameters) || array_key_exists("warID", $parameters)) {
 			$warID = isset($parameters["war"]) ? (int)$parameters["war"] : (int)$parameters["warID"];
