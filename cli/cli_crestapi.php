@@ -84,9 +84,7 @@ class cli_crestapi implements cliCommand
 
 					// statsD
 					StatsD::increment("crest_processing");
-
 					$perrymail = json_decode($body, false);
-					MTools::putMail($killID, $body);
 
 					$killmail = array();
 					$killmail["killID"] = (int) $killID;
