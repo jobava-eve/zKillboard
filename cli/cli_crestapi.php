@@ -1,6 +1,6 @@
 <?php
 /* zKillboard
- * Copyright (C) 2012-2015 EVE-KILL Team and EVSCO.
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,87 +42,81 @@ class cli_crestapi implements cliCommand
 	 */
 	public function execute($parameters, $db)
 	{
-		if (Util::isMaintenanceMode()) return;
 		global $debug, $baseAddr;
 		$count = 0;
 		$timer = new Timer();
-		Log::log("Starting CREST API killmail parsing");
-		while ($timer->stop() < 59000)
-		{
-			// Get the killmail data
-			$data = $db->queryRow("SELECT * FROM zz_crest_killmail WHERE processed = 0 ORDER BY dttm DESC LIMIT 1", array(), 0);
-			try
-			{
-				// Bind the data to variables
-				$killID = isset($data["killID"]) ? $data["killID"] : NULL;
-				$hash = isset($data["hash"]) ? trim($data["hash"]) : NULL;
 
-				// If neither killID or hash is set, just return.. no need to go on..
-				if($killID == NULL || $hash == NULL)
-					return;
+		$db::execute("update zz_crest_killmail set processed = 0 where processed < -500");
+		do {
+			// Put priority on unknown kills first
+			/*$crests = $db->query("select c.* from zz_crest_killmail c left join zz_killmails k on (c.killID = k.killID) where c.processed = 0 and k.killID is null order by killID desc limit 1", array(), 0);
+			// If no unknown kills, then check the rest
+			if (count($crests) == 0)*/ $crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 1", array(), 0);
+			foreach ($crests as $crest) {
+				try {
+					if (Util::isMaintenanceMode()) return;
+					$now = $timer->stop();
+					$killID = $crest["killID"];
+					$hash = trim($crest["hash"]);
 
-				if($debug)
-					Log::log("CREST API: Processing kill $killID");
+					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
+					if ($debug) Log::log($url);
 
-				// Get the data from CREST
-				StatsD::increment("crest_calls");
-				$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL, $url);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_USERAGENT, "API Fetcher for http://$baseAddr");
-				$body = curl_exec($ch);
-				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+					StatsD::increment("crest_calls");
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $url);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($ch, CURLOPT_USERAGENT, "API Fetcher for http://$baseAddr");
+					$body = curl_exec($ch);
+					$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+					if ($httpCode > 500)
+					{
+						StatsD::increment("crest_processing.500")
+						sleep(5);
+						continue;
+					}
+					if ($httpCode != 200)
+					{
+						Db::execute("update zz_crest_killmail set processed = :i where killID = :killID and hash = :hash", array(":i" => (-1 * $httpCode), ":killID" => $killID, ":hash" => $hash));
+						continue;
+					}
 
-				// If the server is rejecting us, bail
-				if ($httpCode > 500)
-				{
-					StatsD::increment("crest_processing.500");
-					return;
+					// statsD
+					StatsD::increment("crest_processing");
+
+					$perrymail = json_decode($body, false);
+					MTools::putMail($killID, $body);
+
+					$killmail = array();
+					$killmail["killID"] = (int) $killID;
+					$killmail["solarSystemID"] = (int) $perrymail->solarSystem->id;
+					$killmail["killTime"] = str_replace(".", "-", $perrymail->killTime);
+					$killmail["moonID"] = (int) @$perrymail->moon->id;
+
+					$victim = array();
+					$killmail["victim"] = self::getVictim($perrymail->victim);
+					$killmail["attackers"] = self::getAttackers($perrymail->attackers);
+					$killmail["items"] = self::getItems($perrymail->victim->items);
+
+					$json = json_encode($killmail);
+					$killmailHash = Util::getKillHash(null, json_decode($json));
+
+					$c = $db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
+					$db->execute("update zz_crest_killmail set processed = 1 where killID = :killID and hash = :hash", array(":killID" => $killID, ":hash" => $hash));
+					Db::execute("insert ignore into transfers values (:killID)", array(":killID" => $killID));
+					// Share with zKillboard
+					if ($baseAddr != "zkillboard.com") file_get_contents("https://zkillboard.com/crestmail/$killID/$hash/");
+
+					if ($c > 0) $count++;
+				} catch (Exception $ex) {
+					Log::log("CREST exception: $killID - " . $ex->getMessage());
+					$db->execute("update zz_crest_killmail set processed = -1 where killID = :killID and hash = :hash", array(":killID" => $killID, ":hash" => $hash));
 				}
-				// If we get an error code, it's probably because the server either doesn't work, or because the kill is wrong, so wrong..
-				if ($httpCode != 200)
-				{
-					StatsD::increment("crest_processing.error");
-					Log::log("Crestapi Error: $killID / $httpCode");
-					$db->execute("update zz_crest_killmail set processed = :i where killID = :killID", array(":i" => (-1 * $httpCode), ":killID" => $killID));
-					usleep(250000);
-					continue;
-				}
-
-				// statsD
-				StatsD::increment("crest_processing");
-
-				// Decode the killmail data
-				$perrymail = json_decode($body, false);
-
-				// Generate the killmail
-				$killmail = array();
-				$killmail["killID"] = (int) $killID;
-				$killmail["solarSystemID"] = (int) $perrymail->solarSystem->id;
-				$killmail["killTime"] = str_replace(".", "-", $perrymail->killTime);
-				$killmail["moonID"] = (int) @$perrymail->moon->id;
-
-				$victim = array();
-				$killmail["victim"] = self::getVictim($perrymail->victim);
-				$killmail["attackers"] = self::getAttackers($perrymail->attackers);
-				$killmail["items"] = self::getItems($perrymail->victim->items);
-
-				// Encode the killmail data into json
-				$json = json_encode($killmail);
-				$killmailHash = Util::getKillHash(null, json_decode($json));
-
-				// Insert the killmail into zz_killmails
-				$db->execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
-				$db->execute("UPDATE zz_crest_killmail SET processed = 1 WHERE killID = :killID", array(":killID" => $killID));
 			}
-			catch (Exception $ex)
-			{
-				Log::log("CREST exception: $killID - " . $ex->getMessage());
-				$db->execute("UPDATE zz_crest_killmail SET processed = -1 WHERE killID = :killID", array(":killID" => $killID));
-			}
-		}
+			if (count($crests) == 0) sleep(1);
+		} while ($timer->stop() < 65000);
+		if ($count) Log::log("CREST: Added $count kills");
 	}
 
 	/**
@@ -179,16 +173,14 @@ class cli_crestapi implements cliCommand
 	private static function getItems($items)
 	{
 		$retArray = array();
-		foreach($items as $item)
-		{
+		foreach($items as $item) {
 			$i = array();
 			$i["typeID"] = (int) @$item->itemType->id;
 			$i["flag"] = (int) @$item->flag;
 			$i["qtyDropped"] = (int) @$item->quantityDropped;
 			$i["qtyDestroyed"] = (int) @$item->quantityDestroyed;
 			$i["singleton"] = (int) @$item->singleton;
-			if (isset($item->items))
-				$i["items"] = self::getItems($item->items);
+			if (isset($item->items)) $i["items"] = self::getItems($item->items);
 			$retArray[] = $i;
 		}
 		return $retArray;
