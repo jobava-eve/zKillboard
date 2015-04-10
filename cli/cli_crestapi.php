@@ -72,7 +72,7 @@ class cli_crestapi implements cliCommand
 
 					if ($httpCode > 500)
 					{
-						StatsD::increment("crest_processing.500")
+						StatsD::increment("crest_processing.500");
 						sleep(5);
 						continue;
 					}
