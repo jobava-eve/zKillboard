@@ -59,8 +59,8 @@ class cli_populateAlliances implements cliCommand
 			$exception = $ex;
 		}
 		if ($list != null && sizeof($list->alliances) > 0) {
-			$db->execute("update zz_alliances set memberCount = 0");
-			$db->execute("update zz_corporations set allianceID = 0");
+			$db->execute("UPDATE zz_alliances SET memberCount = 0 WHERE memberCount > 0");
+			$db->execute("UPDATE zz_corporations SET allianceID = 0 WHERE allianceID != 0");
 			foreach ($list->alliances as $alliance) {
 				$allianceCount++;
 				$allianceID = $alliance['allianceID'];
