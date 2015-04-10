@@ -39,15 +39,11 @@ class cli_statsQueue implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
-			$processedKills = $db->query("select killID from zz_stats_queue limit 100", array(), 0);
-			if (count($processedKills) == 0)
-			{
-				sleep(5);
-				continue;
-			}
-
+			$processedKills = $db->query("SELECT killID FROM zz_stats_queue", array(), 0);
 			foreach($processedKills as $row)
 			{
+				if(timer->stop() > 65000) exit();
+
 				$killID = $row["killID"];
 				Stats::calcStats($killID, true);
 				// Add points and total value to the json stored in the database
@@ -84,6 +80,7 @@ class cli_statsQueue implements cliCommand
 				if (class_exists("Stomp"))
 					StompUtil::sendKill($killID);
 			}
+			sleep(1);
 		}
 	}
 }
