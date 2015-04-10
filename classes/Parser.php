@@ -654,10 +654,10 @@ class Parser
 					'Отсек дронов' => 'Drone Bay',
 					'Луна:' => 'Moon:',
 					'(Груз)' => '(Cargo)',
-					'(Имплантат)' => '(Implant)',
+					'(植入体)' => '(Implant)',
 					'кол-во:' => 'Qty:',
 					'(В контейнере)' => '(In Container)',
-					'Уничтоженные предметы:' => 'Destroyed items:',
+					'被毁物品:' => 'Destroyed items:',
 				);
 			foreach ($translation as $w => $t) {
 				$mail = str_ireplace($w, $t, $mail);
