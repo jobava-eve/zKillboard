@@ -4,6 +4,5 @@ composer.phar
 .lighttpd.conf
 www.pid
 cache/sessions
-killmails
 sitemaps/
 cron.overrides
