@@ -633,6 +633,9 @@ class Parser
 
 		// Chinese
 		if (strpos($mail, "军团") || strpos($mail, "受害者")) {
+			// Just incase that weird : is standard on all chinese mails
+			$mail = str_replace("：", ":", $mail);
+
 			$translation = array(
 					'受害者:' => 'Victim:',
 					'联盟:' => 'Alliance:',
