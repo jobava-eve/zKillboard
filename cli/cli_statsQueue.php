@@ -42,7 +42,7 @@ class cli_statsQueue implements cliCommand
 			$processedKills = $db->query("SELECT killID FROM zz_stats_queue", array(), 0);
 			foreach($processedKills as $row)
 			{
-				if(timer->stop() > 65000) exit();
+				if($timer->stop() > 65000) exit();
 
 				$killID = $row["killID"];
 				Stats::calcStats($killID, true);
