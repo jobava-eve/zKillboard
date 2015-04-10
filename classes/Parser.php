@@ -632,48 +632,37 @@ class Parser
 		}
 
 		// Chinese
-		/*if (strpos($mail, "Корпорация") || strpos($mail, "Неизвестно")) {
+		if (strpos($mail, "军团") || strpos($mail, "受害者")) {
 			$translation = array(
-					'Жертва:' => 'Victim:',
-					'Альянс: НЕТ' => 'Alliance: None',
-					'Альянс: нет' => 'Alliance: None',
-					'Альянс: Нет' => 'Alliance: None',
-					': НЕТ' => ": None",
-					': нет' => ": None",
-					': Нет' => ": None",
-					'Альянс:' => 'Alliance:',
-					'Имя:' => 'Name:',
-					'Фракция: Неизвестно' => 'Faction: None',
-					'Фракция: НЕТ' => 'Faction: None',
-					'Фракция: нет' => 'Faction: None',
-					'Фракция: Нет' => 'Faction: None',
-					'Фракция:' => 'Faction:',
-					'Уничтоженные предметы:' => 'Destroyed items:',
-					'Уничтожено:' => 'Destroyed:',
-					'Уровень безопасности:' => 'Security:',
-					'Система:' => 'System:',
-					'Участники:' => 'Involved parties:',
-					'кол-во:' => 'Qty:',
-					'Корпорация:' => 'Corp:',
-					'(Груз)' => '(Cargo)',
-					'(Имплантат)' => '(Implant)',
-					'Корабль:' => 'Ship:',
-					'Оружие:' => 'Weapon:',
-					'(В контейнере)' => '(In Container)',
-					'Нанесенный ущерб:' => 'Damage Done:',
-					'Полученный ущерб:' => 'Damage Taken:',
-					'(нанес последний удар)' => '(laid the final blow)',
+					'受害者:' => 'Victim:',
+					'联盟:' => 'Alliance:',
+					'名称:' => 'Name:',
+					'势力:' => 'Faction:',
+					'被摧毁物:' => 'Destroyed:',
+					'安全等级:' => 'Security:',
+					'星系:' => 'System:',
+					'参与者:' => 'Involved parties:',
+					'军团:' => 'Corp:',
+					'舰船:' => 'Ship:',
+					'武器:' => 'Weapon:',
+					'造成损伤:' => 'Damage Done:',
+					'所受损伤:' => 'Damage Taken:',
+					'(给予最后一击)' => '(laid the final blow)',
 					'Сброшенные предметы:' => 'Dropped items:',
 					'кол-во:' => 'Qty:',
 					'Неизвестно' => 'None',
 					'Отсек дронов' => 'Drone Bay',
 					'Луна:' => 'Moon:',
-
+					'(Груз)' => '(Cargo)',
+					'(Имплантат)' => '(Implant)',
+					'кол-во:' => 'Qty:',
+					'(В контейнере)' => '(In Container)',
+					'Уничтоженные предметы:' => 'Destroyed items:',
 				);
 			foreach ($translation as $w => $t) {
 				$mail = str_ireplace($w, $t, $mail);
 			}
-		}*/
+		}
 		return $mail;
 	}
 }
