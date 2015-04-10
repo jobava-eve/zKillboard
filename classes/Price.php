@@ -92,6 +92,7 @@ class Price
 		}
 
 		usleep(33334); // Limit CREST market calls to 30 per second (sleep regardless of when we made our last call)
+		Log::log("Fetching price for $typeID");
 
 		$url = "http://public-crest.eveonline.com/market/10000002/types/$typeID/history/";
 		$raw = Util::getData($url);

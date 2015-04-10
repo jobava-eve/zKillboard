@@ -78,10 +78,6 @@ class cli_parseKills implements cliCommand
 			// Parse order
 			$minMax = $parseAscending ? "min" : "max";
 
-			// If the price cache is updating, we shouldn't to the latest to oldest mails
-			if (date("Gi") < 105)
-				$minMax = "min"; // Override during CREST cache interval
-
 			// Select killIDs to process
 			$id = $db->queryField("SELECT $minMax(killID) killID FROM zz_killmails WHERE processed = 0 AND killID > 0", "killID", array(), 0);
 
@@ -123,14 +119,6 @@ class cli_parseKills implements cliCommand
 
 				// Hash is already in the $row array, no need to fetch it from the DB unless we have to..
 				$hash = $row["hash"];
-
-				// Because of CREST caching AND the want for accurate prices, don't process the first hour
-				// of kills until after 01:05 each day
-				if (date("Gi") < 105 && $kill["killTime"] >= date("Y-m-d 00:00:00"))
-				{
-					sleep(1);
-					continue;
-				}
 
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
