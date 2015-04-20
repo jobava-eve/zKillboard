@@ -45,6 +45,9 @@ $baseAddr = "%baseaddr%";
 $fullAddr = "http://" . $baseAddr;
 chdir($baseDir);
 
+// Enable the raw killmail parser
+$rawKillmailParser = false;
+
 // SSO
 $ssoEnable = false;
 $ssoServer = "https://login.eveonline.com"; // use https://sisilogin.testeveonline.com for the test server
@@ -144,8 +147,8 @@ $config = array(
 	"mode" => ($debug ? "development" : "production"),
 	"debug" => ($debug ? true : false),
 	"log.enabled" => false,
-	"cookies.secret_key" => $cookie_secret
-	);
+	"cookies.secret_key" => $cookie_secret,
+);
 
 $useSemaphores = false;
 $semaphoreModulus = 10;
