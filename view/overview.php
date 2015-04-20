@@ -17,41 +17,59 @@
  */
 
 $key = $input[0];
-if (!isset($input[1])) $app->redirect("/");
+if (!isset($input[1])) {
+	$app->redirect("/");
+}
+
 $id = $input[1];
 $pageType = @$input[2];
 
-if (strlen("$id") > 11) $app->redirect("/");
+if (strlen("$id") > 11) {
+	$app->redirect("/");
+}
 
-if ($pageType == "history") $app->redirect("../stats/");
+if ($pageType == "history") {
+	$app->redirect("../stats/");
+}
 
 $validSubPages = array("page", "group", "month", "year", "ship");
 $validPageTypes = array("overview", "kills", "losses", "solo", "stats", "wars", "supers", "page", "api", "corpstats", "top", "topalltime");
-if (!in_array($pageType, $validPageTypes) && $pageType != "" && !in_array($pageType, $validSubPages)) $app->redirect("/$key/$id/");
-if ($pageType == "" || in_array($pageType, $validSubPages)) $pageType = "overview";
-
-
-$map = array(
-		"corporation"   => array("column" => "corporation", "id" => "Info::getCorpId", "details" => "Info::getCorpDetails", "mixed" => true),
-		"character"     => array("column" => "character", "id" => "Info::getCharId", "details" => "Info::getPilotDetails", "mixed" => true),
-		"alliance"      => array("column" => "alliance", "id" => "Info::getAlliId", "details" => "Info::getAlliDetails", "mixed" => true),
-		"faction"       => array("column" => "faction", "id" => "Info::getFactionId", "details" => "Info::getFactionDetails", "mixed" => true),
-		"system"        => array("column" => "solarSystem", "id" => "Info::getSystemId", "details" => "Info::getSystemDetails", "mixed" => true),
-		"region"        => array("column" => "region", "id" => "Info::getRegionId", "details" => "Info::getRegionDetails", "mixed" => true),
-		"group"			=> array("column" => "group", "id" => "Info::getGroupIDFromName", "details" => "Info::getGroupDetails", "mixed" => true),
-		"ship"          => array("column" => "shipType", "id" => "Info::getShipId", "details" => "Info::getShipDetails", "mixed" => true),
-		);
-if (!array_key_exists($key, $map)) $app->notFound();
-
-if (!is_numeric($id))
-{
-	$function = $map[$key]["id"];
-	$id = call_user_func($function, $id);
-	if ($id > 0) $app->redirect("/" . $key . "/" . $id . "/", 301);
-	else $app->notFound();
+if (!in_array($pageType, $validPageTypes) && $pageType != "" && !in_array($pageType, $validSubPages)) {
+	$app->redirect("/$key/$id/");
 }
 
-if ($id <= 0) $app->notFound();
+if ($pageType == "" || in_array($pageType, $validSubPages)) {
+	$pageType = "overview";
+}
+
+$map = array(
+	"corporation" => array("column" => "corporation", "id" => "Info::getCorpId", "details" => "Info::getCorpDetails", "mixed" => true),
+	"character" => array("column" => "character", "id" => "Info::getCharId", "details" => "Info::getPilotDetails", "mixed" => true),
+	"alliance" => array("column" => "alliance", "id" => "Info::getAlliId", "details" => "Info::getAlliDetails", "mixed" => true),
+	"faction" => array("column" => "faction", "id" => "Info::getFactionId", "details" => "Info::getFactionDetails", "mixed" => true),
+	"system" => array("column" => "solarSystem", "id" => "Info::getSystemId", "details" => "Info::getSystemDetails", "mixed" => true),
+	"region" => array("column" => "region", "id" => "Info::getRegionId", "details" => "Info::getRegionDetails", "mixed" => true),
+	"group" => array("column" => "group", "id" => "Info::getGroupIDFromName", "details" => "Info::getGroupDetails", "mixed" => true),
+	"ship" => array("column" => "shipType", "id" => "Info::getShipId", "details" => "Info::getShipDetails", "mixed" => true),
+);
+if (!array_key_exists($key, $map)) {
+	$app->notFound();
+}
+
+if (!is_numeric($id)) {
+	$function = $map[$key]["id"];
+	$id = call_user_func($function, $id);
+	if ($id > 0) {
+		$app->redirect("/" . $key . "/" . $id . "/", 301);
+	} else {
+		$app->notFound();
+	}
+
+}
+
+if ($id <= 0) {
+	$app->notFound();
+}
 
 $parameters = Util::convertUriToParameters();
 @$page = max(1, $parameters["page"]);
@@ -63,9 +81,11 @@ $parameters["limit"] = $limit;
 $parameters["page"] = $page;
 try {
 	$detail = call_user_func($map[$key]["details"], $id, $parameters);
-	if (isset($detail["valid"]) && $detail["valid"] == false) $app->notFound();
-} catch (Exception $ex)
-{
+	if (isset($detail["valid"]) && $detail["valid"] == false) {
+		$app->notFound();
+	}
+
+} catch (Exception $ex) {
 	$app->render("error.html", array("message" => "There was an error fetching information for the $key you specified."));
 	return;
 }
@@ -76,15 +96,18 @@ $columnName = $map[$key]["column"] . "ID";
 $mixedKills = $pageType == "overview" && $map[$key]["mixed"] && UserConfig::get("mixKillsWithLosses", true);
 
 $mixed = $pageType == "overview" ? Kills::getKills($parameters) : array();
-$kills = $pageType == "kills"    ? Kills::getKills($parameters) : array();
-$losses = $pageType == "losses"  ? Kills::getKills($parameters) : array();
+$kills = $pageType == "kills" ? Kills::getKills($parameters) : array();
+$losses = $pageType == "losses" ? Kills::getKills($parameters) : array();
 
 if ($pageType != "solo" || $key == "faction") {
 	$soloKills = array();
 	//$soloCount = 0;
 } else {
 	$soloParams = $parameters;
-	if (!isset($parameters["kills"]) || !isset($parameters["losses"])) $soloParams["mixed"] = true;
+	if (!isset($parameters["kills"]) || !isset($parameters["losses"])) {
+		$soloParams["mixed"] = true;
+	}
+
 	$soloKills = Kills::getKills($soloParams);
 	//$soloCount = Db::queryField("select count(killID) count from zz_participants where " . $map[$key]["column"] . "ID = :id and isVictim = 1 and number_involved = 1", "count", array(":id" => $id), 3600);
 }
@@ -98,14 +121,19 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
 
-	if($pageType != "topalltime")
-	{
-		if(!isset($topParameters["year"]))
+	if ($pageType != "topalltime") {
+		if (!isset($topParameters["year"])) {
 			$topParameters["year"] = date("Y");
-		if(!isset($topParameters["month"]))
+		}
+
+		if (!isset($topParameters["month"])) {
 			$topParameters["month"] = date("m");
+		}
+
 	}
-	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
+	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) {
+		$topParameters["kills"] = true;
+	}
 
 	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
 	$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
@@ -121,49 +149,57 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 		$topLists[] = array("name" => "Top Faction Alliances", "type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
 	}
 } else {
-                $p = $parameters;
-                $numDays = 7;
-                $p["limit"] = 10;
-                $p["pastSeconds"] = $numDays * 86400;
-                $p["kills"] = $pageType != "losses";
+	$p = $parameters;
+	$numDays = 7;
+	$p["limit"] = 10;
+	$p["pastSeconds"] = $numDays * 86400;
+	$p["kills"] = $pageType != "losses";
 
-		if ($key != "character") {
-			$topLists[] = Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p));
-			if ($key != "corporation") {
-				$topLists[] = Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p));
-				if ($key != "alliance") {
-					$topLists[] = Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p));
-				}
+	if ($key != "character") {
+		$topLists[] = Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p));
+		if ($key != "corporation") {
+			$topLists[] = Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p));
+			if ($key != "alliance") {
+				$topLists[] = Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p));
 			}
 		}
-		if ($key != "ship") $topLists[] = Info::doMakeCommon("Top Ships", "shipTypeID", Stats::getTopShips($p));
-		if ($key != "system") $topLists[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
-		$p["limit"] = 5;
-		$topKills = Stats::getTopIsk($p);
+	}
+	if ($key != "ship") {
+		$topLists[] = Info::doMakeCommon("Top Ships", "shipTypeID", Stats::getTopShips($p));
+	}
+
+	if ($key != "system") {
+		$topLists[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
+	}
+
+	$p["limit"] = 5;
+	$topKills = Stats::getTopIsk($p);
 }
 
 $corpList = array();
-if ($pageType == "api") $corpList = Info::getCorps($id);
+if ($pageType == "api") {
+	$corpList = Info::getCorps($id);
+}
 
 $corpStats = array();
-if ($pageType == "corpstats") $corpStats = Info::getCorpStats($id, $parameters);
+if ($pageType == "corpstats") {
+	$corpStats = Info::getCorpStats($id, $parameters);
+}
 
 $onlyHistory = array("character", "corporation", "alliance");
 if ($pageType == "stats" && in_array($key, $onlyHistory)) {
 	$detail["history"] = Summary::getMonthlyHistory($columnName, $id);
-} else $detail["history"] = array();
+} else {
+	$detail["history"] = array();
+}
 
 // Figure out if the character or corporation has any API keys in the database
 $apiVerified = false;
-if(in_array($key, array("character", "corporation")))
-{
-	if($key == "character")
-	{
+if (in_array($key, array("character", "corporation"))) {
+	if ($key == "character") {
 		$count = Db::queryField("SELECT count(1) count FROM zz_api_characters WHERE characterID = :characterID", "count", array(":characterID" => $id));
 		$apiVerified = $count > 0 ? 1 : 0;
-	}
-	else
-	{
+	} else {
 		$count = Db::queryField("select count(1) count from zz_api_characters where isDirector = 'T' and corporationID = :corpID", "count", array(":corpID" => $id));
 		$apiVerified = $count > 0 ? 1 : 0;
 	}
@@ -173,24 +209,27 @@ $cnt = 0;
 $cnid = 0;
 $stats = array();
 $totalcount = ceil(count($detail["stats"]) / 4);
-foreach($detail["stats"] as $q)
-{
-	if($cnt == $totalcount)
-	{
+foreach ($detail["stats"] as $q) {
+	if ($cnt == $totalcount) {
 		$cnid++;
 		$cnt = 0;
 	}
 	$stats[$cnid][] = $q;
 	$cnt++;
 }
-if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
+if ($mixedKills) {
+	$kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
+}
 
 $prevID = null;
 $nextID = null;
-if (in_array($key, array("character", "corporation", "alliance", "faction")))
-{
-	if ($key == "faction") $table = "ccp_zfactions";
-	else $table = "zz_${key}s";
+if (in_array($key, array("character", "corporation", "alliance", "faction"))) {
+	if ($key == "faction") {
+		$table = "ccp_zfactions";
+	} else {
+		$table = "zz_${key}s";
+	}
+
 	$column = "${key}ID";
 	$prevID = Db::queryField("select $column from $table where $column < :id order by $column desc limit 1", $column, array(":id" => $id), 300);
 	$nextID = Db::queryField("select $column from $table where $column > :id order by $column asc limit 1", $column, array(":id" => $id), 300);
@@ -200,8 +239,7 @@ $warID = (int) $id;
 $extra = array();
 $extra["hasWars"] = Db::queryField("select count(distinct warID) count from zz_wars where aggressor = $warID or defender = $warID", "count");
 $extra["wars"] = array();
-if ($pageType == "wars" && $extra["hasWars"])
-{
+if ($pageType == "wars" && $extra["hasWars"]) {
 	$extra["wars"][] = War::getNamedWars("Active Wars - Aggressor", "select * from zz_wars where aggressor = $warID and timeFinished is null order by timeStarted desc");
 	$extra["wars"][] = War::getNamedWars("Active Wars - Defending", "select * from zz_wars where defender = $warID and timeFinished is null order by timeStarted desc");
 	$extra["wars"][] = War::getNamedWars("Closed Wars - Aggressor", "select * from zz_wars where aggressor = $warID and timeFinished is not null order by timeFinished desc");
@@ -209,8 +247,7 @@ if ($pageType == "wars" && $extra["hasWars"])
 }
 
 $filter = "";
-switch ($key)
-{
+switch ($key) {
 	case "corporation":
 	case "alliance":
 	case "faction":
@@ -218,11 +255,15 @@ switch ($key)
 }
 if ($filter != "") {
 	$minKillID = Db::queryField("select min(killID) killID from zz_participants where dttm >= date_sub(now(), interval 90 day) and dttm < date_sub(now(), interval 89 day)", "killID", array(), 900);
-	$hasSupers = Db::queryField("select killID from zz_participants where isVictim = 0 and groupID in (30, 659) and $filter and killID > $minKillID limit 1", "killID", array(":id" => $id));
+	if ($minKillID > 0) {
+		$hasSupers = Db::queryField("select killID from zz_participants where isVictim = 0 and groupID in (30, 659) and $filter and killID > $minKillID limit 1", "killID", array(":id" => $id));
+	} else {
+		$hasSupers = 0;
+	}
+
 	$extra["hasSupers"] = $hasSupers > 0;
 	$extra["supers"] = array();
-	if ($pageType == "supers" && $hasSupers)
-	{
+	if ($pageType == "supers" && $hasSupers) {
 		$months = 3;
 		$data = array();
 		$data["titans"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where  killID >= $minKillID and isVictim = 0 and groupID = 30 and $filter group by characterID order by 2 desc", array(":id" => $id), 900);
@@ -242,5 +283,3 @@ $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $l
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
 $app->render("overview.html", $renderParams);
-
-
