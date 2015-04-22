@@ -352,12 +352,11 @@ class cli_parseKills implements cliCommand
 		global $db;
 
 		$dttm = (string) $kill["killTime"];
-
-		$itemName = Db::queryField("select typeName from ccp_invTypes where typeID = :typeID", "typeName", array(":typeID" => $item["typeID"]));
+		$typeID = $item["typeID"];
+		$itemName = Db::queryField("select typeName from ccp_invTypes where typeID = :typeID", "typeName", array(":typeID" => $typeID));
 		if ($itemName == null)
 			$itemName = "TypeID $typeID";
 
-		$typeID = $item["typeID"];
 
 		if ($item["typeID"] == 33329 && $item["flag"] == 89)
 			$price = 0.01; // Golden pod implant can't be destroyed
