@@ -55,7 +55,8 @@ class cli_feedzKB implements cliCommand
 				if ($lastKillTime == "") $lastKillTime = null;
 				$feed["lastKillTime"] = $lastKillTime;
 
-				$feed["url"] = "https://zkillboard.com/api/{$entityType}ID/$id/";
+				// This URL should really be user defineable
+				$feed["url"] = "https://beta.eve-kill.net/api/combined/{$entityType}ID/$id/";
 				$feeds[] = $feed;
 			}
 		}
