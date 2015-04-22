@@ -48,6 +48,9 @@ chdir($baseDir);
 // Enable the raw killmail parser
 $rawKillmailParser = false;
 
+// Only fetch character if needed
+$enableCharacterFetcher = false;
+
 // SSO
 $ssoEnable = false;
 $ssoServer = "https://login.eveonline.com"; // use https://sisilogin.testeveonline.com for the test server

@@ -35,6 +35,11 @@ class cli_characters implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		global $enableCharacterFetcher;
+
+		if(!$enableCharacterFetcher)
+			return;
+
 		if (Util::is904Error())
 			return;
 
