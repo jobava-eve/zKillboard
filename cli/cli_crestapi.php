@@ -60,8 +60,6 @@ class cli_crestapi implements cliCommand
 					$hash = trim($crest["hash"]);
 
 					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
-					if ($debug) Log::log($url);
-
 					StatsD::increment("crest_calls");
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_URL, $url);
