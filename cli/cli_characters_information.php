@@ -60,6 +60,7 @@ class cli_characters_information implements cliCommand
 			$json = json_encode($data);
 
 			Db::execute("UPDATE zz_characters SET history = :data WHERE characterID = :characterID", array(":data" => $json, ":characterID" => $data["characterID"]));
+			StatsD::increment("characters_history");
 			usleep(333333); // Sleep for 333ms (3 a second)
 		}
 	}
