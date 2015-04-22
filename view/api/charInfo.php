@@ -50,6 +50,7 @@ class api_charInfo implements apiEndpoint
 		$data["lastSeenSystem"] = Info::getSystemName($lastSeenSystemID);
 		$data["lastSeenRegion"] = Info::getRegionName(Info::getRegionIDFromSystemID($lastSeenSystemID));
 		$data["lastSeenDate"] = Db::queryField("SELECT dttm FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "dttm", array(":charID" => $characterID));
+		$data["lastSeenShip"] = Info::getShipName(Db::queryField("SELECT shipTypeID FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "shipTypeID", array(":charID" => $characterID)));
 		$data["corporationActiveArea"] = Info::getRegionName(Info::getRegionIDFromSystemID($corpActiveSystemID));
 		$data["allianceActiveArea"] = isset($allianceID) ? Info::getRegionName(Info::getRegionIDFromSystemID($allianceActiveSystemID)) : "";
 		$data["lifeTimeKills"] = Db::queryField("SELECT count(*) AS kills FROM zz_participants WHERE characterID = :charID AND isVictim = 0", "kills", array(":charID" => $characterID));

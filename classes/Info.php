@@ -346,6 +346,12 @@ class Info
 		return $shipID;
 	}
 
+	public static function getShipName($id)
+	{
+		$shipName = Db::queryField("SELECT typeName FROM ccp_invTypes WHERE typeID = :id", "typeName", array(":id" => $id), 3600);
+		return $shipName;
+	}
+
 	/**
 	 * Attempt to find the name of a corporation in the corporations table.	If not found then attempt to pull the name via an API lookup.
 	 *
