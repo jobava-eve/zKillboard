@@ -102,7 +102,6 @@ class cli_crestapi implements cliCommand
 
 					$c = $db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
 					$db->execute("update zz_crest_killmail set processed = 1 where killID = :killID and hash = :hash", array(":killID" => $killID, ":hash" => $hash));
-					Db::execute("insert ignore into transfers values (:killID)", array(":killID" => $killID));
 
 					if ($c > 0) $count++;
 				} catch (Exception $ex) {
