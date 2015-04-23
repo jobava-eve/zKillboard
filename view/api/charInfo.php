@@ -68,7 +68,16 @@ class api_charInfo implements apiEndpoint
 			$i++;
 		}
 		$data["ePeenSize"] = $penis . "D";
+		$facepalm = "(>ლ)";
+		$cnt = log($data["lifeTimeLosses"]);
+		$i = 0;
+		while($i < $cnt)
+		{
+			$facepalms .= $facepalm;
+			$i++;
+		}
 
+		$data["facepalms"] = $facepalms;
 		return $data;
 
 		// Do the same with corporation and alliance apis?
