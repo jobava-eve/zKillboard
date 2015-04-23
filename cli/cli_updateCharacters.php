@@ -73,6 +73,27 @@ class cli_updateCharacters implements cliCommand
 					$name = $charInfo->characterName;
 					$corpID = $charInfo->corporationID;
 					$alliID = $charInfo->allianceID;
+					$data = array();
+					$data["characterID"] = $charInfo->characterID;
+					$data["characterName"] = $charInfo->characterName;
+					$data["corporationID"] = $charInfo->corporationID;
+					$data["corporationName"] = $charInfo->corporation;
+					$data["corporationDate"] = $charInfo->corporationDate;
+					$data["allianceID"] = $charInfo->allianceID;
+					$data["allianceName"] = $charInfo->alliance;
+					$data["allianceDate"] = $charInfo->allianceDate;
+					$data["bloodline"] = $charInfo->bloodline;
+					$data["race"] = $charInfo->race;
+					$data["securityStatus"] = $charInfo->securityStatus;
+
+					foreach($charInfo->employmentHistory->toArray() as $empHistory)
+						$data["employmentHistory"][] = array("recordID" => $empHistory["recordID"], "corporationID" => $empHistory["corporationID"], "corporationName" => $empHistory["corporationName"], "startDate" => $empHistory["startDate"]);
+
+					$json = json_encode($data);
+
+					Db::execute("UPDATE zz_characters SET history = :data WHERE characterID = :characterID", array(":data" => $json, ":characterID" => $data["characterID"]));
+					Db::execute("UPDATE zz_characters SET lastUpdated = now() WHERE characterID = :characterID", array(":characterID" => $data["characterID"]));
+					StatsD::increment("characters_history");
 
 					if ($name != $row["name"] || ((int) $corpID) != $row["corporationID"] || ((int) $alliID) != $row["allianceID"])
 						$db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
