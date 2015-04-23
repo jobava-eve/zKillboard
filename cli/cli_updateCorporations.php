@@ -75,11 +75,12 @@ class cli_updateCorporations implements cliCommand
 						"memberCount" => $corpInfo->memberCount
 					)
 				);
-
 				StatsD::increment("corporations_Updated");
-				if ($name != "") 
-					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() json = :json where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr, "json" => $json));
-
+				if ($name != "")
+				{
+					$db->execute("UPDATE zz_corporations SET information = :information WHERE corporationID = :corporationID", array(":information" => $json, ":corporationID" => $corpInfo->corporationID));
+					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
+				}
 			} catch (Exception $ex)
 			{
 				$db->execute("update zz_corporations set lastUpdated = now() where corporationID = :id", array(":id" => $id));
