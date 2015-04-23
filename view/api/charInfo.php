@@ -53,8 +53,8 @@ class api_charInfo implements apiEndpoint
 		$data["lastSeenShip"] = Info::getShipName(Db::queryField("SELECT shipTypeID FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "shipTypeID", array(":charID" => $characterID)));
 		$data["corporationActiveArea"] = Info::getRegionName(Info::getRegionIDFromSystemID($corpActiveSystemID));
 		$data["allianceActiveArea"] = isset($allianceID) ? Info::getRegionName(Info::getRegionIDFromSystemID($allianceActiveSystemID)) : "";
-		$data["lifeTimeKills"] = Db::queryField("SELECT count(killID) AS kills FROM zz_participants WHERE characterID = :charID AND isVictim = 0", "kills", array(":charID" => $characterID));
-		$data["lifeTimeLosses"] = Db::queryField("SELECT count(killID) AS losses FROM zz_participants WHERE characterID = :charID AND isVictim = 1", "losses", array(":charID" => $characterID));
+		$data["lifeTimeKills"] = Db::queryField("SELECT SUM(destroyed) AS kills FROM zz_stats WHERE typeID = :charID", "kills", array(":charID" => $characterID), 3600);
+		$data["lifeTimeLosses"] = Db::queryField("SELECT SUM(lost) AS losses FROM zz_stats WHERE typeID = :charID", "losses", array(":charID" => $characterID), 3600);
 		$data["top10FlownShips"] = Stats::getTopShips(array("characterID" => $characterID, "kills" => true, "month" => date("m"), "year" => date("y"), "limit" => 10), true);
 		$data["top10ActiveSystems"] = Stats::getTopSystems(array("characterID" => $characterID, "kills" => true, "month" => date("m"), "year" => date("y"), "limit" => 10), true);
 		$data["lastUpdatedOnBackend"] = Db::queryField("SELECT lastUpdated FROM zz_characters WHERE characterID = :charID", "lastUpdated", array(":charID" => $characterID));
