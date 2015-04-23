@@ -55,7 +55,6 @@ class cli_updateCorporations implements cliCommand
 				$memberCount = $corpInfo->memberCount;
 				$ceoID = $corpInfo->ceoID;
 				if ($ceoID == 1) $ceoID = 0;
-				$dscr = $corpInfo->description;
 				$json = json_encode(
 					array(
 						"corporationID" => $corpInfo->corporationID,
@@ -79,7 +78,7 @@ class cli_updateCorporations implements cliCommand
 				if ($name != "")
 				{
 					$db->execute("UPDATE zz_corporations SET information = :information WHERE corporationID = :corporationID", array(":information" => $json, ":corporationID" => $corpInfo->corporationID));
-					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
+					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, lastUpdated = now() where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
 				}
 			} catch (Exception $ex)
 			{
