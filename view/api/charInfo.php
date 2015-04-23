@@ -58,6 +58,9 @@ class api_charInfo implements apiEndpoint
 		$data["top10FlownShips"] = Stats::getTopShips(array("characterID" => $characterID, "kills" => true, "month" => date("m"), "year" => date("y"), "limit" => 10), true);
 		$data["top10ActiveSystems"] = Stats::getTopSystems(array("characterID" => $characterID, "kills" => true, "month" => date("m"), "year" => date("y"), "limit" => 10), true);
 		$data["lastUpdatedOnBackend"] = Db::queryField("SELECT lastUpdated FROM zz_characters WHERE characterID = :charID", "lastUpdated", array(":charID" => $characterID));
+		$data["soloKills"] = Db::queryField("SELECT count(*) as kills FROM zz_participants WHERE characterID = :charID AND isVictim = 0 AND number_involved = 1", "kills", array(":charID" => $characterID));
+		$data["blobKills"] = Db::queryField("SELECT count(*) as kills FROM zz_participants WHERE characterID = :charID AND isVictim = 0 AND number_involved >= 50", "kills", array(":charID" => $characterID));
+		$data["percentageSoloPVPer"] = $data["soloKills"] / $data["blobKills"] * 100;
 
 		$penis = "(..)==";
 		$cnt = log($data["lifeTimeKills"]) * 3;
@@ -68,12 +71,14 @@ class api_charInfo implements apiEndpoint
 			$i++;
 		}
 		$data["ePeenSize"] = $penis . "D";
-		$facepalm = "(>ლ)";
-		$cnt = log($data["lifeTimeLosses"]);
+
+		$facepalmLosses = Db::queryField("SELECT count(*) AS losses FROM zz_participants WHERE characterID = :charID AND shipPrice >= 200000000 AND isVictim = 1", "losses", array(":charID" => $characterID));
+		$facepalms = "(>ლ)";
+		$cnt = log($facepalmLosses);
 		$i = 0;
 		while($i < $cnt)
 		{
-			$facepalms .= $facepalm;
+			$facepalms .= "(>ლ)";
 			$i++;
 		}
 
