@@ -56,9 +56,29 @@ class cli_updateCorporations implements cliCommand
 				$ceoID = $corpInfo->ceoID;
 				if ($ceoID == 1) $ceoID = 0;
 				$dscr = $corpInfo->description;
+				$json = json_encode(
+					array(
+						"corporationID" => $corpInfo->corporationID,
+						"corporationName" => $corpInfo->corporationName,
+						"allianceID" => $corpInfo->allianceID,
+						"allianceName" => $corpInfo->allianceName,
+						"factionID" => $corpInfo->factionID,
+						"factionName" => $corpInfo->factionName,
+						"ticker" => $corpInfo->ticker,
+						"ceoID" => $corpInfo->ceoID,
+						"ceoName" => $corpInfo->ceoName,
+						"stationID" => $corpInfo->stationID,
+						"stationName" => $corpInfo->stationName,
+						"description" => $corpInfo->description,
+						"url" => $corpInfo->url,
+						"taxRate" => $corpInfo->taxRate,
+						"memberCount" => $corpInfo->memberCount
+					)
+				);
+
 				StatsD::increment("corporations_Updated");
 				if ($name != "") 
-					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
+					$db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() json = :json where corporationID = :id", array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr, "json" => $json));
 
 			} catch (Exception $ex)
 			{
