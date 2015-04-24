@@ -1,9 +1,12 @@
 config.php
 vendor/
 composer.phar
-.lighttpd.conf
-www.pid
 cache/sessions
+cache/templates
+cache/update
+cache/pheal
 killmails
 sitemaps/
 cron.overrides
+.phpintel/
+.idea/
