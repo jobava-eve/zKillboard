@@ -443,7 +443,7 @@ class Util
 				)
 			);
 
-			if(count($ipsAvailable) > 0)
+			if(count($ipsAvailable) > 1)
 			{
 				$ip = $ipsAvailable[time() % count($ipsAvailable)];
 				curl_setopt($curl, CURLOPT_INTERFACE, $ip);
