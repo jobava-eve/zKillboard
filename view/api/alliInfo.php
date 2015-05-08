@@ -53,7 +53,7 @@ class api_alliInfo implements apiEndpoint
 		$members = Db::query("SELECT characterID, name FROM zz_characters WHERE allianceID = :alliID", array(":alliID" => $allianceID));
 		$data["memberArrayCount"] = count($members);
 		$data["members"] = $members;
-		$supers = Db::query("SELECT a.characterID AS characterID, b.name AS name, a.shipTypeID AS shipTypeID FROM zz_participants a, zz_characters b WHERE a.characterID = b.characterID AND a.groupID IN (30, 659) AND a.allianceID = :alliID GROUP BY name ORDER BY characterID", array(":alliID" => $allianceID), 3600);
+		$supers = Db::query("SELECT a.characterID AS characterID, b.name AS name, a.shipTypeID AS shipTypeID, MAX(a.dttm) AS lastSeenDate FROM zz_participants a, zz_characters b WHERE a.characterID = b.characterID AND a.groupID IN (30, 659) AND a.allianceID = :alliID GROUP BY name ORDER BY characterID", array(":alliID" => $allianceID), 3600);
 		$data["superCaps"] = $supers;
 
                 $penis = "(..)==";
