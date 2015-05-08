@@ -107,7 +107,7 @@ class cli_recalculatePrice implements cliCommand
 		}
 
 		$dttm = (string) $kill["killTime"];
-		$total += Price::getItemPrice($kill["info"]["shipTypeID"], $dttm, true);
+		$total += Price::getItemPrice($kill["info"]["shipTypeID"], $dttm);
 		return $total;
 	}
 }
