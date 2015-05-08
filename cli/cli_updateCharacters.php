@@ -99,7 +99,7 @@ class cli_updateCharacters implements cliCommand
 						$db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 
 					StatsD::increment("characters_Updated");
-					usleep(333333); // Sleep for 333ms (3 req/s)
+					usleep(200000); // Sleep for 200ms (5 req/s)
 				}
 				catch (Exception $ex)
 				{
