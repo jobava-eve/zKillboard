@@ -180,24 +180,16 @@ class Util
 				case "highsec":
 				case "solo":
 					$parameters[$key] = true;
-					break;
-				case "character":
+				break;
 				case "characterID":
-				case "corporation":
 				case "corporationID":
-				case "alliance":
 				case "allianceID":
-				case "faction":
 				case "factionID":
-				case "ship":
 				case "shipID":
 				case "shipTypeID":
-				case "group":
 				case "groupID":
-				case "system":
 				case "solarSystemID":
 				case "systemID":
-				case "region":
 				case "regionID":
 					if ($value != null) {
 						if (strpos($key, "ID") === false) $key = $key . "ID";
@@ -206,8 +198,8 @@ class Util
 						$exploded = explode(",", $value);
 						foreach($exploded as $aValue)
 						{
-							if ($aValue != (int) $aValue || ((int) $aValue) == 0) die(); //throw new Exception("Invalid ID passed: $aValue");
- 						}
+							if ($aValue != (int) $aValue || ((int) $aValue) == 0) throw new Exception("Invalid ID passed: $aValue");
+						}
 						if (sizeof($exploded) > 10) throw new Exception("Too many IDs! Max: 10");
 						$parameters[$key] = $exploded;
 					}
