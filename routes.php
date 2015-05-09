@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 $app->notFound(function () use ($app) {
 	$app->redirect("..", 302);
 });
@@ -89,6 +88,7 @@ $app->get("/top/lasthour/", function() use ($app) {
 $app->get("/ranks/:pageType/:subType/", function($pageType, $subType) use ($app) {
 	include( "view/ranks.php" );
 });
+
 $app->get("/top(/:type)(/:page)(/:time+)/", function($type = "weekly", $page = NULL, $time = array()) use ($app) {
 	include( "view/top.php" );
 });
@@ -257,6 +257,11 @@ $app->map("/merge/:characterID/", function($characterID) use ($app){
 
 	include("view/merge.php");
 })->via("GET", "POST");
+
+// Character
+$app->get("/character/:character(/:pageType)(/:subPages+)/", function($character, $pageType = "overview", $subPages = array()) use ($app) {
+        include("view/character.php");
+});
 
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
