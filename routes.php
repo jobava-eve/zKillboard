@@ -263,6 +263,10 @@ $app->get("/character/:character(/:pageType)(/:subPages+)/", function($character
         include("view/character.php");
 });
 
+// Corporation
+$app->get("/corporation/:corporation(/:pageType)(/:subPages+)/", function($corporation, $pageType = "overview", $subPages = array()) use ($app) {
+        include("view/corporation.php");
+});
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
