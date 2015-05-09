@@ -272,6 +272,12 @@ $app->get("/corporation/:corporation(/:pageType)(/:subPages+)/", function($corpo
 $app->get("/alliance/:alliance(/:pageType)(/:subPages+)/", function($alliance, $pageType = "overview", $subPages = array()) use ($app) {
         include("view/alliance.php");
 });
+
+// Faction
+$app->get("/faction/:faction(/:pageType)(/:subPages+)/", function($faction, $pageType = "overview", $subPages = array()) use ($app) {
+        include("view/faction.php");
+});
+
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
