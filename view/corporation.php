@@ -110,14 +110,6 @@ else
 	$topKills = Stats::getTopIsk($p);
 }
 
-$corpList = array();
-if ($pageType == "api")
-	$corpList = Info::getCorps($corporationID);
-
-$corpStats = array();
-if ($pageType == "corpstats")
-	$corpStats = Info::getCorpStats($corporationID, $parameters);
-
 // Fix the history data!
 $detail["history"] = $pageType == "stats" ? Summary::getMonthlyHistory($columnName, $corporationID) : array();
 
@@ -183,27 +175,27 @@ if ($pageType == "supers" && $hasSupers)
 	$extra["hasSupers"] = sizeof($data["titans"]["data"]) || sizeof($data["moms"]["data"]);
 }
 
-$renderParams = array("pageName" => $pageName,
+$renderParams = array(
+	"pageName" => $pageName,
 	"kills" => $kills,
-"losses" => $losses,
-"detail" => $detail,
-"page" => $page,
-"topKills" => $topKills,
-"mixed" => $mixedKills,
-"key" => "corporation",
-"id" => $corporationID,
-"pageType" => $pageType,
-"solo" => $solo,
-"topLists" => $topLists,
-"corps" => $corpList,
-"corpStats" => $corpStats,
-"summaryTable" => $stats,
-"pager" => (sizeof($kills) + sizeof($losses) >= $limit),
-"datepicker" => true,
-"apiVerified" => $apiVerified,
-"prevID" => $prevID,
-"nextID" => $nextID,
-"extra" => $extra);
+	"losses" => $losses,
+	"detail" => $detail,
+	"page" => $page,
+	"topKills" => $topKills,
+	"mixed" => $mixedKills,
+	"key" => "corporation",
+	"id" => $corporationID,
+	"pageType" => $pageType,
+	"solo" => $solo,
+	"topLists" => $topLists,
+	"summaryTable" => $stats,
+	"pager" => (sizeof($kills) + sizeof($losses) >= $limit),
+	"datepicker" => true,
+	"apiVerified" => $apiVerified,
+	"prevID" => $prevID,
+	"nextID" => $nextID,
+	"extra" => $extra
+);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
