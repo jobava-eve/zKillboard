@@ -18,6 +18,7 @@
 
 // Find the characterID
 $characterID = is_numeric($character) ? (int) $character : (int) Db::queryField("SELECT characterID FROM zz_characters WHERE name = :name", "characterID", array(":name" => $character));
+
 // If the characterID we get from above is zero, don't even bother anymore.....
 if($characterID == 0)
 	$app->redirect("/");
@@ -26,6 +27,7 @@ elseif(!is_numeric($character)) // if character isn't numeric, we redirect TO th
 
 // Now we figure out all the parameters
 $parameters = Util::convertUriToParameters();
+
 // Unset the character => id, and make it characterID => id
 unset($parameters["character"]);
 $parameters["characterID"] = $characterID;
@@ -38,29 +40,30 @@ $parameters["page"] = $page;
 
 // and now we fetch the info!
 $detail = Info::getPilotDetails($characterID, $parameters);
-//$totalKills = isset($detail["shipsDestroyed"]) ? $detail["shipsDestroyed"] : 0;
-//$totalLosses = isset($detail["shipsLost"]) ? $detail["shipsLost"] : 0;
 
+// Define the page information and scope etc.
 $pageName = isset($detail["characterName"]) ? $detail["characterName"] : "???";
 $columnName = "characterID";
 $mixedKills = $pageType == "overview" && UserConfig::get("mixKillsWithLosses", true);
 
+// Load kills for the various pages.
 $mixed = $pageType == "overview" ? Kills::getKills($parameters) : array();
 $kills = $pageType ==  "kills" ? Kills::getKills($parameters) : array();
 $losses = $pageType == "losses" ? Kills::getKills($parameters) : array();
 
+// Solo parameters
 $soloParams = $parameters;
 if (!isset($parameters["kills"]) || !isset($parameters["losses"])) {
 	$soloParams["mixed"] = true;
 }
 
+// Solo kills
 $soloKills = Kills::getKills($soloParams);
-//$soloCount = Db::queryField("select count(killID) count from zz_participants where " . $map[$key]["column"] . "ID = :id and isVictim = 1 and number_involved = 1", "count", array(":id" => $characterID), 3600);
-//$soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $characterID);
 
 $topLists = array();
 $topKills = array();
+// Top list on the top/topalltime page
 if ($pageType == "top" || $pageType == "topalltime")
 {
 	$topParameters = $parameters;
@@ -87,11 +90,12 @@ if ($pageType == "top" || $pageType == "topalltime")
 }
 else
 {
+	// Top lists on the pages themselves.
 	$p = $parameters;
 	$numDays = 7;
 	$p["limit"] = 10;
 	$p["pastSeconds"] = $numDays * 86400;
-	$p["kills"] = !in_array("losses", $subPages);
+	$p["kills"] = $pageType != "losses";
 
 	$topLists[] = Info::doMakeCommon("Top Ships", "shipTypeID", Stats::getTopShips($p));
 	$topLists[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
@@ -112,8 +116,10 @@ $cnt = 0;
 $cnid = 0;
 $stats = array();
 $totalcount = ceil(count($detail["stats"]) / 4);
-foreach ($detail["stats"] as $q) {
-	if ($cnt == $totalcount) {
+foreach ($detail["stats"] as $q)
+{
+	if ($cnt == $totalcount)
+	{
 		$cnid++;
 		$cnt = 0;
 	}
