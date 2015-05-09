@@ -17,7 +17,10 @@
  */
 
 // Find the corporationID
-$corporationID = is_numeric($corporation) ? (int) $corporation : (int) Db::queryField("SELECT corporationID FROM zz_corporations WHERE name = :name", "corporationID", array(":name" => $corporation));
+if(!is_numeric($corporation))
+	$corporationID = (int) Db::queryField("SELECT corporationID FROM zz_corporations WHERE name = :name", "corporationID", array(":name" => $corporation), 3600);
+else // Verify it exists
+	$corporationID = (int) Db::queryField("SELECT corporationID FROM zz_corporations WHERE corporationID = :corporationID", "corporationID", array(":corporationID" => (int) $corporation), 3600);
 
 // If the corporationID we get from above is zero, don't even bother anymore.....
 if($corporationID == 0)

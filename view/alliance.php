@@ -17,7 +17,10 @@
  */
 
 // Find the allianceID
-$allianceID = is_numeric($alliance) ? (int) $alliance : (int) Db::queryField("SELECT allianceID FROM zz_alliances WHERE name = :name", "allianceID", array(":name" => $alliance));
+if(!is_numeric($alliance))
+	$allianceID = (int) Db::queryField("SELECT allianceID FROM zz_alliances WHERE name = :name", "allianceID", array(":name" => $alliance), 3600);
+else // Verify it exists
+	$allianceID = (int) Db::queryField("SELECT allianceID FROM zz_alliances WHERE allianceID = :allianceID", "allianceID", array(":allianceID" => (int) $alliance), 3600);
 
 // If the allianceID we get from above is zero, don't even bother anymore.....
 if($allianceID == 0)

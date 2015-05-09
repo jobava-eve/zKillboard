@@ -17,7 +17,10 @@
  */
 
 // Find the characterID
-$characterID = is_numeric($character) ? (int) $character : (int) Db::queryField("SELECT characterID FROM zz_characters WHERE name = :name", "characterID", array(":name" => $character));
+if(!is_numeric($character))
+	$characterID = (int) Db::queryField("SELECT characterID FROM zz_characters WHERE name = :name", "characterID", array(":name" => $character), 3600);
+else // Verify it exists
+	$characterID = (int) Db::queryField("SELECT characterID FROM zz_characters WHERE characterID = :characterID", "characterID", array(":characterID" => (int) $character), 3600);
 
 // If the characterID we get from above is zero, don't even bother anymore.....
 if($characterID == 0)
