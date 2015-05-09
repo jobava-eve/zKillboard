@@ -32,6 +32,11 @@ $parameters = Util::convertUriToParameters();
 unset($parameters["character"]);
 $parameters["characterID"] = $characterID;
 
+// Make sure that the pageType is correct..
+$subPageTypes = array("page", "groupID", "month", "year", "shipTypeID");
+if(in_array($pageType, $subPageTypes))
+	$pageType = "overview";
+
 // Some defaults
 @$page = max(1, $parameters["page"]);
 $limit = 50;
