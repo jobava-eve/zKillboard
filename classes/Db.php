@@ -69,6 +69,7 @@ class Db
 	 */
 	public static function query($query, $parameters = array(), $cacheTime = 30, $selectCheck = true)
 	{
+		$query = $query . "/* " . $_SERVER["REQUEST_URI"] . " */";
 		// Sanity check
 		if(strpos($query, ";") !== false)
 			throw new Exception("Semicolons are not allowed in queries. Use parameters instead.");
