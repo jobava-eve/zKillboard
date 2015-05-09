@@ -167,10 +167,10 @@ if ($pageType == "supers" && $hasSupers)
 {
 	$months = 3;
 	$data = array();
-	$data["titans"]["data"] = Db::query("SELECT distinct characterID, count(distinct killID) kills, shipTypeID FROM zz_participants WHERE killID >= $minKillID AND isVictim = 0 AND groupID = 30 AND corporationID = :id GROUP BY corporationID ORDER BY 2 DESC", array(":id" => $corporationID), 900);
+	$data["titans"]["data"] = Db::query("SELECT distinct characterID, count(distinct killID) AS kills, shipTypeID FROM zz_participants WHERE killID >= $minKillID AND isVictim = 0 AND groupID = 30 AND corporationID = :id GROUP BY characterID ORDER BY 2 DESC", array(":id" => $corporationID), 900);
 	$data["titans"]["title"] = "Titans";
 
-	$data["moms"]["data"] = Db::query("SELECT distinct characterID, count(distinct killID) kills, shipTypeID FROM zz_participants WHERE killID >= $minKillID AND isVictim = 0 AND groupID = 659 AND corporationID = :id GROUP BY corporationID ORDER BY 2 DESC", array(":id" => $corporationID), 900);
+	$data["moms"]["data"] = Db::query("SELECT distinct characterID, count(distinct killID) AS kills, shipTypeID FROM zz_participants WHERE killID >= $minKillID AND isVictim = 0 AND groupID = 659 AND corporationID = :id GROUP BY characterID ORDER BY 2 DESC", array(":id" => $corporationID), 900);
 	$data["moms"]["title"] = "Supercarriers";
 
 	Info::addInfo($data);
