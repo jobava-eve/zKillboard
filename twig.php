@@ -107,25 +107,6 @@ if($disqus)
 if($disqusSSO)
     $twig->addglobal("disqusSSO", Disqus::init());
 
-// User's account balance
-$twig->addGlobal("accountBalance", $accountBalance);
-$twig->addGlobal("adFreeMonthCost", $adFreeMonthCost);
-
-// Display a banner?
-$banner = Db::queryField("select banner from zz_subdomains where (subdomain = :server or alias = :server)", "banner", array(":server" => $_SERVER["SERVER_NAME"]), 60);
-if ($banner)
-{
-	$banner = str_replace("http://i.imgur.com/", "https://i.imgur.com/", $banner);
-	$banner = str_replace("http://imgur.com/", "https://imgur.com/", $banner);
-	$twig->addGlobal("headerImage", $banner);
-}
-
-$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :server", "count", array(":server" => $_SERVER["SERVER_NAME"]), 60);
-$adfree |= Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and alias = :server", "count", array(":server" => $_SERVER["SERVER_NAME"]), 60);
-if ($adfree) $twig->addGlobal("showAds", false);
-else $twig->addGlobal("showAds", $showAds);
-Subdomains::getSubdomainParameters($_SERVER["SERVER_NAME"]);
-
 $twig->addGlobal("KillboardName", (isset($killboardName) ? $killboardName : "zKillboard"));
 
 // Set the style used side wide to the user selected one, or the config default
