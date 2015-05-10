@@ -288,9 +288,14 @@ $app->get("/region/:region(/:pageType)(/:subPages+)/", function($region, $pageTy
 		include("view/region.php");
 });
 
-// ship
+// Ship
 $app->get("/ship/:shipType(/:pageType)(/:subPages+)/", function($shipType, $pageType = "overview", $subPages = array()) use ($app) {
 		include("view/ship.php");
+});
+
+// Group
+$app->get("/group/:group(/:pageType)(/:subPages+)/", function($group, $pageType = "overview", $subPages = array()) use ($app) {
+		include("view/group.php");
 });
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
