@@ -260,27 +260,32 @@ $app->map("/merge/:characterID/", function($characterID) use ($app){
 
 // Character
 $app->get("/character/:character(/:pageType)(/:subPages+)/", function($character, $pageType = "overview", $subPages = array()) use ($app) {
-        include("view/character.php");
+		include("view/character.php");
 });
 
 // Corporation
 $app->get("/corporation/:corporation(/:pageType)(/:subPages+)/", function($corporation, $pageType = "overview", $subPages = array()) use ($app) {
-        include("view/corporation.php");
+		include("view/corporation.php");
 });
 
 // Alliance
 $app->get("/alliance/:alliance(/:pageType)(/:subPages+)/", function($alliance, $pageType = "overview", $subPages = array()) use ($app) {
-        include("view/alliance.php");
+		include("view/alliance.php");
 });
 
 // Faction
 $app->get("/faction/:faction(/:pageType)(/:subPages+)/", function($faction, $pageType = "overview", $subPages = array()) use ($app) {
-        include("view/faction.php");
+		include("view/faction.php");
 });
 
 // System
 $app->get("/system/:solarSystem(/:pageType)(/:subPages+)/", function($solarSystem, $pageType = "overview", $subPages = array()) use ($app) {
-        include("view/system.php");
+		include("view/system.php");
+});
+
+// Region
+$app->get("/region/:region(/:pageType)(/:subPages+)/", function($region, $pageType = "overview", $subPages = array()) use ($app) {
+		include("view/region.php");
 });
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
