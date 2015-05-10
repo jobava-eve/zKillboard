@@ -136,6 +136,8 @@ if($details == null)
 	Cache::set($killKey, $details);
 }
 
+$app->etag(md5(serialize($details)));
+$app->expires("+5 minutes");
 $app->render("detail.html", $details);
 function involvedships($array)
 {

@@ -188,6 +188,6 @@ $renderParams = array(
 	"extra" => $extra
 );
 
-//$app->etag(md5(serialize($renderParams)));
-//$app->expires("+5 minutes");
+$app->etag(md5(serialize($renderParams)));
+$app->expires("+5 minutes");
 $app->render("overview.html", $renderParams);
