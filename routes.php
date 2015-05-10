@@ -278,6 +278,10 @@ $app->get("/faction/:faction(/:pageType)(/:subPages+)/", function($faction, $pag
         include("view/faction.php");
 });
 
+// System
+$app->get("/system/:solarSystem(/:pageType)(/:subPages+)/", function($solarSystem, $pageType = "overview", $subPages = array()) use ($app) {
+        include("view/system.php");
+});
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
