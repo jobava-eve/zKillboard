@@ -287,6 +287,11 @@ $app->get("/system/:solarSystem(/:pageType)(/:subPages+)/", function($solarSyste
 $app->get("/region/:region(/:pageType)(/:subPages+)/", function($region, $pageType = "overview", $subPages = array()) use ($app) {
 		include("view/region.php");
 });
+
+// ship
+$app->get("/ship/:shipType(/:pageType)(/:subPages+)/", function($shipType, $pageType = "overview", $subPages = array()) use ($app) {
+		include("view/ship.php");
+});
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
