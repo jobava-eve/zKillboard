@@ -43,7 +43,7 @@ class cli_updateCharacters implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
-			$result = $db->query("select characterID, name, corporationID, allianceID from zz_characters where lastUpdated < date_sub(now(), interval 2 day) order by lastUpdated limit 1000", array(), 0);
+			$result = $db->query("select characterID, name, corporationID, allianceID from zz_characters where lastUpdated < date_sub(now(), interval 7 day) order by lastUpdated limit 1000", array(), 0);
 			foreach ($result as $row)
 			{
 				if (Util::is904Error())
