@@ -69,9 +69,6 @@ class Db
 	 */
 	public static function query($query, $parameters = array(), $cacheTime = 30, $selectCheck = true)
 	{
-		if(isset($_SERVER["REQUEST_URI"]))
-			$query = $query . " /* Request From Page: " . $_SERVER["REQUEST_URI"] . " */";
-
 		// Sanity check
 		if(strpos($query, ";") !== false)
 			throw new Exception("Semicolons are not allowed in queries. Use parameters instead.");
@@ -309,7 +306,7 @@ class Db
 	{
 		StatsD::increment("website_queryCount");
 
-		if ($duration < 10000)  // Don't log queries taking less than 10 seconds.
+		if ($duration < 500)  // Don't log queries taking less than 10 seconds.
 			return;
 
 		global $baseAddr;
