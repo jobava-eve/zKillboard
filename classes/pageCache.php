@@ -21,8 +21,8 @@ class pageCache extends \Slim\Middleware
 			"/information/" => 60*5, // 5 minutes on information, tho it's probably not needed tbh
 		);
 
-		// Default cachetime is 15seconds
-		$cacheTime = 15;
+		// Default cachetime is 0seconds
+		$cacheTime = 0;
 		foreach($pages as $page => $cTime)
 		{
 			if(stristr($pageURL, $page)) // Only do shit on the kill page for now... Shou
