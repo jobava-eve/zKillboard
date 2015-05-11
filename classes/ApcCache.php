@@ -30,7 +30,8 @@ class ApcCache extends AbstractCache
 	 */
 	public function set($key, $value, $timeout)
 	{
-		return apc_store($key, $value, $timeout);
+		if(!is_array($value))
+			return apc_store($key, $value, $timeout);
 	}
 
 	/**
