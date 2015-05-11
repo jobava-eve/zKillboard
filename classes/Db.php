@@ -122,15 +122,6 @@ class Db
 			// Stop the timer
 			$duration = $timer->stop();
 
-			global $debug;
-			if($debug && isset($_SERVER))
-			{
-				foreach($parameters as $key => $value)
-					$logQuery = str_replace($key, $value, $query);
-				ChromePhp::log($logQuery);
-				ChromePhp::log("Query took: {$duration}ms");
-			}
-
 			// If cache time is above 0 seconds, lets store it in the cache.
 			if($cacheTime > 0)
 				Cache::set($key, $result, min(3600, $cacheTime)); // Store it in the cache system
@@ -244,16 +235,6 @@ class Db
 
 		// Stop the timer
 		$duration = $timer->stop();
-
-		global $debug;
-		if($debug && isset($_SERVER))
-		{
-			foreach($parameters as $key => $value)
-				$logQuery = str_replace($key, $value, $query);
-			ChromePhp::log($logQuery);
-			ChromePhp::log("Query took: {$duration}ms");
-		}
-
 
 		// Log the query
 		self::log($query, $parameters, $duration);
