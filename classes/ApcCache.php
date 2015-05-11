@@ -22,7 +22,7 @@ class ApcCache extends AbstractCache
 {
 	public function get($key)
 	{
-		return apc_fetch($key);
+		return unserialize(apc_fetch($key));
 	}
 
 	/**
@@ -30,8 +30,7 @@ class ApcCache extends AbstractCache
 	 */
 	public function set($key, $value, $timeout)
 	{
-		if(!is_array($value))
-			return apc_store($key, $value, $timeout);
+		return apc_store($key, serialize($value), $timeout);
 	}
 
 	/**
@@ -41,7 +40,7 @@ class ApcCache extends AbstractCache
 	{
 		if(!apc_exists($key))
 			return false;
-		apc_store($key, $value, $timeout);
+		apc_store($key, serialize($value), $timeout);
 	}
 
 	/**
