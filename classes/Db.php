@@ -350,6 +350,6 @@ class Db
 		foreach($parameters as $key => $value)
 			$query .= "|$key|$value";
 
-		return "Db:" . md5($query);
+		return "Db:" . sha1($query);
 	}
 }
