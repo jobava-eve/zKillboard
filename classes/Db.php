@@ -123,7 +123,7 @@ class Db
 			$duration = $timer->stop();
 
 			global $debug;
-			if($debug)
+			if($debug && isset($_SERVER))
 			{
 				foreach($parameters as $key => $value)
 					$logQuery = str_replace($key, $value, $query);
@@ -246,7 +246,7 @@ class Db
 		$duration = $timer->stop();
 
 		global $debug;
-		if($debug)
+		if($debug && isset($_SERVER))
 		{
 			foreach($parameters as $key => $value)
 				$logQuery = str_replace($key, $value, $query);
