@@ -8,7 +8,17 @@ class pageCache extends \Slim\Middleware
 
 		// Pages to cache
 		$pages = array(
-			"/kill/" => "3600",
+			"/kill/" => 60*60*24, // Kill detail pages can easily be cached for many hours since they rarely change..
+			"/system/" => 60*60, // 1 hour cache on the system page
+			"/region/" => 60*60, // 1 hour cache on the region page
+			"/group/" => 60*60, // 1 hour cache on the groups view
+			"/ship/" => 60*15, // 15 minutes on ship view
+			"/character/" => 60*5, // 5 minutes on character view
+			"/corporation/" => 60*5, // 5 minutes on corporation view
+			"/alliance/" => 60*5, // 5 minutes on alliance view
+			"/faction/" => 60*15, // 15 minutes on faction view
+			"/item/" => 60*60*24, // 1 Day on item view, shit barely changes..
+			"/information/" => 60*5, // 5 minutes on information, tho it's probably not needed tbh
 		);
 
 		// Default cachetime is 15seconds
@@ -32,7 +42,7 @@ class pageCache extends \Slim\Middleware
 		$data = $fileCache->get(md5($pageURL));
 		if ($data) {
 			// cache hit... return the cached content
-			header("XPageCache: true");
+			header("X-PageCache: true");
 			$rsp["Content-Type"] = $data["content_type"];
 			$rsp->body($data["body"]);
 			return;
