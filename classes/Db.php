@@ -125,7 +125,9 @@ class Db
 			global $debug;
 			if($debug)
 			{
-				ChromePhp::log($query);
+				foreach($parameters as $key => $value)
+					$logQuery = str_replace($key, $value, $query);
+				ChromePhp::log($logQuery);
 				ChromePhp::log("Query took: {$duration}ms");
 			}
 
@@ -246,9 +248,12 @@ class Db
 		global $debug;
 		if($debug)
 		{
-			ChromePhp::log($query);
+			foreach($parameters as $key => $value)
+				$logQuery = str_replace($key, $value, $query);
+			ChromePhp::log($logQuery);
 			ChromePhp::log("Query took: {$duration}ms");
 		}
+
 
 		// Log the query
 		self::log($query, $parameters, $duration);
