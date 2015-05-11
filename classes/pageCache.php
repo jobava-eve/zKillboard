@@ -3,6 +3,12 @@ class pageCache extends \Slim\Middleware
 {
 	public function call()
 	{
+		if(User::isLoggedIn())
+		{
+			$this->next->call();
+			return;
+		}
+
 		$pageURL = $this->app->request()->getResourceUri();
 		$fileCache = new FileCache();
 
@@ -40,7 +46,8 @@ class pageCache extends \Slim\Middleware
 
 		// Get the cached result if it exists
 		$data = $fileCache->get(md5($pageURL));
-		if ($data) {
+		if (isset($data) && !empty($data["body"]))
+		{
 			// cache hit... return the cached content
 			header("X-PageCache: true");
 			$rsp["Content-Type"] = $data["content_type"];
