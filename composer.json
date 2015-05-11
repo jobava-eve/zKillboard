@@ -13,7 +13,8 @@
 		"twig/twig": "1.*",
 		"erusev/parsedown": "dev-master",
 		"domnikl/statsd": "~2.0",
-		"textalk/websocket": "1.0.*"
+		"textalk/websocket": "1.0.*",
+		"ccampbell/chromephp": "dev-master"
 	},
 	"minimum-stability": "stable",
 	"prefer-stable": true

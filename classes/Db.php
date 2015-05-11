@@ -71,6 +71,11 @@ class Db
 	{
 		if(isset($_SERVER["REQUEST_URI"]))
 			$query = $query . " /* Request From Page: " . $_SERVER["REQUEST_URI"] . " */";
+
+		global $debug;
+		if($debug)
+			ChromePhp::log($query);
+
 		// Sanity check
 		if(strpos($query, ";") !== false)
 			throw new Exception("Semicolons are not allowed in queries. Use parameters instead.");
@@ -197,7 +202,9 @@ class Db
 	 */
 	public static function execute($query, $parameters = array(), $reportErrors = true, $returnID = false)
 	{
-		//self::validateQuery($query);
+		global $debug;
+		if($debug)
+			ChromePhp::log($query);
 
 		// Start the timer
 		$timer = new Timer();
