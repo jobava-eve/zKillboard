@@ -37,11 +37,13 @@ class api_charInfo implements apiEndpoint
 	{
 		$data = array();
 		if(isset($parameters["characterID"]))
-		{
 			$characterID = (int) $parameters["characterID"][0];
-			$data = json_decode(Db::queryField("SELECT history FROM zz_characters WHERE characterID = :charID", "history", array(":charID" => $characterID)), true);
-		}
 
+		$exists = Db::queryField("SELECT characterID FROM zz_characters WHERE characterID = :characterID", "characterID", array(":characterID" => $characterID));
+		if(!$exists)
+			return array("type" => "error", "message" => "Character does not exist");
+
+		$data = json_decode(Db::queryField("SELECT history FROM zz_characters WHERE characterID = :charID", "history", array(":charID" => $characterID)), true);
 		$corporationID = $data["corporationID"];
 		$allianceID = $data["allianceID"];
 		$lastSeenSystemID = Db::queryField("SELECT solarSystemID FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "solarSystemID", array(":charID" => $characterID));
