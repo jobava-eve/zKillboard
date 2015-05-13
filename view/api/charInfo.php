@@ -47,6 +47,8 @@ class api_charInfo implements apiEndpoint
 		$lastSeenSystemID = Db::queryField("SELECT solarSystemID FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "solarSystemID", array(":charID" => $characterID));
 		$corpActiveSystemID = Db::queryField("SELECT solarSystemID, count(killID) AS hits FROM zz_participants WHERE characterID = :charID AND corporationID = :corpID AND dttm >= date_sub(now(), interval 30 day) GROUP BY solarSystemID ORDER BY hits DESC LIMIT 10000", "solarSystemID", array(":charID" => $characterID, ":corpID" => $corporationID));
 		$allianceActiveSystemID = Db::queryField("SELECT solarSystemID, count(killID) AS hits FROM zz_participants WHERE characterID = :charID AND allianceID = :alliID AND dttm >= date_sub(now(), interval 30 day) GROUP BY solarSystemID ORDER BY hits DESC LIMIT 10000", "solarSystemID", array(":charID" => $characterID, ":alliID" => $allianceID));
+		$data["allianceTicker"] = Db::queryField("SELECT ticker FROM zz_alliances WHERE allianceID = :allianceID", "ticker", array(":allianceID" => $allianceID));
+		$data["corporationTicker"] = Db::queryField("SELECT ticker FROM zz_corporations WHERE corporationID = :corporationID", "ticker", array(":corporationID" => $corporationID));
 		$data["lastSeenSystem"] = Info::getSystemName($lastSeenSystemID);
 		$data["lastSeenRegion"] = Info::getRegionName(Info::getRegionIDFromSystemID($lastSeenSystemID));
 		$data["lastSeenDate"] = Db::queryField("SELECT dttm FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "dttm", array(":charID" => $characterID));
