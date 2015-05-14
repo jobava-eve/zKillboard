@@ -29,8 +29,8 @@ class api_battles implements apiEndpoint
 	{
 		return array("type" => "parameters", "parameters" =>
 			array(
-				"/api/battles/list/" => "Lists all the battles available to peruse.",
-				"/api/battles/battle/#/" => "Lists data for a single battle. Replace # with a battleID."
+				"list" => "Lists all the battles available to peruse.",
+				"battle/#/" => "Lists data for a single battle. Replace # with a battleID."
 			)
 		);
 	}

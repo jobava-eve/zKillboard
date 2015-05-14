@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = "API Docs" %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
+
+{% block content %}
+
+<h1>zKB API</h1>
+<b>API URL:</b> <a href="{{ fullsiteurl }}/api/">{{ fullsiteurl }}/api/</a><br>
+<b>Requests pr. hour:</b> {{ maxRequestsPerHour }}<br>
+<br>
+To monitor how many requests you've done in an hour, look at the headers. More specifically: X-Bin-Request-Count and X-Bin-Max-Requests
+<br>
+<h3>API Endpoints:</h3>
+<table class="table table-compact table-striped table-hover table-bordered table-condensed col-xs-4">
+	<tr><th>Endpoint</th><th>Description</th><th>Parameters</th></tr>
+	{% for key,data in data %}
+		<tr>
+			<td>{{ key }}</td>
+			<td style="width: 250px;">{{ data.description }}</td>
+			<td>
+			{% for call, param in data.parameters %}
+				<b>{{ call }}</b> -> {{ param }}<br>
+			{% endfor %}
+			</td>
+		</tr>
+	{% endfor %}
+</table>
+{% endblock %}

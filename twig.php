@@ -81,6 +81,7 @@ $twig->addGlobal("image_alliance", $imageServer."Alliance/");
 $twig->addGlobal("image_item", $imageServer."Type/");
 $twig->addGlobal("image_ship", $imageServer."Render/");
 
+$twig->addGlobal("maxRequestsPerHour", $maxRequestsPerHour);
 $twig->addGlobal("siteurl", $baseAddr);
 $twig->addGlobal("fullsiteurl", $fullAddr);
 $twig->addGlobal("requesturi", $_SERVER["REQUEST_URI"]);
