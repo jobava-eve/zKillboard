@@ -18,6 +18,11 @@ session_start();
 // Check if the user has autologin turned on
 if(!User::isLoggedIn()) User::autoLogin();
 
+// Detect mobile devices
+$detect = new Mobile_Detect();
+$isMobile = $detect->isMobile() ? true : false;
+$isTablet = $detect->isTablet() ? true : false;
+
 // Theme
 if(User::isLoggedIn())
 	$theme = UserConfig::get("theme");
@@ -25,6 +30,8 @@ if(!isset($theme))
 	$theme = "zkillboard";
 elseif(!is_dir("themes/$theme"))
 	$theme = "zkillboard";
+if($isMobile && !$isTablet)
+	$theme = "mobile";
 
 $app->config(array("templates.path" => $baseDir."themes/" . $theme));
 

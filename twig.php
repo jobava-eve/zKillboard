@@ -23,7 +23,7 @@ $app->view(new \Slim\Views\Twig());
 $viewtheme = null;
 $accountBalance = 0;
 $userShowAds = true;
-if(User::isLoggedIn()) 
+if(User::isLoggedIn())
 {
 	$accountBalance = User::getBalance(User::getUserID());
 	$adFreeUntil = UserConfig::get("adFreeUntil", null);
@@ -67,6 +67,9 @@ foreach($explode as $key => $ex)
     }
 
 }
+
+$twig->addGlobal("isMobile", $isMobile);
+$twig->addGlobal("isTablet", $isTablet);
 
 $twig->addGlobal('requestUriPager', implode("/", $expager));
 $actualURI = implode("/", $explode);
@@ -115,11 +118,6 @@ $twig->addGlobal("style", UserConfig::get("style", $style));
 
 // Set the theme global for twig.
 $twig->addGlobal("theme", UserConfig::get("theme", $theme));
-
-// Detect mobile devices
-$detect = new Mobile_Detect();
-$twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));
-$twig->addGlobal("isTablet", ($detect->isTablet() ? true : false));
 
 // Raw killmail
 $twig->addGlobal("rawKillmail", $rawKillmailParser);
