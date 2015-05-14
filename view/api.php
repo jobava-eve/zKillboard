@@ -77,6 +77,10 @@ else
 	);
 }
 
+// If the endpoint is docs, we'll just render the html page instead, since the same data is available under /list/ and /parameters/ ! :)
+if($endpoint == "docs")
+	return $app->render("apidocs.html", array("data" => $data));
+
 // Scrape Checker If type isn't set, scrapecheck, otherwise don't..
 $type = isset($data["type"]) ? "error" : NULL;
 if($type == NULL)
