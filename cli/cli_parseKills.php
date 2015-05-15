@@ -151,22 +151,21 @@ class cli_parseKills implements cliCommand
 
 				}
 
-				// Do some validation on the kill
-				if (!self::validKill($kill))
-				{
-					$db->execute("UPDATE zz_killmails set processed = 3 WHERE killid = :killid", array(":killid" => $row["killID"]));
-					continue;
-				}
+				// Lets define if it's an NPC or not
+				$isNPC = self::isNPC($kill);
 
 				// Calculate costs
 				$totalCost = 0;
 				$itemInsertOrder = 0;
 				$totalCost += self::processItems($kill, $killID, $kill["items"], $itemInsertOrder);
-				$totalCost += self::processVictim($kill, $killID, $kill["victim"], false);
+				$totalCost += self::processVictim($kill, $killID, $kill["victim"]);
 
 				// Process the attacker
 				foreach ($kill["attackers"] as $attacker)
 					self::processAttacker($kill, $killID, $attacker, $kill["victim"]["shipTypeID"], $totalCost);
+
+				if($isNPC)
+					$db->execute("UPDATE zz_participants_temporary SET isNPC = 1 WHERE killID = :killID", array(":killID" => $killID));
 
 				// Calculate the points that the kill is worth
 				$points = Points::calculatePoints($killID, true);
@@ -175,7 +174,8 @@ class cli_parseKills implements cliCommand
 				$db->execute("UPDATE zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp WHERE killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => count($kill["attackers"]), ":tp" => $totalCost));
 
 				// Pass the killID to the $processedKills array, so we can show how many kills we've done this cycle..
-				$processedKills[] = $killID;
+				if(!$isNPC)
+					$processedKills[] = $killID;
 			}
 
 			// If there are kills to clean up, we'll get rid of them here.. This should only be old manual mails that are now api verified tho
@@ -208,47 +208,21 @@ class cli_parseKills implements cliCommand
 		$db->execute("DROP TABLE IF EXISTS zz_participants_temporary");
 	}
 
-	private static function validKill(&$kill)
+	private static function isNPC(&$kill)
 	{
-		// Show all pod kills
-		$victimShipID = $kill["victim"]["shipTypeID"];
-		if ($victimShipID == 670 || $victimShipID == 33328)
-			return true;
-
-		$npcOnly = true;
-		$victimCorp = $kill["victim"]["corporationID"] < 1000999 ? 0 : $kill["victim"]["corporationID"];
-		$victimAlli = $kill["victim"]["allianceID"];
-
-		$blueOnBlue = true;
+		$npcOnly = false;
 		foreach ($kill["attackers"] as $attacker)
-		{
-			$attackerGroupID = Info::getGroupID($attacker["shipTypeID"]);
-			// A tower is involved
-			if ($attackerGroupID == 365)
-				return true;
-
-			// Drifters
-			if(isset($attacker["shipTypeID"]) && $attacker["shipTypeID"] == 34495) return true;
-			if(isset($attacker["factionID"]) && $attacker["factionID"] == 500021) return true;
-			if(isset($attacker["corporationID"]) && $attacker["corporationID"] == 500021) return true;
-
-			// Don't process the kill if it's NPC only
 			$npcOnly &= $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125);
 
-			// Check for blue on blue
-			if ($attacker["characterID"] != 0) $blueOnBlue &= $victimCorp == $attacker["corporationID"] && $victimAlli == $attacker["allianceID"];
-		}
-
-		if ($npcOnly /*|| $blueOnBlue*/)
-			return false;
-
-		return true;
+		if($npcOnly)
+			return true;
+		return false;
 	}
 
 	/**
 	 * @param boolean $isNpcVictim
 	 */
-	private static function processVictim(&$kill, $killID, &$victim, $isNpcVictim)
+	private static function processVictim(&$kill, $killID, &$victim)
 	{
 		global $db;
 		$dttm = (string) $kill["killTime"];
@@ -257,28 +231,29 @@ class cli_parseKills implements cliCommand
 		$groupID = Info::getGroupID($victim["shipTypeID"]);
 		$regionID = Info::getRegionIDFromSystemID($kill["solarSystemID"]);
 
-		if (!$isNpcVictim) $db->execute("
-				INSERT INTO zz_participants_temporary
-				(killID, solarSystemID, regionID, isVictim, shipTypeID, groupID, shipPrice, damage, factionID, allianceID,
-				 corporationID, characterID, dttm, vGroupID)
-				values
-				(:killID, :solarSystemID, :regionID, 1, :shipTypeID, :groupID, :shipPrice, :damageTaken, :factionID, :allianceID,
-				 :corporationID, :characterID, :dttm, :vGroupID)",
-				array(
-				       ":killID" => $killID,
-				       ":solarSystemID" => $kill["solarSystemID"],
-				       ":regionID" => $regionID,
-				       ":shipTypeID" => $victim["shipTypeID"],
-				       ":groupID" => $groupID,
-				       ":vGroupID" => $groupID,
-				       ":shipPrice" => $shipPrice,
-				       ":damageTaken" => $victim["damageTaken"],
-				       ":factionID" => $victim["factionID"],
-				       ":allianceID" => $victim["allianceID"],
-				       ":corporationID" => $victim["corporationID"],
-				       ":characterID" => $victim["characterID"],
-				       ":dttm" => $dttm,
-				      ));
+		$db->execute("
+			INSERT INTO zz_participants_temporary
+			(killID, solarSystemID, regionID, isVictim, shipTypeID, groupID, shipPrice, damage, factionID, allianceID,
+			 corporationID, characterID, dttm, vGroupID)
+			values
+			(:killID, :solarSystemID, :regionID, 1, :shipTypeID, :groupID, :shipPrice, :damageTaken, :factionID, :allianceID,
+			 :corporationID, :characterID, :dttm, :vGroupID)",
+			array(
+				":killID" => $killID,
+				":solarSystemID" => $kill["solarSystemID"],
+				":regionID" => $regionID,
+				":shipTypeID" => $victim["shipTypeID"],
+				":groupID" => $groupID,
+				":vGroupID" => $groupID,
+				":shipPrice" => $shipPrice,
+				":damageTaken" => $victim["damageTaken"],
+				":factionID" => $victim["factionID"],
+				":allianceID" => $victim["allianceID"],
+				":corporationID" => $victim["corporationID"],
+				":characterID" => $victim["characterID"],
+				":dttm" => $dttm,
+			)
+		);
 
 		Info::addChar($victim["characterID"], $victim["characterName"]);
 		Info::addCorp($victim["corporationID"], $victim["corporationName"]);
@@ -297,29 +272,30 @@ class cli_parseKills implements cliCommand
 		$dttm = (string) $kill["killTime"];
 
 		$db->execute("
-				INSERT INTO zz_participants_temporary
-				(killID, solarSystemID, regionID, isVictim, characterID, corporationID, allianceID, total_price, vGroupID,
-				 factionID, damage, finalBlow, weaponTypeID, shipTypeID, groupID, dttm)
-				values
-				(:killID, :solarSystemID, :regionID, 0, :characterID, :corporationID, :allianceID, :total, :vGroupID,
-				 :factionID, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :dttm)",
-				array(
-				       ":killID" => $killID,
-				       ":solarSystemID" => $kill["solarSystemID"],
-				       ":regionID" => $regionID,
-				       ":characterID" => $attacker["characterID"],
-				       ":corporationID" => $attacker["corporationID"],
-				       ":allianceID" => $attacker["allianceID"],
-				       ":factionID" => $attacker["factionID"],
-				       ":damageDone" => $attacker["damageDone"],
-				       ":finalBlow" => $attacker["finalBlow"],
-				       ":weaponTypeID" => $attacker["weaponTypeID"],
-				       ":shipTypeID" => $attacker["shipTypeID"],
-				       ":groupID" => $attackerGroupID,
-				       ":dttm" => $dttm,
-				       ":total" => $totalCost,
-				       ":vGroupID" => $victimGroupID,
-				      ));
+			INSERT INTO zz_participants_temporary
+			(killID, solarSystemID, regionID, isVictim, characterID, corporationID, allianceID, total_price, vGroupID,
+			factionID, damage, finalBlow, weaponTypeID, shipTypeID, groupID, dttm)
+			values
+			(:killID, :solarSystemID, :regionID, 0, :characterID, :corporationID, :allianceID, :total, :vGroupID,
+			:factionID, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :dttm)",
+			array(
+				":killID" => $killID,
+				":solarSystemID" => $kill["solarSystemID"],
+				":regionID" => $regionID,
+				":characterID" => $attacker["characterID"],
+				":corporationID" => $attacker["corporationID"],
+				":allianceID" => $attacker["allianceID"],
+				":factionID" => $attacker["factionID"],
+				":damageDone" => $attacker["damageDone"],
+				":finalBlow" => $attacker["finalBlow"],
+				":weaponTypeID" => $attacker["weaponTypeID"],
+				":shipTypeID" => $attacker["shipTypeID"],
+				":groupID" => $attackerGroupID,
+				":dttm" => $dttm,
+				":total" => $totalCost,
+				":vGroupID" => $victimGroupID,
+			)
+		);
 		Info::addChar($attacker["characterID"], $attacker["characterName"]);
 		Info::addCorp($attacker["corporationID"], $attacker["corporationName"]);
 		Info::addAlli($attacker["allianceID"], $attacker["allianceName"]);

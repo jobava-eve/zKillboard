@@ -178,13 +178,31 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 					PRIMARY KEY (`killID`,`groupName`,`groupNum`,`groupID`)
 					) ENGINE=InnoDB");
 
-		$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $column != 0 and isVictim = 1 and characterID != 0");
+		$db->execute("insert ignore into zz_stats_temporary
+			(
+				select killID, '$type', $column, groupID, points, total_price
+				from zz_participants
+				where $column != 0
+				and isVictim = 1
+				and characterID != 0
+				and isNPC = 0
+			)
+		");
 		$db->execute("replace into zz_stats (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 		$db->execute("delete from zz_stats where type = :type", array(":type" => $type));
 
 		if ($calcKills) {
 			$db->execute("truncate table zz_stats_temporary");
-			$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $column != 0 and isVictim = 0 and characterID != 0");
+			$db->execute("insert ignore into zz_stats_temporary
+				(
+					select killID, '$type', $column, vGroupID, points, total_price
+					from zz_participants
+					where $column != 0
+					and isVictim = 0
+					and characterID != 0
+					and isNPC = 0
+				)
+			");
 			$db->execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
 		}
 
