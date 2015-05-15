@@ -3,6 +3,7 @@ class pageCache extends \Slim\Middleware
 {
 	public function call()
 	{
+		global $theme;
 		if(User::isLoggedIn())
 		{
 			$this->next->call();
@@ -10,6 +11,7 @@ class pageCache extends \Slim\Middleware
 		}
 
 		$pageURL = $this->app->request()->getResourceUri();
+		$md5 = md5($pageURL . $theme);
 		$fileCache = new FileCache();
 
 		// Pages to cache
@@ -45,7 +47,7 @@ class pageCache extends \Slim\Middleware
 		$rsp = $this->app->response();
 
 		// Get the cached result if it exists
-		$data = $fileCache->get(md5($pageURL));
+		$data = $fileCache->get($md5);
 		if (isset($data) && !empty($data["body"]))
 		{
 			// cache hit... return the cached content
@@ -61,7 +63,7 @@ class pageCache extends \Slim\Middleware
 		// cache result for future look up
 		if ($rsp->status() == 200) {
 			if($cacheTime > 0)
-				$fileCache->set(md5($pageURL), array("key" => $pageURL, "content_type" => $rsp["Content-Type"], "body" => $rsp->body()), $cacheTime);
+				$fileCache->set($md5, array("key" => $pageURL, "content_type" => $rsp["Content-Type"], "body" => $rsp->body()), $cacheTime);
 		}
 	}
 }
