@@ -97,6 +97,7 @@ class cli_parseKills implements cliCommand
 			$result[] = $db->queryRow("SELECT * FROM zz_killmails WHERE killID = :killID", array(":killID" => $id), 0);
 
 			$processedKills = array();
+			$npcProcess = array();
 			$cleanupKills = array();
 			// There is actually only one result, so no need for a foreach, but whatever..
 			foreach ($result as $row)
@@ -176,6 +177,8 @@ class cli_parseKills implements cliCommand
 				// Pass the killID to the $processedKills array, so we can show how many kills we've done this cycle..
 				if(!$isNPC)
 					$processedKills[] = $killID;
+				else
+					$npcProcess[] = $killID;
 			}
 
 			// If there are kills to clean up, we'll get rid of them here.. This should only be old manual mails that are now api verified tho
@@ -191,6 +194,7 @@ class cli_parseKills implements cliCommand
 			{
 				$db->execute("INSERT IGNORE INTO zz_stats_queue values (" . implode("), (", $processedKills) . ")");
 				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $processedKills) . ")");
+				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $npcProcess) . ")");
 			}
 		}
 		if ($numKills > 0)
@@ -210,13 +214,12 @@ class cli_parseKills implements cliCommand
 
 	private static function isNPC(&$kill)
 	{
-		$npcOnly = false;
+		$npc = false;
 		foreach ($kill["attackers"] as $attacker)
-			$npcOnly &= $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125);
+			$npc = $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125) ? true : false;
 
-		if($npcOnly)
-			return true;
-		return false;
+var_dump($npc);
+		return $npc;
 	}
 
 	/**
