@@ -1,5 +1,4 @@
 body, html {
-	height: 100%;
 	margin-top: 25px;
 }
 
@@ -7,44 +6,6 @@ body, html {
 .centered img { display:block; margin:0 auto; }
 
 .eveimage { background-color: #222; max-width:100%; height:auto; overflow: hidden; font-size: 0.1px;}
-
-#back-top {
-	position: fixed;
-	bottom: 50px;
-	margin-left: -65px;
-}
-
-#back-top a {
-	width: 55px;
-	display: block;
-	text-align: center;
-	font: 11px/100% Arial, Helvetica, sans-serif;
-	text-transform: uppercase;
-	text-decoration: none;
-	color: #444;
-
-	/* transition */
-	-webkit-transition: 1s;
-	-moz-transition: 1s;
-	transition: 1s;
-}
-#back-top a:hover {
-	color: #999;
-}
-
-/* arrow icon (span tag) */
-#back-top span {
-	width: 55px;
-	height: 60px;
-	display: block;
-	margin-bottom: 7px;
-	background: url(/themes/zkillboard/img/up-arrow.png) no-repeat center center;
-
-	/* transition */
-	-webkit-transition: 1s;
-	-moz-transition: 1s;
-	transition: 1s;
-}
 
 .accordion-group {
   margin-bottom: 0px;
@@ -56,37 +17,6 @@ body, html {
 .accordion-inner{
     padding:0px 0px;
     border-top:0px solid #e5e5e5;
-}
-
-#left-banner {
-position: fixed;
-top: 70px;
-left: 5px;
-z-index: 0;
-cursor: pointer;
-width: 160px;
-}
-
-#right-banner {
-position: fixed;
-top: 70px;
-right: 5px;
-z-index: 9500;
-cursor: pointer;
-width: 160px;
-}
-
-.facebook{
-	background: url("/themes/zkillboard/img/social/fb_1.png") no-repeat center center;
-}
-.twitter {
-	background: url("/themes/zkillboard/img/social/twitter_1.png") no-repeat center center;
-}
-.googleplus {
-	background: url("/themes/zkillboard/img/social/google_plus.png") no-repeat center center;
-}
-.reddit {
-	background: url("/themes/zkillboard/img/social/reddit.png") no-repeat center center;
 }
 
 .rank-table tr td, .rank-table tr th {
@@ -123,38 +53,6 @@ ul.autocomplete span { position: absolute; top: 10px; right: 5px; }
 	pointer-events: none;
 }
 
-/* mobile menu stuff */
-.mobileNav {
-	position: absolute;
-	left: -200px;
-	top: 0px;
-	width: 200px;
-	z-index: 99;
-	height: 100%;
-}
-
-.content {
-	position: relative;
-	left: 0;
-	top: 0;
-	right: 0px;
-}
-
-.content.opened {
-	left: 200px;
-}
-
-.mobileNav.opened {
-	left: 0px;
-}
-
-.content, .mobileNav {
-	-webkit-transition: all 0.2s ease-in-out;
-	-moz-transition: all 0.2s ease-in-out;
-	-o-transition: all 0.2s ease-in-out;
-	transition: all 0.2s ease-in-out;
-}
-
 .listPilots {
 	padding: 10px 0px 10px 0px;
 	margin: 10px 0px 10px 0px;
@@ -178,4 +76,94 @@ ul.autocomplete span { position: absolute; top: 10px; right: 5px; }
 		overflow-y: auto;
 		overflow-x: hidden;
 	}
+}
+
+@media (min-width: 768px) {
+	body {
+		background-color: #060606;
+		background-image: url("/themes/zkillboard/img/bg_cyborg_blueish.jpg");
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		background-attachment: fixed;
+	}
+}
+
+.nobackground {
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	background: #060606;
+	background-color: rgba(6,6,6,0.9);
+	box-shadow: 0 0 15px 15px rgba(6,6,6,0.9);
+	opacity: 0.98;
+}
+
+.table tbody tr.error td
+{
+  background-color: #2F0202;
+}
+
+.table tbody tr.winwin td
+{
+  background-color: #001600;
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input
+{
+color: black;
+ }
+
+.item_dropped_row {
+	background-color: #001600;
+}
+.item_dropped {
+	color: white;
+}
+.item_dropped_qty {
+	color: white;
+}
+.item_destroyed, .red {
+	color: red;
+}
+.green {
+	color: green;
+}
+
+.no-stripe {
+	background-color: black;
+}
+
+.table-no-hover tbody tr:hover td, .table tbody tr:hover th {
+	background-color: transparent;
+}
+
+.alert-danger {
+	background-color: #800000;
+}
+
+table, .table {
+	color: #888;
+}
+
+table a, .table a {
+	color: #2a9fd6;
+	text-decoration: none;
+}
+
+tr.heading {
+	background-color: #000;
+}
+
+.nav .caret, .nav a:hover .caret {
+	border-top-color: #888;
+	border-bottom-color: #888;
+}
+
+pre {
+	background-color: #000;
+	font-weight: bold;
+	color: #6E6E6E;
+	border-color: #333;
 }

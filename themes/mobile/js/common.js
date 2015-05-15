@@ -50,32 +50,11 @@ $(document).ready(function() {
 			return false;
 		});
 	});
-	
-	//add the autocomplete search thing
-	$('#searchbox').zz_search( function(data, event) { window.location = '/' + data.type + '/' + data.id + '/'; event.preventDefault(); } );
-	
-	//and for the tracker entity lookup
-	$('#addentitybox').zz_search( function(data) { 
-		$('#addentity input[name="entitymetadata"]').val(JSON.stringify(data));
-		$('#addentity input[name="addentitybox"]').val(data.name);
-		$('#addentity').submit();
-	});
 
     // prevent firing of window.location in table rows if a link is clicked directly
 	$('.killListRow a').click(function(e) {
 		e.stopPropagation();
 	});
-
-	$('a.openMenu').click(function(e){
-		$('.content').toggleClass('opened');
-		$('.mobileNav').toggleClass('opened');
-		e.preventDefault();
-	});
-
-	// auto show comments tab on detail page
-	if(window.location.hash.match(/comment/)) {
-		$('a[href="#comment"]').tab('show');
-	}
 
 	if (top !== self) {
 		$("#iframed").modal('show');
@@ -91,8 +70,6 @@ function updateKillsLastHour() {
 $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
 
 $(function() {
-    //$('.nav-wrapper').height($("#nav").height());
-    
     $('#nav').affix({
         offset: { top: $('#nav').offset().top }
     });

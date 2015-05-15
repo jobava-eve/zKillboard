@@ -1,13 +1,6 @@
-{% if headerImage is defined %}
-	<div class="container">
-		<div class="navbar-header topimage">
-			<a href="/"><img src="{{ headerImage }}" alt=""></a>
-		</div>
-	</div>
-{% endif %}
 <div class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
-		<div class="navbar-header">
+		<div class="navbar-header" style="padding-right: 2px;">
 			<button type="button" class="navbar-toggle openMenu" data-toggle="collapse" data-target=".navbar-main">
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
@@ -101,25 +94,10 @@
 					</ul>
 				</li>
 				{% endif %}
-				<li class="hidden-xs hidden-sm"><a href="/post/">Post</a></li>
-				<li><a href="https://map.eve-kill.net/" target="_blank">Map</a></li>
-				{% if statslink %}
-					<li class="hidden-xs hidden-sm"><a href="{{ statslink }}">Stats</a></li>
-				{% endif %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-            			<li class="hidden-xs hidden-sm hidden-md"><div class="fb-like" data-width="1" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false" data-colorscheme="dark" style="padding-top: 15px;"></div></a>
-				<li class="hidden-xs hidden-sm"><a href="/top/lasthour/" rel="tooltip" title="Kills added in the last hour" id="lasthour">{{ killsLastHour | number_format(0)}}</a></li>
-				<li class="hidden-xs hidden-sm"><a href="#" onclick="return false;" rel="tooltip" title="Eve Time"><div id="my_clock"></div></a></li>
-				<li>
-					<form name="search" id="search" class="navbar-form navbar-right" action="/search/" method="post">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" autocomplete="off" id="searchbox" name="searchbox">
-						</div>
-					</form>
-				</li>
-				<li class="dropdown hidden-xs">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-info"></i> <b class="caret"></b></a>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Information <span class="caret"></span></b></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-header">Support</li>
 						<li><a href="/tickets/">Tickets</a></li>
@@ -163,6 +141,13 @@
 							{% endif %}
 						{% endif %}
 					</ul>
+				</li>
+				<li>
+					<form name="search" id="search" class="navbar-form navbar-right" action="/search/" method="post">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search" autocomplete="off" id="searchbox" name="searchbox">
+						</div>
+					</form>
 				</li>
 			</ul>
 		</div>
