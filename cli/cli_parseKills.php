@@ -121,6 +121,16 @@ class cli_parseKills implements cliCommand
 				// Hash is already in the $row array, no need to fetch it from the DB unless we have to..
 				$hash = $row["hash"];
 
+				// Lets just be sure it actually has a system id in the first place..
+				$regionID = Info::getRegionIDFromSystemID($kill["solarSystemID"]);
+
+				if($regionID == NULL)
+				{
+					// The killmail is faulty as hell
+					$db->execute("UPDATE zz_killmails set processed = 2 WHERE killid = :killid", array(":killid" => $row["killID"]));
+					continue;
+				}
+
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
 				$numKills++;
@@ -194,8 +204,10 @@ class cli_parseKills implements cliCommand
 			{
 				$db->execute("INSERT IGNORE INTO zz_stats_queue values (" . implode("), (", $processedKills) . ")");
 				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $processedKills) . ")");
-				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $npcProcess) . ")");
 			}
+			$numNPC = count($npcProcess);
+			if($numNPC > 0)
+				$db->execute("UPDATE zz_killmails set processed = 1 WHERE killID in (" . implode(",", $npcProcess) . ")");
 		}
 		if ($numKills > 0)
 		{
@@ -218,7 +230,6 @@ class cli_parseKills implements cliCommand
 		foreach ($kill["attackers"] as $attacker)
 			$npc = $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125) ? true : false;
 
-var_dump($npc);
 		return $npc;
 	}
 
