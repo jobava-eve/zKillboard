@@ -37,11 +37,11 @@ class Price
 			return 1;
 
 		$date = isset($date) ? $date : date("Y-m-d");
-		$price = Db::queryField("SELECT avgPrice FROM zz_item_price_lookup WHERE typeID = :typeID AND priceDate = :priceDate", "avgPrice", array(":typeID" => $typeID, ":priceDate" => $date), 0);
+		$price = Db::queryField("SELECT lowPrice FROM zz_item_price_lookup WHERE typeID = :typeID AND priceDate = :priceDate", "lowPrice", array(":typeID" => $typeID, ":priceDate" => $date), 0);
 
 		// If the price is zero, fetch the last available price, since that's probably right.. i guess.. fml
 		if($price == 0 || $price == NULL)
-			$price = Db::queryField("SELECT avgPrice FROM zz_item_price_lookup WHERE typeID = :typeID ORDER BY priceDate DESC LIMIT 1", "avgPrice", array(":typeID" => $typeID), 0);
+			$price = Db::queryField("SELECT lowPrice FROM zz_item_price_lookup WHERE typeID = :typeID ORDER BY priceDate DESC LIMIT 1", "lowPrice", array(":typeID" => $typeID), 0);
 		// If price is zero, get the base price
 		if ($price == 0)
 			$price = self::getItemBasePrice($typeID);
