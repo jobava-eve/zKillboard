@@ -19,6 +19,7 @@ CREATE TABLE `zz_participants` (
   `corporationID` int(16) NOT NULL,
   `characterID` int(16) NOT NULL,
   `finalBlow` tinyint(1) NOT NULL,
+  `isNPC` int(1) NOT NULL DEFAULT '0',
   KEY `number_involved` (`number_involved`),
   KEY `shipTypeID_index` (`shipTypeID`),
   KEY `killID` (`killID`,`dttm`),
@@ -39,5 +40,6 @@ CREATE TABLE `zz_participants` (
   KEY `solarSystemID_dttm` (`solarSystemID`,`dttm`),
   KEY `corporationID_dttm` (`corporationID`,`dttm`),
   KEY `allianceID_dttm` (`allianceID`,`dttm`),
-  KEY `characterID_dttm` (`characterID`,`dttm`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
+  KEY `characterID_dttm` (`characterID`,`dttm`),
+  KEY `isNPC` (`killID`,`isNPC`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
