@@ -187,15 +187,23 @@ class cli_priceCheck implements cliCommand
 					$lowBuy = $data["buy"]["min"];
 					$highBuy = $data["buy"]["max"];
 
-					// If the sellince price is under 0.005% different from the buying price then we swap them..
-					if((($highBuy / $lowPrice) * 100) < 0.005)
+					// If the sellince price is under 0.05% different from the buying price then we swap them..
+					if($highBuy > 0 && $lowPrice > 0)
 					{
-						$avgPrice = $data["buy"]["avg"];
-						$lowPrice = $data["buy"]["min"];
-						$highPrice = $data["buy"]["max"];
-						$avgBuy = $data["buy"]["avg"];
-						$lowBuy = $data["buy"]["min"];
-						$highBuy = $data["buy"]["max"];
+						if((($highBuy / $lowPrice) * 100) < 0.05)
+						{
+							// Make sure it has no chance of being duplicated
+							$duplicationChance = Db::queryField("SELECT chanceOfDuplicating FROM ccp_invTypes WHERE typeID = :typeID", "chanceOfDuplicating", array(":typeID" => $typeID));
+							if($duplicationChance == 0)
+							{
+								$avgPrice = $data["buy"]["avg"];
+								$lowPrice = $data["buy"]["min"];
+								$highPrice = $data["buy"]["max"];
+								$avgBuy = $data["buy"]["avg"];
+								$lowBuy = $data["buy"]["min"];
+								$highBuy = $data["buy"]["max"];
+							}
+						}
 					}
 				break;
 			}
