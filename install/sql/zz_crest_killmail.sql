@@ -9,4 +9,4 @@ CREATE TABLE `zz_crest_killmail` (
   KEY `hash` (`hash`),
   KEY `processed` (`processed`),
   KEY `timestamp` (`dttm`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;

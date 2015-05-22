@@ -186,11 +186,21 @@ class cli_priceCheck implements cliCommand
 					$avgBuy = $data["buy"]["avg"];
 					$lowBuy = $data["buy"]["min"];
 					$highBuy = $data["buy"]["max"];
+
+					// If the sellince price is under 5% different from the buying price then we swap them..
+					if((($highBuy / $lowPrice) * 100) < 5)
+					{
+						$avgPrice = $data["buy"]["avg"];
+						$lowPrice = $data["buy"]["min"];
+						$highPrice = $data["buy"]["max"];
+						$avgBuy = $data["buy"]["avg"];
+						$lowBuy = $data["buy"]["min"];
+						$highBuy = $data["buy"]["max"];
+					}
 				break;
 			}
 
 			$date = $data["date"];
-
 			// a fallthrough for pre-defined prices
 			if($lowPrice == 0)
 				$lowPrice = $avgPrice;
