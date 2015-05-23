@@ -18,9 +18,9 @@
 
 // Find the regionID
 if(!is_numeric($region))
-	$regionID = (int) Db::queryField("SELECT regionID FROM ccp_systems WHERE regionName = :regionName", "regionID", array(":regionName" => $region), 3600);
+	$regionID = (int) Db::queryField("SELECT regionID FROM ccp_regions WHERE regionName = :regionName", "regionID", array(":regionName" => $region), 3600);
 else // Verify it exists
-	$regionID = (int) Db::queryField("SELECT regionID FROM ccp_systems WHERE regionID = :regionID", "regionID", array(":regionID" => (int) $region), 3600);
+	$regionID = (int) Db::queryField("SELECT regionID FROM ccp_regions WHERE regionID = :regionID", "regionID", array(":regionID" => (int) $region), 3600);
 
 // If the regionID we get from above is zero, don't even bother anymore.....
 if($regionID == 0)
