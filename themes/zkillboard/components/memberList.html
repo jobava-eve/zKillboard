@@ -1,3 +1,30 @@
+{% set pageBase = requestUriPager %}
+{% set pageBase = (pageBase == '' ? '/' : pageBase) %}
+
+{% if extra.memberCount > 100 %}
+<div class="pull-right">
+	<ul class="pagination pagination-sm">
+		{% if page == 2 %}
+			<li><a href="{{ pageBase }}" rel="nofollow prev">&laquo;</a></li>
+		{% elseif page > 2 %}
+			<li><a href="{{ pageBase }}page/{{ page - 1 }}/" rel="nofollow prev">&laquo;</a></li>
+		{% endif %}
+
+		{% set startIndex = page - 3 %}
+		{% set endIndex = page + 3 %}
+
+		{% for pageIndex in startIndex..endIndex %}
+			{% if pageIndex == 1 %}
+				<li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}" rel="nofollow">{{ pageIndex }}</a></li>
+			{% elseif pageIndex > 1 %}
+				<li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}page/{{pageIndex}}/" rel="nofollow">{{ pageIndex }}</a></li>
+			{% endif %}
+		{% endfor %}
+		<li><a href="{{ pageBase }}page/{{ page + 1 }}/" rel="nofollow next">&raquo;</a></li>
+	</ul>
+</div>
+{% endif %}
+
 <table name="memberList" class="table table-hover table-striped">
 	<tr>
 		<th>Character name</th>
@@ -21,3 +48,27 @@
 		</tr>
 	{% endfor %}
 </table>
+
+{% if extra.memberCount > 100 %}
+<div class="pull-right">
+	<ul class="pagination pagination-sm">
+		{% if page == 2 %}
+			<li><a href="{{ pageBase }}" rel="nofollow prev">&laquo;</a></li>
+		{% elseif page > 2 %}
+			<li><a href="{{ pageBase }}page/{{ page - 1 }}/" rel="nofollow prev">&laquo;</a></li>
+		{% endif %}
+
+		{% set startIndex = page - 3 %}
+		{% set endIndex = page + 3 %}
+
+		{% for pageIndex in startIndex..endIndex %}
+			{% if pageIndex == 1 %}
+				<li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}" rel="nofollow">{{ pageIndex }}</a></li>
+			{% elseif pageIndex > 1 %}
+				<li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}page/{{pageIndex}}/" rel="nofollow">{{ pageIndex }}</a></li>
+			{% endif %}
+		{% endfor %}
+		<li><a href="{{ pageBase }}page/{{ page + 1 }}/" rel="nofollow next">&raquo;</a></li>
+	</ul>
+</div>
+{% endif %}

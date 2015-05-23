@@ -179,7 +179,10 @@ if ($pageType == "supers" && $hasSupers)
 }
 if($pageType == "members")
 {
-	$extra["memberList"] = Db::query("SELECT * FROM zz_characters WHERE corporationID = :corporationID ORDER BY name", array(":corporationID" => $corporationID));
+	$memberLimit = 100;
+	$offset = ($page - 1) * $memberLimit;
+	$extra["memberList"] = Db::query("SELECT * FROM zz_characters WHERE corporationID = :corporationID ORDER BY name LIMIT $offset, $memberLimit", array(":corporationID" => $corporationID));
+	$extra["memberCount"] = Db::queryField("SELECT count(*) AS count FROM zz_characters WHERE corporationID = :corporationID", "count", array(":corporationID" => $corporationID));
 	foreach($extra["memberList"] as $key => $data)
 	{
 		$characterID = $data["characterID"];

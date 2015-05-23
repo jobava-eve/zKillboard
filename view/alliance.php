@@ -187,7 +187,10 @@ if ($pageType == "supers" && $hasSupers)
 
 if($pageType == "members")
 {
-	$extra["memberList"] = Db::query("SELECT * FROM zz_characters WHERE allianceID = :allianceID ORDER BY name", array(":allianceID" => $allianceID));
+	$memberLimit = 100;
+	$offset = ($page - 1) * $memberLimit;
+	$extra["memberList"] = Db::query("SELECT * FROM zz_characters WHERE allianceID = :allianceID ORDER BY name LIMIT $offset, $memberLimit", array(":allianceID" => $allianceID));
+	$extra["memberCount"] = Db::queryField("SELECT count(*) AS count FROM zz_characters WHERE allianceID = :allianceID", "count", array(":allianceID" => $allianceID));
 	foreach($extra["memberList"] as $key => $data)
 	{
 		$characterID = $data["characterID"];
@@ -222,6 +225,8 @@ $renderParams = array(
 	"datepicker" => true,
 	"prevID" => $prevID,
 	"nextID" => $nextID,
+	"pager" => true,
+	"datepicker" => false,
 	"extra" => $extra
 );
 
