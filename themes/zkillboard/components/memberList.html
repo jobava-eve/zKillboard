@@ -1,0 +1,23 @@
+<table name="memberList" class="table table-hover table-striped">
+	<tr>
+		<th>Character name</th>
+		<th>Last Seen System</th>
+		<th>Last Seen Region</th>
+		<th>Last Seen Ship</th>
+		<th>Life Time Kills</th>
+		<th>Life Time Losses</th>
+		<th>Last Seen Date</th>
+	</tr>
+
+	{% for character in extra.memberList %}
+		<tr>
+			<td><img src="{{ image_character}}{{character.characterID}}_32.jpg"> <a href="/character/{{ character.characterID }}/">{{ character.name }}</a></td>
+			<td><a href="/system/{{ character.lastSeenSystem|url_encode }}/">{{ character.lastSeenSystem }}</a></td>
+			<td><a href="/region/{{ character.lastSeenRegion|url_encode }}/">{{ character.lastSeenRegion }}</a></td>
+			<td><a href="/ship/{{ character.lastSeenShip|url_encode }}/">{{ character.lastSeenShip }}</a></td>
+			<td>{{ character.lifeTimeKills }}</td>
+			<td>{{ character.lifeTimeLosses }}</td>
+			<td>{{ character.lastSeenDate }}</td>
+		</tr>
+	{% endfor %}
+</table>

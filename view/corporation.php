@@ -177,6 +177,22 @@ if ($pageType == "supers" && $hasSupers)
 	$extra["supers"] = $data;
 	$extra["hasSupers"] = sizeof($data["titans"]["data"]) || sizeof($data["moms"]["data"]);
 }
+if($pageType == "members")
+{
+	$extra["memberList"] = Db::query("SELECT * FROM zz_characters WHERE corporationID = :corporationID ORDER BY name", array(":corporationID" => $corporationID));
+	foreach($extra["memberList"] as $key => $data)
+	{
+		$characterID = $data["characterID"];
+		$allianceID = $data["allianceID"];
+		$lastSeenSystemID = Db::queryField("SELECT solarSystemID FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "solarSystemID", array(":charID" => $characterID));
+		$extra["memberList"][$key]["lastSeenSystem"] = $lastSeenSystemID > 0 ? Info::getSystemName($lastSeenSystemID) : "Not Seen";
+		$extra["memberList"][$key]["lastSeenRegion"] = $lastSeenSystemID > 0 ? Info::getRegionName(Info::getRegionIDFromSystemID($lastSeenSystemID)) : "Not Seen";
+		$extra["memberList"][$key]["lastSeenDate"] = Db::queryField("SELECT dttm FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "dttm", array(":charID" => $characterID));
+		$extra["memberList"][$key]["lastSeenShip"] = Info::getShipName(Db::queryField("SELECT shipTypeID FROM zz_participants WHERE characterID = :charID ORDER BY dttm DESC LIMIT 1", "shipTypeID", array(":charID" => $characterID)));
+		$extra["memberList"][$key]["lifeTimeKills"] = Db::queryField("SELECT SUM(destroyed) AS kills FROM zz_stats WHERE typeID = :charID", "kills", array(":charID" => $characterID), 3600);
+		$extra["memberList"][$key]["lifeTimeLosses"] = Db::queryField("SELECT SUM(lost) AS losses FROM zz_stats WHERE typeID = :charID", "losses", array(":charID" => $characterID), 3600);
+	}
+}
 
 $renderParams = array(
 	"pageName" => $pageName,

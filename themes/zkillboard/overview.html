@@ -45,7 +45,11 @@
 	{% else %}
 		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Monthly Top</a></li>
 	{% endif %}
+
 	<li class="{{ isActive('stats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/stats/">Stats</a></li>
+	{% if key == "corporation" or key == "alliance" %}
+	<li class="{{ isActive('members', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/members/">Members</a></li>
+	{% endif %}
 	{% if extra.hasSupers > 0 %}
 	<li class="{{ isActive('supers', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/supers/">Supers</a></li>
 	{% endif %}
@@ -136,6 +140,8 @@
     {% include 'components/summary.html' %}
     <div class="clearfix"></div>
     {% include 'components/history.html' %}
+{% elseif pageType == 'members' %}
+	{% include 'components/memberList.html' %}
 {% elseif pageType == 'top' %}
 	{% set showImage = true %}
 	<div class="row centered"><input style="background: transparent; color: white; border: 0px; width:60px; height:35px;" type="text" name="datepicker" class="datepicker" value="{{ month }}/{{ year }}">&nbsp;<i class="fa fa-calendar-o"></i></div>
@@ -146,17 +152,14 @@
 {% elseif pageType == 'corpstats' %}
 	{% include 'components/corpstats.html' %}
 {% elseif pageType == 'supers' %}
-
-<h3>Intel - Supers <small>(Last 3 months)</small></h3>
-{% set fieldset = extra.supers.titans %}
-{% include 'components/intel_table.html' %}
-
-{% set fieldset = extra.supers.moms %}
-{% include 'components/intel_table.html' %}
-<div class="clearfix"/>
-
+	<h3>Intel - Supers <small>(Last 3 months)</small></h3>
+	{% set fieldset = extra.supers.titans %}
+	{% include 'components/intel_table.html' %}
+	{% set fieldset = extra.supers.moms %}
+	{% include 'components/intel_table.html' %}
+	<div class="clearfix"/>
 {% elseif pageType == 'wars' %}
-{% for row in extra.wars %}
+	{% for row in extra.wars %}
         <div class="pull-left col-lg-6">
         <center><h4>{{ row.name }}</h4></center>
 	{% set wars = row.wars %}
@@ -202,6 +205,10 @@
 		$(document).ready(function() {
 			$("#corpstats").tablesorter({textExtraction: removeCommas});
 		}); 
+		$(document).ready(function() {
+			$("#memberList").tablesorter({textExtraction: removeCommas});
+		}); 
+
 		function removeCommas(val) {
 			return val.innerHTML.replace(',', '', 'g');
 		}
