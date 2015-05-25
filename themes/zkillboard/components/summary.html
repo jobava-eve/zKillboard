@@ -20,7 +20,7 @@
 				<tbody>
 					{% for stats in data %}
 						<tr rel="tooltip" title="{{ stats.groupName }}">
-							<td><a href="/{{ key }}/{{ id }}/group/{{stats.groupID}}/">{{ shortString(stats.groupName, 21) }}</a></td>
+							<td><a href="/{{ key }}/{{ id }}/groupID/{{stats.groupID}}/">{{ shortString(stats.groupName, 21) }}</a></td>
 							<td class="green" style="text-align: right;">{{ stats.destroyed|number_format(0) }}</td>
 							<td class="red" style="text-align: right;">{{ stats.lost|number_format(0) }}</td>
 						</tr>
