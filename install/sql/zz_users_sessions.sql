@@ -7,4 +7,4 @@ CREATE TABLE `zz_users_sessions` (
   `userAgent` text NOT NULL,
   `ip` varchar(16) NOT NULL,
   UNIQUE KEY `sessionHash` (`sessionHash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

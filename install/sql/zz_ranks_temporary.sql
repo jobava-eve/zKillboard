@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `zz_ranks_recent`;
-CREATE TABLE `zz_ranks_recent` (
+DROP TABLE IF EXISTS `zz_ranks_temporary`;
+CREATE TABLE `zz_ranks_temporary` (
   `type` varchar(16) NOT NULL,
   `typeID` int(16) NOT NULL,
   `shipsDestroyed` int(16) NOT NULL,
@@ -18,5 +18,11 @@ CREATE TABLE `zz_ranks_recent` (
   `ilRank` mediumint(16) NOT NULL,
   `iskEff` decimal(3,1) NOT NULL,
   `overallRank` mediumint(16) NOT NULL,
-  PRIMARY KEY (`type`,`typeID`)
+  PRIMARY KEY (`type`,`typeID`),
+  KEY `shipsDestroyed` (`shipsDestroyed`,`sdRank`),
+  KEY `shipsLost` (`shipsLost`,`slRank`),
+  KEY `pointsDestroyed` (`pointsDestroyed`,`pdRank`),
+  KEY `pointsLost` (`pointsLost`,`plRank`),
+  KEY `iskDestroyed` (`iskDestroyed`,`idRank`),
+  KEY `iskLost` (`iskLost`,`ilRank`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED TRANSACTIONAL=0;

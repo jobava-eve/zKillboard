@@ -8,4 +8,4 @@ CREATE TABLE `zz_ranks_progress` (
   PRIMARY KEY (`dttm`,`type`,`typeID`),
   KEY `type` (`type`,`typeID`),
   KEY `overallRank` (`overallRank`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
