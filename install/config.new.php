@@ -100,7 +100,7 @@ $cookie_time = (3600 * 24 * 30); // 30 days
 $cookie_secret = "%cookiesecret%";
 
 // API
-$apiRequestsPrDay = 17280; // Once every 5 seconds
+$maxRequestsPerHour = 1800; // Once every 2 seconds
 $apiWhiteList = array();
 
 // Stomp
