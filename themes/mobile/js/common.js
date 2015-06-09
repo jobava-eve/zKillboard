@@ -70,7 +70,10 @@ function updateKillsLastHour() {
 $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
 
 $(function() {
-    $('#nav').affix({
-        offset: { top: $('#nav').offset().top }
-    });
+    var $nav = $('#nav');
+    if ($nav.length > 0) {
+        $nav.affix({
+            offset: { top: $nav.offset().top }
+        });
+    }
 });

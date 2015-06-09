@@ -92,8 +92,11 @@ $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropa
 
 $(function() {
     //$('.nav-wrapper').height($("#nav").height());
-    
-    $('#nav').affix({
-        offset: { top: $('#nav').offset().top }
-    });
+
+    var $nav = $('#nav');
+    if ($nav.length > 0) {
+        $nav.affix({
+            offset: { top: $nav.offset().top }
+        });
+    }
 });
